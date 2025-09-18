@@ -1,8 +1,8 @@
 # AI Readiness Assessment Tool
 
-A comprehensive web application for evaluating organizations' readiness for AI adoption across multiple assessment pillars including technology infrastructure, data management, organizational culture, strategic planning, and risk management.
+A comprehensive enterprise-grade web application for evaluating organizations' readiness for AI adoption across multiple assessment pillars including technology infrastructure, data management, organizational culture, strategic planning, and risk management.
 
-## Features
+## 🚀 Features
 
 ### Phase 1: Core Assessment Platform ✅
 - **Multi-pillar Assessment**: Comprehensive evaluation across 5 key areas
@@ -15,33 +15,47 @@ A comprehensive web application for evaluating organizations' readiness for AI a
 - **Progress Tracking**: Visual progress bars and step indicators
 - **Auto-save**: Automatic preservation of assessment progress
 - **Smooth Transitions**: Animated transitions between assessment steps
-- **PDF Export**: Professional PDF generation of assessment results
+- **Professional PDF Reports**: Server-side PDF generation with branded reports
 - **Mobile Responsive**: Optimized charts and interface for mobile devices
 - **Results Metadata**: Display of organization info, industry, and timestamp
 
-### Phase 2: Admin Dashboard ✅
-- **Secure Admin Access**: Password-protected admin authentication
-- **Response Management**: View and manage all assessment responses
-- **Data Export**: CSV export of all responses and JSON export of individual responses
-- **Pagination**: Efficient handling of large datasets
-- **Statistics Dashboard**: Overview of total responses and average scores
+### Phase 3: Production Features ✅
+- **JWT Authentication**: Secure token-based authentication system
+- **Server-side PDF Generation**: Professional branded reports using Puppeteer
+- **Admin Dashboard**: Enhanced admin panel with filtering and export capabilities
+- **Security Hardening**: HTTPS enforcement, CORS, rate limiting, and security headers
+- **Database Integration**: PostgreSQL with Drizzle ORM for production data persistence
+- **Health Monitoring**: Comprehensive health check endpoints for deployment
 
-## Tech Stack
+### Admin Dashboard Features ✅
+- **Secure Admin Access**: JWT-based authentication replacing basic password auth
+- **Advanced Filtering**: Filter responses by date range, organization, and industry
+- **Response Management**: View and manage all assessment responses with pagination
+- **Multi-format Export**: 
+  - CSV export of filtered responses with comprehensive data
+  - JSON export of individual responses
+  - PDF export of individual assessment reports
+- **Statistics Dashboard**: Overview of total responses and average scores
+- **Real-time Data**: Live updates with proper cache invalidation
+
+## 🛠 Tech Stack
 
 - **Frontend**: React 18, TypeScript, Tailwind CSS, shadcn/ui components
 - **Backend**: Node.js, Express, TypeScript
-- **Database**: In-memory storage (development), SQLite with Prisma (future production)
+- **Database**: PostgreSQL with Drizzle ORM for production
+- **Authentication**: JWT tokens with secure cookie handling
+- **PDF Generation**: Puppeteer for server-side PDF reports
 - **Charts**: Recharts for data visualization
 - **Forms**: React Hook Form with Zod validation
 - **State Management**: TanStack Query (React Query)
 - **Routing**: Wouter for client-side routing
-- **Validation**: Drizzle-Zod for schema validation
+- **Security**: Helmet, CORS, Rate Limiting, Input Validation
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 - Node.js 18+ 
-- No external database required (uses in-memory storage)
+- PostgreSQL database (Replit provides built-in PostgreSQL)
 
 ### Installation
 
@@ -51,113 +65,242 @@ A comprehensive web application for evaluating organizations' readiness for AI a
    ```
 
 2. **Set up environment variables**:
-   - `ADMIN_PASS`: Secure password for admin dashboard access (configured in Replit Secrets)
+   ```bash
+   # Required for production
+   DATABASE_URL=postgresql://...          # PostgreSQL connection string
+   JWT_SECRET=your-secret-key-32-chars    # JWT signing secret (min 32 chars)
+   
+   # Optional configuration
+   CORS_ORIGIN=https://yourdomain.com     # Allowed CORS origins (comma-separated)
+   LOG_LEVEL=info                         # Logging level (debug, info, warn, error)
+   ```
 
-3. **Start the development server**:
+3. **Initialize the database**:
+   ```bash
+   npm run db:push
+   ```
+
+4. **Start the development server**:
    ```bash
    npm run dev
    ```
 
 The application will be available at `http://localhost:5000` (or your Replit domain).
 
-## Usage
+### Production Deployment
+
+1. **Build the application**:
+   ```bash
+   npm run build
+   ```
+
+2. **Start production server**:
+   ```bash
+   npm start
+   ```
+
+## 📖 Usage
 
 ### Taking an Assessment
 
 1. **Start Assessment**: Navigate to the home page and click "Start Assessment"
 2. **Organization Info**: Enter your organization name and industry (optional)
 3. **Complete Questionnaire**: Answer questions across all 5 assessment pillars
-4. **View Results**: Review your comprehensive readiness report
-5. **Export PDF**: Download a professional PDF summary of your results
+4. **View Results**: Review your comprehensive readiness report with interactive charts
+5. **Export PDF**: Download a professional PDF summary with organization branding
 
 ### Admin Dashboard
 
 1. **Access Admin Panel**: Navigate to `/admin/login`
-2. **Login**: Enter the admin password (configured in ADMIN_PASS)
-3. **View Responses**: Browse all assessment submissions with pagination
-4. **Export Data**: 
-   - Download CSV of all responses with comprehensive data
+2. **Create Admin Account**: Use the admin creation interface (first-time setup)
+3. **Login**: Enter your admin credentials
+4. **Advanced Filtering**: 
+   - Filter by date range (from/to dates)
+   - Search by organization name
+   - Filter by industry sector
+5. **Export Filtered Data**: 
+   - Download CSV of filtered responses with comprehensive metrics
    - Export individual responses as JSON files
-5. **Manage Data**: View detailed statistics and response metadata
+   - Generate PDF reports for any assessment
+6. **Manage Data**: View detailed statistics and response metadata with real-time updates
 
-## Assessment Pillars
+## 📊 Assessment Pillars
 
 ### 1. Technology Infrastructure
-Evaluates current technology capabilities, data infrastructure, and integration readiness.
+Evaluates current technology capabilities, data infrastructure, AI tools availability, and integration readiness.
 
 ### 2. Data Management
-Assesses data quality, governance, accessibility, and analytical capabilities.
+Assesses data quality, governance frameworks, accessibility, and analytical capabilities.
 
 ### 3. Organizational Culture
-Reviews AI understanding, change readiness, and digital transformation mindset.
+Reviews AI understanding, change readiness, digital transformation mindset, and staff training.
 
 ### 4. Strategic Planning
-Examines AI strategy integration, goal alignment, and success metrics.
+Examines AI strategy integration, goal alignment, success metrics, and business case development.
 
 ### 5. Risk Management
-Analyzes risk assessment frameworks, ethical considerations, and compliance readiness.
+Analyzes risk assessment frameworks, ethical considerations, compliance readiness, and security measures.
 
-## Admin Features
+## 🔐 Security Features
 
-### Authentication
-- Password-based authentication using ADMIN_PASS environment variable
-- Simple token storage in localStorage (development implementation)
-- Protected admin routes with Bearer token middleware
+### Authentication & Authorization
+- **JWT-based Authentication**: Secure token-based system with proper expiration
+- **Admin Role Management**: Structured admin creation and authentication flow
+- **Secure Token Storage**: HTTP-only cookies with secure flags in production
+- **Password Security**: Proper hashing and validation
 
-**Security Note**: Current implementation stores admin token in browser localStorage. For production use, consider implementing HTTP-only cookies or JWT tokens for enhanced security.
+### Security Hardening
+- **HTTPS Enforcement**: Automatic HTTPS redirect in production environments
+- **CORS Configuration**: Configurable cross-origin resource sharing policies
+- **Rate Limiting**: API endpoint protection with configurable limits
+- **Security Headers**: Comprehensive security headers via Helmet.js
+- **Input Validation**: Zod schema validation for all API endpoints
+- **SQL Injection Protection**: Parameterized queries via Drizzle ORM
+
+### Production Security
+- **Environment Validation**: Required environment variable checks
+- **Secret Management**: Secure handling of JWT secrets and database credentials
+- **Content Security Policy**: Strict CSP headers for XSS protection
+- **Request Size Limits**: Protection against oversized request attacks
+
+## 📊 Admin Features
 
 ### Dashboard Capabilities
-- **Response Listing**: Paginated view of all assessment submissions
-- **Response Details**: Organization, industry, scores, and timestamps
-- **Data Export**: Multiple export formats for data analysis
-- **Basic Statistics**: Total response count and current page metrics
+- **Response Management**: Paginated view with advanced filtering options
+- **Real-time Statistics**: Live dashboard with response counts and metrics
+- **Data Visualization**: Charts and graphs for assessment trends
+- **Export Tools**: Multiple export formats for comprehensive data analysis
+
+### Filtering System
+- **Date Range Filtering**: Filter responses by creation date
+- **Organization Search**: Text-based search across organization names
+- **Industry Filtering**: Filter by industry sectors
+- **Combined Filters**: Apply multiple filters simultaneously
+- **Filter State Management**: Persistent filter state with clear options
 
 ### Export Functionality
-- **CSV Export**: Comprehensive dataset with all pillar scores and metadata
-- **JSON Export**: Individual response data for detailed analysis
+- **Filtered CSV Export**: Export only filtered results with full dataset
+- **Individual JSON Export**: Detailed response data for analysis
+- **PDF Report Generation**: Professional branded assessment reports
 - **Automated Downloads**: Direct file downloads with proper naming conventions
 
-## Development
+## 🔧 Development
 
 ### Project Structure
 ```
 client/src/
 ├── components/     # Reusable UI components
-├── pages/         # Application pages
+│   ├── ui/        # shadcn/ui base components
+│   └── results/   # Assessment result components
+├── pages/         # Application pages and routes
 ├── lib/           # Utilities and configurations
 └── hooks/         # Custom React hooks
 
 server/
 ├── routes.ts      # API endpoint definitions
-├── storage.ts     # Database interface
-└── services/      # Business logic services
+├── storage.ts     # Database interface and operations
+├── auth/          # Authentication services
+├── services/      # Business logic services
+│   ├── questionLoader.ts  # Question management
+│   ├── scorer.ts         # Assessment scoring logic
+│   └── pdfGenerator.ts   # PDF generation service
+└── config/        # Configuration files
 
 shared/
 └── schema.ts      # Shared TypeScript types and Zod schemas
 ```
 
-### Key Components
-- **Assessment Flow**: Multi-step questionnaire with validation
-- **Results Display**: Interactive charts and score visualization
-- **Admin Interface**: Secure data management and export tools
-- **Responsive Design**: Mobile-optimized throughout
+### Key Development Features
+- **Hot Module Replacement**: Fast development with Vite HMR
+- **TypeScript**: Full type safety across frontend and backend
+- **Schema Validation**: Shared validation between client and server
+- **Database Migrations**: Automatic schema synchronization
+- **Code Quality**: ESLint and TypeScript strict mode
 
-## Deployment
+## 🌐 API Endpoints
 
-This application is designed to run on Replit with automatic deployment capabilities:
+### Public Endpoints
+- `GET /api/health` - Basic health check
+- `GET /api/health/detailed` - Comprehensive system health
+- `GET /api/questions` - Assessment questions
+- `POST /api/score` - Submit assessment responses
+- `GET /api/response/:id` - Retrieve assessment results
+- `GET /api/report/pdf/:id` - Download PDF report
 
-1. **Environment Setup**: Configure ADMIN_PASS in Replit Secrets
-2. **Storage**: Uses in-memory storage (data persists during session)
-3. **Deployment**: Use Replit's deployment feature to publish your app
+### Admin Endpoints (JWT Protected)
+- `POST /api/admin/login` - Admin authentication
+- `GET /api/admin/responses` - List responses with filtering
+- `GET /api/admin/export/csv` - Export filtered CSV data
+- `GET /api/admin/export/json/:id` - Export individual JSON
+- `GET /api/admin/export/pdf/:id` - Generate admin PDF report
 
-## Security Considerations
+### Health Check Endpoints
+- `GET /api/health` - Quick health status
+- `GET /api/health/detailed` - Database, JWT, and system checks
 
-- Admin authentication using environment variables
-- Request validation with Zod schemas
-- Input validation for all API endpoints
-- **Note**: Current implementation uses basic authentication suitable for development. For production deployment, consider implementing additional security measures such as HTTPS, CORS configuration, and secure session management.
+## 🚀 Deployment
 
-## Contributing
+### Replit Deployment
+1. **Environment Configuration**: Set up required environment variables in Replit Secrets
+2. **Database Setup**: Configure PostgreSQL connection (automatic in Replit)
+3. **Build Process**: Use Replit's build system or run `npm run build`
+4. **Deployment**: Deploy using Replit's deployment features
+
+### Manual Deployment
+1. **Server Requirements**: Node.js 18+, PostgreSQL database
+2. **Environment Setup**: Configure all required environment variables
+3. **Build Application**: Run `npm run build` for production builds
+4. **Process Management**: Use PM2 or similar for production process management
+5. **Reverse Proxy**: Configure nginx or similar for HTTPS and static file serving
+
+### Health Monitoring
+- Use `/api/health/detailed` for comprehensive system monitoring
+- Set up monitoring alerts based on health check responses
+- Monitor database connectivity and JWT service health
+
+## 🔧 Configuration
+
+### Environment Variables
+
+#### Required
+- `DATABASE_URL`: PostgreSQL connection string
+- `JWT_SECRET`: JWT signing secret (minimum 32 characters)
+
+#### Optional
+- `CORS_ORIGIN`: Comma-separated list of allowed origins
+- `LOG_LEVEL`: Logging level (debug, info, warn, error)
+- `PORT`: Server port (default: 5000)
+- `NODE_ENV`: Environment mode (development, production)
+
+### Production Configuration
+The application includes comprehensive production configuration in `server/config/production.ts`:
+
+- **Security Headers**: Comprehensive CSP and security configurations
+- **Rate Limiting**: Configurable rate limits for different endpoint types
+- **Database Settings**: Connection pooling and timeout configurations
+- **PDF Generation**: Optimized Puppeteer settings for production
+- **Health Checks**: Monitoring and alerting configurations
+
+## 🧪 Testing
+
+### End-to-End Testing
+The application includes comprehensive testing capabilities:
+
+1. **Assessment Flow Testing**: Complete user journey from start to PDF export
+2. **Admin Dashboard Testing**: Authentication, filtering, and export functionality
+3. **API Endpoint Testing**: All public and protected endpoints
+4. **Security Testing**: Authentication, authorization, and input validation
+
+### Running Tests
+```bash
+# Run development server for testing
+npm run dev
+
+# Access test endpoints
+curl http://localhost:5000/api/health/detailed
+```
+
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -165,10 +308,39 @@ This application is designed to run on Replit with automatic deployment capabili
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
+### Development Guidelines
+- Follow TypeScript strict mode requirements
+- Use Zod schemas for all API validation
+- Implement proper error handling and logging
+- Add appropriate test coverage for new features
+- Follow security best practices for authentication and data handling
+
+## 📄 License
 
 This project is provided as-is for educational and development purposes.
 
-## Support
+## 🆘 Support
 
 For questions or support, please open an issue in the repository or contact the development team.
+
+## 🔄 Version History
+
+### v3.0.0 - Production Release
+- JWT-based authentication system
+- Server-side PDF generation with Puppeteer
+- PostgreSQL database integration
+- Advanced admin filtering and export capabilities
+- Comprehensive security hardening
+- Production-ready deployment configuration
+
+### v2.0.0 - Admin Dashboard
+- Admin authentication and dashboard
+- Data export capabilities (CSV/JSON)
+- Response management and pagination
+- Security enhancements
+
+### v1.0.0 - Core Assessment Platform
+- Multi-pillar assessment questionnaire
+- Real-time scoring and visualization
+- Professional results display
+- PDF export functionality
