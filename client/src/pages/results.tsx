@@ -1,7 +1,7 @@
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Download, Share, RotateCcw, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,21 @@ export default function Results() {
   const responseId = params.id;
   
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const [isPrintMode, setIsPrintMode] = useState(false);
+
+  // Print lifecycle management
+  useEffect(() => {
+    const handleBeforePrint = () => setIsPrintMode(true);
+    const handleAfterPrint = () => setIsPrintMode(false);
+    
+    window.addEventListener('beforeprint', handleBeforePrint);
+    window.addEventListener('afterprint', handleAfterPrint);
+    
+    return () => {
+      window.removeEventListener('beforeprint', handleBeforePrint);
+      window.removeEventListener('afterprint', handleAfterPrint);
+    };
+  }, []);
 
   // For demo purposes, we'll show mock results if no responseId
   // In production, this would redirect to assessment
@@ -33,6 +48,25 @@ export default function Results() {
         newSet.add(sectionId);
       }
       return newSet;
+    });
+  };
+
+  const handleDownloadPDF = () => {
+    // Enter print mode for 2-page summary layout
+    setIsPrintMode(true);
+    
+    // Wait for layout reflow and chart resize
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Trigger resize event for charts
+        window.dispatchEvent(new Event('resize'));
+        
+        // Wait a bit more for charts to reflow, then print
+        setTimeout(() => {
+          window.print();
+          // isPrintMode will be reset by afterprint listener
+        }, 300);
+      });
     });
   };
 
@@ -88,12 +122,12 @@ export default function Results() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={`container mx-auto px-4 py-8 ${isPrintMode ? 'print-summary' : ''}`}>
       <div className="max-w-6xl mx-auto">
         <ResultsHeader />
 
         {/* Overall Score */}
-        <Card className="mb-8">
+        <Card data-card className="mb-8">
           <CardContent className="p-8">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
@@ -105,6 +139,7 @@ export default function Results() {
                   <span className="text-2xl text-muted-foreground">/ 100</span>
                 </div>
                 <Badge 
+                  data-badge
                   className="mb-4"
                   style={{ backgroundColor: displayResults.color }}
                 >
@@ -115,7 +150,7 @@ export default function Results() {
                 </p>
               </div>
               
-              <div className="flex justify-center">
+              <div className="flex justify-center gauge-container" data-gauge>
                 <Gauge value={displayResults.overall} />
               </div>
             </div>
@@ -123,11 +158,11 @@ export default function Results() {
         </Card>
 
         {/* Pillar Scores */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid lg:grid-cols-2 gap-8 mb-8 chart-section">
           <RadarChart data={displayResults.pillarScores} pillarNames={pillarNames} />
           
           {/* Key Insights */}
-          <Card>
+          <Card data-card>
             <CardContent className="p-8">
               <h3 className="text-xl font-semibold mb-6">Key Insights</h3>
               
@@ -184,8 +219,8 @@ export default function Results() {
           </Card>
         </div>
 
-        {/* Detailed Responses */}
-        <Card>
+        {/* Detailed Responses - Hidden in print mode */}
+        <Card className={isPrintMode ? 'no-print' : ''}>
           <div className="p-8 border-b border-border">
             <h3 className="text-xl font-semibold">Detailed Response Analysis</h3>
             <p className="text-muted-foreground mt-2">
@@ -238,9 +273,9 @@ export default function Results() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-          <Button size="lg" data-testid="button-download-report">
+          <Button size="lg" onClick={handleDownloadPDF} data-testid="button-download-report">
             <Download className="w-4 h-4 mr-2" />
-            Download Report
+            Download PDF
           </Button>
           <Button variant="outline" size="lg" data-testid="button-share-results">
             <Share className="w-4 h-4 mr-2" />
