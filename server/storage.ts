@@ -4,7 +4,8 @@ import { PrismaClient } from "../generated/prisma";
 export interface IStorage {
   createResponse(response: InsertResponse): Promise<Response>;
   getResponse(id: string): Promise<Response | undefined>;
-  getAllResponses(): Promise<Response[]>;
+  getAllResponses(limit?: number, offset?: number): Promise<Response[]>;
+  getResponseCount(): Promise<number>;
 }
 
 export class PrismaStorage implements IStorage {
@@ -45,10 +46,16 @@ export class PrismaStorage implements IStorage {
     }
   }
 
-  async getAllResponses(): Promise<Response[]> {
+  async getAllResponses(limit?: number, offset?: number): Promise<Response[]> {
     return await this.prisma.response.findMany({
       orderBy: { createdAt: 'desc' },
+      take: limit,
+      skip: offset,
     });
+  }
+
+  async getResponseCount(): Promise<number> {
+    return await this.prisma.response.count();
   }
 
   async disconnect(): Promise<void> {

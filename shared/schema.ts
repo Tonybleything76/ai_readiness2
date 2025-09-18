@@ -76,3 +76,10 @@ export const scoreResponseSchema = z.object({
 
 export type ScoreRequest = z.infer<typeof scoreRequestSchema>;
 export type ScoreResponse = z.infer<typeof scoreResponseSchema>;
+
+// Admin authentication schema
+export const adminLoginSchema = z.object({
+  password: z.string().min(1, "Password is required"),
+});
+
+export type AdminLogin = z.infer<typeof adminLoginSchema>;
