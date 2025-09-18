@@ -1,6 +1,6 @@
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Download, Share, RotateCcw, ChevronDown, TrendingUp, History } from "lucide-react";
+import { Download, Share, RotateCcw, ChevronDown, TrendingUp, History, Lightbulb, AlertTriangle, Star, ArrowRight, CheckCircle, XCircle, BarChart3, Target } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import ResultsHeader from "@/components/results/results-header";
 import RadarChart from "@/components/results/radar-chart";
 import Gauge from "@/components/ui/gauge";
-import { ScoreResponse } from "@/lib/types";
+import { ScoreResponse, Recommendation, InsightsSummary } from "@shared/schema";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 // Additional types for Phase 3 features
@@ -380,6 +380,137 @@ export default function Results() {
             ))}
           </div>
         </Card>
+
+            {/* Recommendations and Insights Section */}
+            {displayResults?.recommendations && displayResults.recommendations.length > 0 && (
+              <Card className="mt-8">
+                <CardContent className="p-8">
+                  <div className="flex items-center mb-6">
+                    <Lightbulb className="w-6 h-6 mr-3 text-primary" />
+                    <h2 className="text-2xl font-bold">Personalized Recommendations</h2>
+                  </div>
+                  
+                  <div className="grid gap-6">
+                    {displayResults.recommendations.map((recommendation: Recommendation, index: number) => (
+                      <Card key={recommendation.id} className="border-l-4 border-l-primary/20">
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <div className="flex items-center space-x-2">
+                                <Badge 
+                                  variant={recommendation.priority === 'high' ? 'destructive' : 
+                                          recommendation.priority === 'medium' ? 'secondary' : 'outline'}
+                                  className="text-xs"
+                                >
+                                  {recommendation.priority === 'high' && <AlertTriangle className="w-3 h-3 mr-1" />}
+                                  {recommendation.priority === 'medium' && <Star className="w-3 h-3 mr-1" />}
+                                  {recommendation.priority === 'low' && <CheckCircle className="w-3 h-3 mr-1" />}
+                                  {recommendation.priority.toUpperCase()}
+                                </Badge>
+                                <Badge variant="outline" className="text-xs">
+                                  {recommendation.category.charAt(0).toUpperCase() + recommendation.category.slice(1)}
+                                </Badge>
+                              </div>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                          </div>
+                          <h3 className="text-lg font-semibold mb-2" data-testid={`recommendation-title-${index}`}>
+                            {recommendation.title}
+                          </h3>
+                          <p className="text-muted-foreground" data-testid={`recommendation-description-${index}`}>
+                            {recommendation.description}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Insights Summary */}
+            {displayResults?.insights && (
+              <Card className="mt-8">
+                <CardContent className="p-8">
+                  <div className="flex items-center mb-6">
+                    <BarChart3 className="w-6 h-6 mr-3 text-primary" />
+                    <h2 className="text-2xl font-bold">Assessment Insights</h2>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-8">
+                    {/* Readiness Level and Next Steps */}
+                    <div className="space-y-6">
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3 flex items-center">
+                          <Target className="w-5 h-5 mr-2 text-primary" />
+                          AI Readiness Level
+                        </h3>
+                        <Badge 
+                          variant={(() => {
+                            const level = displayResults.insights.readinessLevel;
+                            if (level === 'Highly Ready') return 'default';
+                            if (level === 'Moderately Ready') return 'secondary';
+                            return 'outline';
+                          })()}
+                          className="text-base px-4 py-2"
+                          data-testid="readiness-level-badge"
+                        >
+                          {displayResults.insights.readinessLevel}
+                        </Badge>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3 flex items-center">
+                          <ArrowRight className="w-5 h-5 mr-2 text-primary" />
+                          Immediate Next Steps
+                        </h3>
+                        <ul className="space-y-2">
+                          {displayResults.insights.nextSteps.map((step, index) => (
+                            <li key={index} className="flex items-start" data-testid={`next-step-${index}`}>
+                              <CheckCircle className="w-4 h-4 mt-0.5 mr-2 text-green-500 flex-shrink-0" />
+                              <span className="text-sm">{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Strengths and Challenges */}
+                    <div className="space-y-6">
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3 flex items-center text-green-700">
+                          <CheckCircle className="w-5 h-5 mr-2" />
+                          Key Strengths
+                        </h3>
+                        <ul className="space-y-2">
+                          {displayResults.insights.strengths.map((strength, index) => (
+                            <li key={index} className="flex items-start" data-testid={`strength-${index}`}>
+                              <Star className="w-4 h-4 mt-0.5 mr-2 text-green-500 flex-shrink-0" />
+                              <span className="text-sm">{strength}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3 flex items-center text-orange-700">
+                          <AlertTriangle className="w-5 h-5 mr-2" />
+                          Areas for Improvement
+                        </h3>
+                        <ul className="space-y-2">
+                          {displayResults.insights.challenges.map((challenge, index) => (
+                            <li key={index} className="flex items-start" data-testid={`challenge-${index}`}>
+                              <XCircle className="w-4 h-4 mt-0.5 mr-2 text-orange-500 flex-shrink-0" />
+                              <span className="text-sm">{challenge}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
