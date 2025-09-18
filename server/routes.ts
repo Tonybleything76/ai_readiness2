@@ -12,6 +12,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Load questions from JSON file
   await questionLoader.loadQuestions();
 
+  // GET /api/health - Health check endpoint for Playwright readiness
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok" });
+  });
+
   // GET /api/questions - Return normalized structure from JSON
   app.get("/api/questions", async (req, res) => {
     try {
