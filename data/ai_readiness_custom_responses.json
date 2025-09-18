@@ -1,0 +1,354 @@
+{
+  "pillars": [
+    {
+      "id": "technology",
+      "name": "Technology Infrastructure",
+      "description": "Evaluate your organization's technical foundation and capabilities for AI implementation.",
+      "questions": [
+        {
+          "id": "tech_data_infrastructure",
+          "text": "How would you rate your organization's current data infrastructure?",
+          "description": "Consider data storage, accessibility, quality, and integration capabilities.",
+          "weight": 0.15,
+          "weight_rationale": "Data infrastructure is fundamental to any AI initiative",
+          "responses": {
+            "1": "No formal data infrastructure",
+            "2": "Basic data storage systems", 
+            "3": "Moderate data infrastructure",
+            "4": "Advanced data infrastructure",
+            "5": "Best-in-class data infrastructure"
+          },
+          "meanings": {
+            "1": "Data is stored in silos with no integration or standardization",
+            "2": "Some centralized storage but limited integration and data quality issues",
+            "3": "Centralized systems with some integration and data governance practices",
+            "4": "Well-integrated systems with strong data governance and quality processes",
+            "5": "Modern, cloud-native architecture with real-time integration and advanced analytics capabilities"
+          }
+        },
+        {
+          "id": "tech_cloud_readiness",
+          "text": "What is your organization's cloud computing maturity?",
+          "description": "Assess your cloud adoption, scalability, and modern architecture practices.",
+          "weight": 0.12,
+          "weight_rationale": "Cloud infrastructure provides the scalability and flexibility needed for AI workloads",
+          "responses": {
+            "1": "No cloud adoption",
+            "2": "Basic cloud services",
+            "3": "Moderate cloud integration", 
+            "4": "Advanced cloud architecture",
+            "5": "Cloud-native organization"
+          },
+          "meanings": {
+            "1": "Entirely on-premises infrastructure with no cloud services",
+            "2": "Limited use of basic cloud services for storage or backup",
+            "3": "Some applications moved to cloud with hybrid architecture",
+            "4": "Most systems cloud-based with good DevOps practices",
+            "5": "Fully cloud-native with microservices, containers, and automated scaling"
+          }
+        },
+        {
+          "id": "tech_api_integration",
+          "text": "How mature are your API and integration capabilities?",
+          "description": "Consider system interoperability, API management, and real-time data exchange.",
+          "weight": 0.10,
+          "weight_rationale": "APIs are essential for AI system integration and data flow",
+          "responses": {
+            "1": "No API strategy",
+            "2": "Basic point-to-point integrations",
+            "3": "Some API development",
+            "4": "Comprehensive API strategy",
+            "5": "Advanced API ecosystem"
+          },
+          "meanings": {
+            "1": "Systems operate in isolation with manual data transfer",
+            "2": "Simple integrations between key systems using basic methods",
+            "3": "Some RESTful APIs developed with basic management practices",
+            "4": "Well-designed API strategy with governance, security, and monitoring",
+            "5": "Sophisticated API ecosystem with GraphQL, event-driven architecture, and comprehensive management"
+          }
+        }
+      ]
+    },
+    {
+      "id": "data_management",
+      "name": "Data Management",
+      "description": "Assess your organization's data governance, quality, and analytics capabilities.",
+      "questions": [
+        {
+          "id": "data_governance",
+          "text": "How would you describe your data governance practices?",
+          "description": "Consider data policies, ownership, privacy compliance, and quality standards.",
+          "weight": 0.18,
+          "weight_rationale": "Strong data governance is critical for AI ethics and compliance",
+          "responses": {
+            "1": "No formal data governance",
+            "2": "Basic data policies",
+            "3": "Moderate governance framework",
+            "4": "Comprehensive data governance",
+            "5": "Best-practice data governance"
+          },
+          "meanings": {
+            "1": "No formal policies, unclear data ownership, limited compliance measures",
+            "2": "Basic policies exist but inconsistent enforcement and limited privacy controls",
+            "3": "Structured governance framework with defined roles and some compliance processes",
+            "4": "Comprehensive policies with clear ownership, strong privacy controls, and regular auditing",
+            "5": "Industry-leading governance with automated compliance, advanced privacy protection, and proactive risk management"
+          }
+        },
+        {
+          "id": "data_quality",
+          "text": "What is the overall quality and consistency of your organizational data?",
+          "description": "Evaluate data accuracy, completeness, timeliness, and standardization.",
+          "weight": 0.16,
+          "weight_rationale": "High-quality data is essential for reliable AI model performance",
+          "responses": {
+            "1": "Poor data quality",
+            "2": "Inconsistent data quality",
+            "3": "Moderate data quality",
+            "4": "High data quality",
+            "5": "Exceptional data quality"
+          },
+          "meanings": {
+            "1": "Significant issues with accuracy, completeness, and consistency across systems",
+            "2": "Data quality varies significantly between systems with manual correction processes",
+            "3": "Generally good quality with some standardization and periodic quality checks",
+            "4": "High-quality data with automated validation, standardization, and regular monitoring",
+            "5": "Superior data quality with real-time validation, comprehensive lineage tracking, and proactive quality management"
+          }
+        },
+        {
+          "id": "data_analytics",
+          "text": "How advanced are your current analytics and reporting capabilities?",
+          "description": "Consider business intelligence, self-service analytics, and predictive capabilities.",
+          "weight": 0.14,
+          "weight_rationale": "Analytics maturity indicates readiness for more advanced AI applications",
+          "responses": {
+            "1": "Basic reporting only",
+            "2": "Standard business intelligence",
+            "3": "Advanced analytics capabilities",
+            "4": "Predictive analytics in use",
+            "5": "AI-powered analytics ecosystem"
+          },
+          "meanings": {
+            "1": "Manual reporting with basic charts and tables from spreadsheets or simple tools",
+            "2": "Standard BI tools with dashboards and structured reports but limited self-service capability",
+            "3": "Self-service analytics with data visualization and some statistical analysis capabilities",
+            "4": "Predictive models in production with machine learning-based forecasting and optimization",
+            "5": "Sophisticated AI-powered analytics with automated insights, natural language querying, and advanced machine learning"
+          }
+        }
+      ]
+    },
+    {
+      "id": "organizational_culture",
+      "name": "Organizational Culture",
+      "description": "Evaluate your organization's cultural readiness for AI adoption and digital transformation.",
+      "questions": [
+        {
+          "id": "culture_change_readiness",
+          "text": "How receptive is your organization to technological change and innovation?",
+          "description": "Consider leadership support, employee attitudes, and change management capabilities.",
+          "weight": 0.16,
+          "weight_rationale": "Cultural acceptance is crucial for successful AI implementation and adoption",
+          "responses": {
+            "1": "Highly resistant to change",
+            "2": "Cautious about new technology",
+            "3": "Moderately open to change",
+            "4": "Embraces technological change",
+            "5": "Innovation-driven culture"
+          },
+          "meanings": {
+            "1": "Strong resistance to new technologies with preference for traditional methods",
+            "2": "Skeptical of new technology with slow adoption and limited leadership support",
+            "3": "Open to change with proper justification and gradual implementation approach",
+            "4": "Actively seeks technological improvements with strong leadership support for innovation",
+            "5": "Innovation is core to organizational identity with rapid adoption of emerging technologies"
+          }
+        },
+        {
+          "id": "culture_skills",
+          "text": "What is your organization's current level of digital skills and AI literacy?",
+          "description": "Assess technical capabilities, training programs, and learning culture.",
+          "weight": 0.14,
+          "weight_rationale": "Employee skills and literacy directly impact AI implementation success",
+          "responses": {
+            "1": "Limited digital skills",
+            "2": "Basic digital competency",
+            "3": "Moderate technical skills",
+            "4": "Strong digital capabilities",
+            "5": "Advanced AI and data science skills"
+          },
+          "meanings": {
+            "1": "Most employees have basic computer skills with limited technical training programs",
+            "2": "Employees comfortable with standard software but limited technical or analytical skills",
+            "3": "Some technical specialists with moderate analytical capabilities and ongoing training",
+            "4": "Strong technical skills across organization with data literacy and continuous learning",
+            "5": "Deep technical expertise with AI/ML specialists and comprehensive upskilling programs"
+          }
+        },
+        {
+          "id": "culture_collaboration",
+          "text": "How effectively do different departments collaborate on technology initiatives?",
+          "description": "Consider cross-functional teamwork, communication, and shared objectives.",
+          "weight": 0.12,
+          "weight_rationale": "AI initiatives require strong cross-functional collaboration",
+          "responses": {
+            "1": "Siloed departments",
+            "2": "Limited cross-functional work",
+            "3": "Moderate collaboration",
+            "4": "Strong cross-functional teams",
+            "5": "Seamless organizational integration"
+          },
+          "meanings": {
+            "1": "Departments work independently with minimal communication or shared goals",
+            "2": "Some collaboration on major projects but generally separate planning and execution",
+            "3": "Regular cross-functional projects with defined processes for collaboration",
+            "4": "Strong culture of teamwork with shared metrics and integrated planning processes",
+            "5": "Fluid organizational boundaries with agile, cross-functional teams as the standard operating model"
+          }
+        }
+      ]
+    },
+    {
+      "id": "strategic_planning",
+      "name": "Strategic Planning",
+      "description": "Assess your organization's strategic approach to AI adoption and digital transformation.",
+      "questions": [
+        {
+          "id": "strategy_vision",
+          "text": "How well-defined is your organization's AI strategy and vision?",
+          "description": "Consider strategic clarity, executive commitment, and roadmap development.",
+          "weight": 0.18,
+          "weight_rationale": "Clear AI strategy is fundamental to successful implementation and ROI",
+          "responses": {
+            "1": "No AI strategy exists",
+            "2": "Informal AI discussions",
+            "3": "Developing AI strategy",
+            "4": "Well-defined AI strategy",
+            "5": "Comprehensive AI transformation plan"
+          },
+          "meanings": {
+            "1": "No formal discussion or planning around AI adoption",
+            "2": "Ad-hoc conversations about AI potential but no formal planning process",
+            "3": "Strategy development in progress with some executive engagement and initial planning",
+            "4": "Clear AI strategy with defined objectives, timeline, and resource allocation",
+            "5": "Comprehensive transformation plan with detailed roadmap, governance, and change management"
+          }
+        },
+        {
+          "id": "strategy_investment",
+          "text": "What is your organization's approach to AI-related investments?",
+          "description": "Consider budget allocation, ROI expectations, and long-term commitment.",
+          "weight": 0.15,
+          "weight_rationale": "Investment commitment indicates serious strategic intent",
+          "responses": {
+            "1": "No dedicated AI budget",
+            "2": "Minimal experimental funding",
+            "3": "Moderate AI investments",
+            "4": "Significant AI budget allocation",
+            "5": "Strategic AI investment program"
+          },
+          "meanings": {
+            "1": "No formal budget allocation for AI initiatives or technology",
+            "2": "Small experimental budget for pilot projects or proof-of-concepts",
+            "3": "Dedicated budget for AI projects with clear approval processes",
+            "4": "Substantial investment in AI technology, talent, and infrastructure",
+            "5": "AI is a strategic investment priority with significant multi-year financial commitment"
+          }
+        },
+        {
+          "id": "strategy_governance",
+          "text": "How mature is your governance structure for AI and data initiatives?",
+          "description": "Evaluate decision-making processes, oversight committees, and accountability frameworks.",
+          "weight": 0.13,
+          "weight_rationale": "Strong governance ensures responsible AI development and deployment",
+          "responses": {
+            "1": "No formal governance",
+            "2": "Basic oversight processes",
+            "3": "Structured governance framework",
+            "4": "Comprehensive AI governance",
+            "5": "Best-practice governance model"
+          },
+          "meanings": {
+            "1": "No formal processes for AI project approval or oversight",
+            "2": "Basic approval processes with limited oversight and accountability",
+            "3": "Structured committees with defined roles and decision-making processes",
+            "4": "Comprehensive governance with ethics oversight, risk management, and performance monitoring",
+            "5": "Industry-leading governance with automated oversight, continuous monitoring, and adaptive frameworks"
+          }
+        }
+      ]
+    },
+    {
+      "id": "risk_management",
+      "name": "Risk Management",
+      "description": "Evaluate your organization's approach to AI-related risks, security, and compliance.",
+      "questions": [
+        {
+          "id": "risk_security",
+          "text": "How robust are your cybersecurity and data protection measures?",
+          "description": "Consider security frameworks, threat detection, and incident response capabilities.",
+          "weight": 0.16,
+          "weight_rationale": "Security is critical for AI systems handling sensitive data",
+          "responses": {
+            "1": "Basic security measures",
+            "2": "Standard security practices",
+            "3": "Good security framework",
+            "4": "Advanced security capabilities",
+            "5": "Best-in-class security program"
+          },
+          "meanings": {
+            "1": "Basic password policies and antivirus with limited monitoring or incident response",
+            "2": "Standard security tools and policies but limited advanced threat protection",
+            "3": "Comprehensive security framework with monitoring, training, and response procedures",
+            "4": "Advanced security with threat intelligence, automated response, and regular security assessments",
+            "5": "Sophisticated security program with AI-powered threat detection, zero-trust architecture, and continuous monitoring"
+          }
+        },
+        {
+          "id": "risk_compliance",
+          "text": "How well does your organization manage regulatory compliance and ethical considerations?",
+          "description": "Assess compliance frameworks, ethical guidelines, and regulatory readiness.",
+          "weight": 0.15,
+          "weight_rationale": "Compliance and ethics are increasingly important for AI deployment",
+          "responses": {
+            "1": "Limited compliance focus",
+            "2": "Basic compliance programs",
+            "3": "Structured compliance approach",
+            "4": "Comprehensive compliance management",
+            "5": "Proactive compliance and ethics leadership"
+          },
+          "meanings": {
+            "1": "Reactive approach to compliance with limited formal processes or training",
+            "2": "Basic compliance programs covering key regulations but limited AI-specific considerations",
+            "3": "Structured approach with dedicated compliance team and regular assessments",
+            "4": "Comprehensive compliance management with AI ethics guidelines and proactive monitoring",
+            "5": "Industry-leading compliance program with automated monitoring, ethical AI frameworks, and regulatory engagement"
+          }
+        },
+        {
+          "id": "risk_business_continuity",
+          "text": "How prepared is your organization for AI-related operational risks?",
+          "description": "Consider backup systems, failure recovery, and business continuity planning.",
+          "weight": 0.12,
+          "weight_rationale": "Business continuity planning is essential for AI-dependent operations",
+          "responses": {
+            "1": "Limited risk planning",
+            "2": "Basic backup systems",
+            "3": "Moderate risk management",
+            "4": "Comprehensive continuity planning",
+            "5": "Advanced resilience framework"
+          },
+          "meanings": {
+            "1": "Minimal backup systems with limited disaster recovery or business continuity planning",
+            "2": "Basic backup and recovery procedures but limited testing or AI-specific considerations",
+            "3": "Structured risk management with business continuity plans and regular testing",
+            "4": "Comprehensive planning with redundant systems, automated failover, and detailed recovery procedures",
+            "5": "Advanced resilience framework with real-time monitoring, predictive maintenance, and adaptive response systems"
+          }
+        }
+      ]
+    }
+  ]
+}
