@@ -1,5 +1,5 @@
 import { type Response, type InsertResponse } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { PrismaClient } from "../generated/prisma";
 
 export interface IStorage {
   createResponse(response: InsertResponse): Promise<Response>;
@@ -7,36 +7,48 @@ export interface IStorage {
   getAllResponses(): Promise<Response[]>;
 }
 
-export class MemStorage implements IStorage {
-  private responses: Map<string, Response>;
+export class PrismaStorage implements IStorage {
+  private prisma: PrismaClient;
 
   constructor() {
-    this.responses = new Map();
+    this.prisma = new PrismaClient();
   }
 
   async createResponse(insertResponse: InsertResponse): Promise<Response> {
-    const id = randomUUID();
-    const response: Response = {
-      id,
-      createdAt: new Date(),
-      orgName: insertResponse.orgName || null,
-      industry: insertResponse.industry || null,
-      answersJson: insertResponse.answersJson,
-      pillarScores: insertResponse.pillarScores,
-      overall: insertResponse.overall,
-      category: insertResponse.category,
-    };
-    this.responses.set(id, response);
+    const response = await this.prisma.response.create({
+      data: {
+        orgName: insertResponse.orgName || null,
+        industry: insertResponse.industry || null,
+        answersJson: insertResponse.answersJson,
+        pillarScores: insertResponse.pillarScores,
+        overall: insertResponse.overall,
+        category: insertResponse.category,
+      },
+    });
     return response;
   }
 
   async getResponse(id: string): Promise<Response | undefined> {
-    return this.responses.get(id);
+    try {
+      const response = await this.prisma.response.findUnique({
+        where: { id },
+      });
+      return response || undefined;
+    } catch (error) {
+      console.error("Error fetching response:", error);
+      return undefined;
+    }
   }
 
   async getAllResponses(): Promise<Response[]> {
-    return Array.from(this.responses.values());
+    return await this.prisma.response.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async disconnect(): Promise<void> {
+    await this.prisma.$disconnect();
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new PrismaStorage();
