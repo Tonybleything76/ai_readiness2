@@ -11,6 +11,15 @@ export class PrismaStorage implements IStorage {
   private prisma: PrismaClient;
 
   constructor() {
+    // Debug DATABASE_URL before creating PrismaClient
+    console.log("DATABASE_URL from env:", process.env.DATABASE_URL);
+    
+    // Set DATABASE_URL if not properly set
+    if (!process.env.DATABASE_URL || process.env.DATABASE_URL.includes('DATABASE_URL=')) {
+      process.env.DATABASE_URL = "file:./dev.db";
+      console.log("Fixed DATABASE_URL to:", process.env.DATABASE_URL);
+    }
+    
     this.prisma = new PrismaClient();
   }
 
