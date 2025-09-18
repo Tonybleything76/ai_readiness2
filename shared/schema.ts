@@ -49,6 +49,27 @@ export type Question = z.infer<typeof questionSchema>;
 export type Pillar = z.infer<typeof pillarSchema>;
 export type AssessmentData = z.infer<typeof assessmentDataSchema>;
 
+// Phase 3: Recommendations and insights types (defined first to avoid forward references)
+export const recommendationSchema = z.object({
+  id: z.string(),
+  category: z.enum(["immediate", "strategic", "foundational"]),
+  priority: z.enum(["high", "medium", "low"]),
+  title: z.string(),
+  description: z.string(),
+  pillar: z.string(),
+  score_threshold: z.number(),
+});
+
+export const insightsSummarySchema = z.object({
+  strengths: z.array(z.string()),
+  challenges: z.array(z.string()),
+  readinessLevel: z.string(),
+  nextSteps: z.array(z.string()),
+});
+
+export type Recommendation = z.infer<typeof recommendationSchema>;
+export type InsightsSummary = z.infer<typeof insightsSummarySchema>;
+
 // API response types
 export const scoreRequestSchema = z.object({
   orgName: z.string().optional(),
@@ -72,6 +93,9 @@ export const scoreResponseSchema = z.object({
   orgName: z.string().nullable().optional(),
   industry: z.string().nullable().optional(),
   createdAt: z.date().optional(),
+  // Phase 3: Recommendations and insights
+  recommendations: z.array(recommendationSchema).optional(),
+  insights: insightsSummarySchema.optional(),
 });
 
 export type ScoreRequest = z.infer<typeof scoreRequestSchema>;
