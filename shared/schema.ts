@@ -68,6 +68,10 @@ export const scoreResponseSchema = z.object({
     label: z.string(),
     meaning: z.string(),
   })),
+  // Metadata fields for results display
+  orgName: z.string().nullable().optional(),
+  industry: z.string().nullable().optional(),
+  createdAt: z.date().optional(),
 });
 
 export type ScoreRequest = z.infer<typeof scoreRequestSchema>;
