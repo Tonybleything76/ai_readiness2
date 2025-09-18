@@ -18,19 +18,19 @@ export default function RadarChart({ data, pillarNames }: RadarChartProps) {
       <CardContent className="p-8">
         <h3 className="text-xl font-semibold mb-6">Pillar Breakdown</h3>
         
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={350} className="mx-auto">
           <RechartsRadarChart data={chartData}>
             <PolarGrid />
             <PolarAngleAxis 
               dataKey="pillar" 
-              className="text-xs"
-              tick={{ fontSize: 10 }}
+              className="text-xs sm:text-sm"
+              tick={{ fontSize: 12 }}
             />
             <PolarRadiusAxis
               angle={90}
               domain={[0, 100]}
-              className="text-xs"
-              tick={{ fontSize: 10 }}
+              className="text-xs sm:text-sm"
+              tick={{ fontSize: 11 }}
             />
             <Radar
               name="Score"
