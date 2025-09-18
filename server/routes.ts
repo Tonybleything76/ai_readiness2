@@ -96,6 +96,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // GET /api/responses/:orgName - Get historical data for organization
+  app.get("/api/responses/:orgName", async (req, res) => {
+    try {
+      const orgName = req.params.orgName;
+      if (!orgName) {
+        return res.status(400).json({ message: "Organization name is required" });
+      }
+
+      const responses = await storage.getResponsesByOrganization(orgName);
+      res.json({
+        orgName,
+        count: responses.length,
+        responses: responses
+      });
+    } catch (error) {
+      console.error("Error getting historical responses:", error);
+      res.status(500).json({ message: "Failed to get historical responses" });
+    }
+  });
+
+  // GET /api/benchmark/:industry - Get industry benchmarking data
+  app.get("/api/benchmark/:industry", async (req, res) => {
+    try {
+      const industry = req.params.industry;
+      if (!industry) {
+        return res.status(400).json({ message: "Industry is required" });
+      }
+
+      const statistics = await storage.getIndustryStatistics(industry);
+      
+      if (!statistics) {
+        return res.status(200).json({
+          industry,
+          available: false,
+          message: "Insufficient data for benchmarking (minimum 10 responses required for privacy)"
+        });
+      }
+
+      res.json({
+        industry,
+        available: true,
+        ...statistics
+      });
+    } catch (error) {
+      console.error("Error getting industry statistics:", error);
+      res.status(500).json({ message: "Failed to get industry statistics" });
+    }
+  });
+
   // POST /api/admin/login - Admin authentication
   app.post("/api/admin/login", (req, res) => {
     try {

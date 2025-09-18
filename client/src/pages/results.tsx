@@ -1,15 +1,43 @@
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Download, Share, RotateCcw, ChevronDown } from "lucide-react";
+import { Download, Share, RotateCcw, ChevronDown, TrendingUp, History } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import ResultsHeader from "@/components/results/results-header";
 import RadarChart from "@/components/results/radar-chart";
 import Gauge from "@/components/ui/gauge";
 import { ScoreResponse } from "@/lib/types";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+
+// Additional types for Phase 3 features
+interface HistoricalResponse {
+  orgName: string;
+  count: number;
+  responses: Array<{
+    id: string;
+    createdAt: string;
+    orgName: string | null;
+    industry: string | null;
+    overall: number;
+    pillarScores: Record<string, number>;
+    category: string;
+  }>;
+}
+
+interface BenchmarkResponse {
+  industry: string;
+  available: boolean;
+  message?: string;
+  count?: number;
+  overallMedian?: number;
+  pillarMedians?: Record<string, number>;
+  overallQuartiles?: { q1: number; q3: number };
+  pillarQuartiles?: Record<string, { q1: number; q3: number }>;
+}
 
 export default function Results() {
   const params = useParams();
@@ -37,6 +65,18 @@ export default function Results() {
   const { data: results, isLoading } = useQuery<ScoreResponse>({
     queryKey: responseId ? ["/api/response", responseId] : [],
     enabled: !!responseId,
+  });
+
+  // Historical data query - only fetch if we have organization name
+  const { data: historicalData, isLoading: isLoadingHistory } = useQuery<HistoricalResponse>({
+    queryKey: results?.orgName ? ["/api/responses", results.orgName] : [],
+    enabled: !!results?.orgName,
+  });
+
+  // Benchmark data query - only fetch if we have industry
+  const { data: benchmarkData, isLoading: isLoadingBenchmark } = useQuery<BenchmarkResponse>({
+    queryKey: results?.industry ? ["/api/benchmark", results.industry] : [],
+    enabled: !!results?.industry,
   });
 
   const toggleSection = (sectionId: string) => {
@@ -125,6 +165,45 @@ export default function Results() {
     risk_management: "🛡️",
   };
 
+  // Format historical data for line charts
+  const formatHistoricalData = () => {
+    if (!historicalData?.responses || historicalData.responses.length < 2) {
+      return null;
+    }
+    
+    return historicalData.responses.map((response: any, index: number) => ({
+      assessment: index + 1,
+      date: new Date(response.createdAt).toLocaleDateString(),
+      overall: response.overall,
+      technology: response.pillarScores?.technology || 0,
+      data_management: response.pillarScores?.data_management || 0,
+      organizational_culture: response.pillarScores?.organizational_culture || 0,
+      strategic_planning: response.pillarScores?.strategic_planning || 0,
+      risk_management: response.pillarScores?.risk_management || 0,
+    }));
+  };
+
+  // Calculate percentile ranking
+  const calculatePercentile = () => {
+    if (!benchmarkData?.available || !displayResults?.overall) {
+      return null;
+    }
+    
+    // Simple percentile calculation based on median and quartiles
+    const userScore = displayResults.overall;
+    const { overallMedian, overallQuartiles } = benchmarkData;
+    
+    if (!overallQuartiles || !overallMedian) return null;
+    
+    if (userScore >= overallQuartiles.q3) return "Top 25%";
+    if (userScore >= overallMedian) return "Above Average";
+    if (userScore >= overallQuartiles.q1) return "Below Average";
+    return "Bottom 25%";
+  };
+
+  const historicalChartData = formatHistoricalData();
+  const userPercentile = calculatePercentile();
+
   return (
     <div className={`container mx-auto px-4 py-8 ${isPrintMode ? 'print-summary' : ''}`}>
       <div className="max-w-6xl mx-auto">
@@ -134,36 +213,59 @@ export default function Results() {
           createdAt={displayResults.createdAt}
         />
 
-        {/* Overall Score */}
-        <Card data-card className="mb-8">
-          <CardContent className="p-8">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h3 className="text-2xl font-semibold mb-4">Overall AI Readiness Score</h3>
-                <div className="flex items-baseline space-x-3 mb-4">
-                  <span className="text-5xl font-mono font-bold text-primary">
-                    {displayResults.overall}
-                  </span>
-                  <span className="text-2xl text-muted-foreground">/ 100</span>
+        <Tabs defaultValue="current" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="current" className="flex items-center gap-2" data-testid="tab-current-results">
+              <TrendingUp className="w-4 h-4" />
+              Current Results
+            </TabsTrigger>
+            <TabsTrigger 
+              value="history" 
+              className="flex items-center gap-2"
+              disabled={!displayResults.orgName || isLoadingHistory}
+              data-testid="tab-history"
+            >
+              <History className="w-4 h-4" />
+              History {(historicalData?.count ?? 0) > 1 && `(${historicalData.count})`}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="current">
+            {/* Overall Score */}
+            <Card data-card className="mb-8">
+              <CardContent className="p-8">
+                <div className="grid md:grid-cols-2 gap-8 items-center">
+                  <div>
+                    <h3 className="text-2xl font-semibold mb-4">Overall AI Readiness Score</h3>
+                    <div className="flex items-baseline space-x-3 mb-4">
+                      <span className="text-5xl font-mono font-bold text-primary">
+                        {displayResults.overall}
+                      </span>
+                      <span className="text-2xl text-muted-foreground">/ 100</span>
+                    </div>
+                    <Badge 
+                      data-badge
+                      className="mb-4"
+                      style={{ backgroundColor: displayResults.color }}
+                    >
+                      {displayResults.category}
+                    </Badge>
+                    {userPercentile && (
+                      <Badge variant="outline" className="mb-4 ml-2">
+                        {userPercentile} in {displayResults.industry}
+                      </Badge>
+                    )}
+                    <p className="text-muted-foreground">
+                      {displayResults.message}
+                    </p>
+                  </div>
+                  
+                  <div className="flex justify-center gauge-container" data-gauge>
+                    <Gauge value={displayResults.overall} />
+                  </div>
                 </div>
-                <Badge 
-                  data-badge
-                  className="mb-4"
-                  style={{ backgroundColor: displayResults.color }}
-                >
-                  {displayResults.category}
-                </Badge>
-                <p className="text-muted-foreground">
-                  {displayResults.message}
-                </p>
-              </div>
-              
-              <div className="flex justify-center gauge-container" data-gauge>
-                <Gauge value={displayResults.overall} />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
 
         {/* Pillar Scores */}
         <div className="grid lg:grid-cols-2 gap-8 mb-8 chart-section">
@@ -279,21 +381,122 @@ export default function Results() {
           </div>
         </Card>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-          <Button size="lg" onClick={handleDownloadPDF} data-testid="button-download-report">
-            <Download className="w-4 h-4 mr-2" />
-            Download PDF
-          </Button>
-          <Button variant="outline" size="lg" data-testid="button-share-results">
-            <Share className="w-4 h-4 mr-2" />
-            Share Results
-          </Button>
-          <Button variant="outline" size="lg" data-testid="button-new-assessment">
-            <RotateCcw className="w-4 h-4 mr-2" />
-            New Assessment
-          </Button>
-        </div>
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+              <Button size="lg" onClick={handleDownloadPDF} data-testid="button-download-report">
+                <Download className="w-4 h-4 mr-2" />
+                Download PDF
+              </Button>
+              <Button variant="outline" size="lg" data-testid="button-share-results">
+                <Share className="w-4 h-4 mr-2" />
+                Share Results
+              </Button>
+              <Button variant="outline" size="lg" data-testid="button-new-assessment">
+                <RotateCcw className="w-4 h-4 mr-2" />
+                New Assessment
+              </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="history">
+            {isLoadingHistory ? (
+              <div className="text-center py-12">
+                <p>Loading historical data...</p>
+              </div>
+            ) : !displayResults.orgName ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">
+                  Historical tracking is only available for named organizations. 
+                  Please include an organization name in your next assessment to enable historical tracking.
+                </p>
+              </div>
+            ) : historicalChartData ? (
+              <div className="space-y-8">
+                {/* Historical Overall Score Trend */}
+                <Card>
+                  <CardContent className="p-8">
+                    <h3 className="text-xl font-semibold mb-6">Overall Score Trend</h3>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={historicalChartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="date" />
+                        <YAxis domain={[0, 100]} />
+                        <Tooltip />
+                        <Legend />
+                        <Line 
+                          type="monotone" 
+                          dataKey="overall" 
+                          stroke="hsl(var(--primary))" 
+                          strokeWidth={3}
+                          name="Overall Score"
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                {/* Historical Pillar Trends */}
+                <Card>
+                  <CardContent className="p-8">
+                    <h3 className="text-xl font-semibold mb-6">Pillar Score Trends</h3>
+                    <ResponsiveContainer width="100%" height={400}>
+                      <LineChart data={historicalChartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="date" />
+                        <YAxis domain={[0, 100]} />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="technology" stroke="hsl(var(--chart-1))" name="Technology" />
+                        <Line type="monotone" dataKey="data_management" stroke="hsl(var(--chart-2))" name="Data Management" />
+                        <Line type="monotone" dataKey="organizational_culture" stroke="hsl(var(--chart-3))" name="Culture" />
+                        <Line type="monotone" dataKey="strategic_planning" stroke="hsl(var(--chart-4))" name="Strategy" />
+                        <Line type="monotone" dataKey="risk_management" stroke="hsl(var(--chart-5))" name="Risk Management" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                {/* Historical Summary */}
+                <Card>
+                  <CardContent className="p-8">
+                    <h3 className="text-xl font-semibold mb-6">Historical Summary</h3>
+                    <div className="grid md:grid-cols-3 gap-6">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-primary">{historicalData?.count || 0}</div>
+                        <div className="text-sm text-muted-foreground">Total Assessments</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-chart-2">
+                          {historicalChartData.length > 1 
+                            ? (historicalChartData[historicalChartData.length - 1].overall - historicalChartData[0].overall > 0 ? '+' : '')
+                            + Math.round(historicalChartData[historicalChartData.length - 1].overall - historicalChartData[0].overall) 
+                            : '0'
+                          }
+                        </div>
+                        <div className="text-sm text-muted-foreground">Overall Change</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-chart-3">
+                          {historicalChartData.length > 0 
+                            ? new Date(historicalChartData[historicalChartData.length - 1].date).toLocaleDateString()
+                            : 'N/A'
+                          }
+                        </div>
+                        <div className="text-sm text-muted-foreground">Last Assessment</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">
+                  No historical data available. Complete another assessment to see trends over time.
+                </p>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
