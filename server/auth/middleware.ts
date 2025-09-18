@@ -131,8 +131,14 @@ export const csrfProtection = (req: Request, res: Response, next: NextFunction) 
     return res.status(403).json({ message: 'CSRF token missing' });
   }
 
-  if (!SessionAuthService.verifyCSRFToken(csrfToken, expectedToken)) {
-    return res.status(403).json({ message: 'Invalid CSRF token' });
+  try {
+    if (!SessionAuthService.verifyCSRFToken(csrfToken, expectedToken)) {
+      return res.status(403).json({ message: 'Invalid CSRF token' });
+    }
+  } catch (error) {
+    // Handle malformed CSRF tokens that cause verification errors
+    console.error("CSRF token verification error:", error);
+    return res.status(403).json({ message: 'Invalid CSRF token format' });
   }
 
   next();
