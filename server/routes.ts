@@ -149,6 +149,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // GET /api/admin/export/csv - Export all responses as CSV
+  app.get("/api/admin/export/csv", authenticateAdmin, async (req, res) => {
+    try {
+      const responses = await storage.getAllResponses(); // Get all responses without pagination
+      
+      // CSV header
+      const csvHeader = "ID,Created At,Organization,Industry,Overall Score,Category,Technology,Data Management,Organizational Culture,Strategic Planning,Risk Management\n";
+      
+      // CSV rows
+      const csvRows = responses.map(response => {
+        const pillarScores = response.pillarScores as any;
+        return [
+          response.id,
+          response.createdAt.toISOString(),
+          response.orgName || "",
+          response.industry || "",
+          response.overall,
+          response.category,
+          pillarScores?.technology || 0,
+          pillarScores?.data_management || 0,
+          pillarScores?.organizational_culture || 0,
+          pillarScores?.strategic_planning || 0,
+          pillarScores?.risk_management || 0
+        ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(",");
+      }).join("\n");
+
+      const csvContent = csvHeader + csvRows;
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="ai-readiness-responses-${new Date().toISOString().split('T')[0]}.csv"`);
+      res.send(csvContent);
+    } catch (error) {
+      console.error("Error exporting CSV:", error);
+      res.status(500).json({ message: "Failed to export CSV" });
+    }
+  });
+
+  // GET /api/admin/export/json/:id - Export individual response as JSON
+  app.get("/api/admin/export/json/:id", authenticateAdmin, async (req, res) => {
+    try {
+      const response = await storage.getResponse(req.params.id);
+      if (!response) {
+        return res.status(404).json({ message: "Response not found" });
+      }
+
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', `attachment; filename="response-${response.id}.json"`);
+      res.json(response);
+    } catch (error) {
+      console.error("Error exporting JSON:", error);
+      res.status(500).json({ message: "Failed to export JSON" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
