@@ -1,5 +1,6 @@
-import { type Response, type InsertResponse } from "@shared/schema";
-import { PrismaClient } from "../generated/prisma";
+import { type Response, type InsertResponse, responses } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc, count, sql } from "drizzle-orm";
 
 // Safe historical response type (excludes sensitive answersJson)
 export type HistoricalResponse = {
@@ -27,37 +28,22 @@ export interface IStorage {
   } | null>;
 }
 
-export class PrismaStorage implements IStorage {
-  private prisma: PrismaClient;
-
-  constructor() {
-    // Set DATABASE_URL if not properly set
-    if (!process.env.DATABASE_URL) {
-      process.env.DATABASE_URL = "file:./prisma/dev.db";
-    }
-    
-    this.prisma = new PrismaClient();
-  }
+export class DatabaseStorage implements IStorage {
 
   async createResponse(insertResponse: InsertResponse): Promise<Response> {
-    const response = await this.prisma.response.create({
-      data: {
-        orgName: insertResponse.orgName || null,
-        industry: insertResponse.industry || null,
-        answersJson: insertResponse.answersJson,
-        pillarScores: insertResponse.pillarScores,
-        overall: insertResponse.overall,
-        category: insertResponse.category,
-      },
-    });
+    const [response] = await db
+      .insert(responses)
+      .values(insertResponse)
+      .returning();
     return response;
   }
 
   async getResponse(id: string): Promise<Response | undefined> {
     try {
-      const response = await this.prisma.response.findUnique({
-        where: { id },
-      });
+      const [response] = await db
+        .select()
+        .from(responses)
+        .where(eq(responses.id, id));
       return response || undefined;
     } catch (error) {
       console.error("Error fetching response:", error);
@@ -66,35 +52,48 @@ export class PrismaStorage implements IStorage {
   }
 
   async getAllResponses(limit?: number, offset?: number): Promise<Response[]> {
-    return await this.prisma.response.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-      skip: offset,
-    });
+    const query = db
+      .select()
+      .from(responses)
+      .orderBy(desc(responses.createdAt));
+    
+    if (limit) {
+      query.limit(limit);
+    }
+    if (offset) {
+      query.offset(offset);
+    }
+    
+    return await query;
   }
 
   async getResponseCount(): Promise<number> {
-    return await this.prisma.response.count();
+    const [result] = await db
+      .select({ count: count() })
+      .from(responses);
+    return result.count;
   }
 
   async getResponsesByOrganization(orgName: string): Promise<HistoricalResponse[]> {
-    return await this.prisma.response.findMany({
-      where: { 
-        orgName: orgName
-      },
-      select: {
-        id: true,
-        createdAt: true,
-        orgName: true,
-        industry: true,
-        overall: true,
-        pillarScores: true,
-        // Explicitly exclude answersJson for privacy/security
-        // answersJson: false, (implicit)
-        category: true,
-      },
-      orderBy: { createdAt: 'asc' }, // Chronological order for historical tracking
-    });
+    try {
+      const results = await db
+        .select({
+          id: responses.id,
+          createdAt: responses.createdAt,
+          orgName: responses.orgName,
+          industry: responses.industry,
+          overall: responses.overall,
+          pillarScores: responses.pillarScores,
+          category: responses.category,
+        })
+        .from(responses)
+        .where(eq(responses.orgName, orgName))
+        .orderBy(desc(responses.createdAt));
+      return results;
+    } catch (error) {
+      console.error("Error fetching responses by organization:", error);
+      return [];
+    }
   }
 
   async getIndustryStatistics(industry: string): Promise<{
@@ -105,14 +104,13 @@ export class PrismaStorage implements IStorage {
     pillarQuartiles: Record<string, { q1: number; q3: number }>;
   } | null> {
     // Get all responses for the industry
-    const responses = await this.prisma.response.findMany({
-      where: { 
-        industry: industry
-      }
-    });
+    const responseList = await db
+      .select()
+      .from(responses)
+      .where(eq(responses.industry, industry));
 
     // K-anonymity protection: only return statistics if >= 10 responses
-    if (responses.length < 10) {
+    if (responseList.length < 10) {
       return null;
     }
 
@@ -134,7 +132,7 @@ export class PrismaStorage implements IStorage {
     };
 
     // Calculate overall score statistics
-    const overallScores = responses.map(r => r.overall);
+    const overallScores = responseList.map(r => r.overall);
     const overallStats = calculateStats(overallScores);
 
     // Calculate pillar statistics
@@ -143,14 +141,14 @@ export class PrismaStorage implements IStorage {
 
     // Get all unique pillar keys from responses
     const pillarKeys = new Set<string>();
-    responses.forEach(response => {
+    responseList.forEach(response => {
       if (response.pillarScores && typeof response.pillarScores === 'object') {
         Object.keys(response.pillarScores).forEach(key => pillarKeys.add(key));
       }
     });
 
     pillarKeys.forEach(pillarKey => {
-      const pillarScores = responses
+      const pillarScores = responseList
         .map(response => {
           if (response.pillarScores && typeof response.pillarScores === 'object' && response.pillarScores !== null) {
             return (response.pillarScores as Record<string, any>)[pillarKey];
@@ -167,7 +165,7 @@ export class PrismaStorage implements IStorage {
     });
 
     return {
-      count: responses.length,
+      count: responseList.length,
       overallMedian: overallStats.median,
       pillarMedians,
       overallQuartiles: { q1: overallStats.q1, q3: overallStats.q3 },
@@ -176,8 +174,8 @@ export class PrismaStorage implements IStorage {
   }
 
   async disconnect(): Promise<void> {
-    await this.prisma.$disconnect();
+    // Drizzle with connection pooling handles disconnection automatically
   }
 }
 
-export const storage = new PrismaStorage();
+export const storage = new DatabaseStorage();
