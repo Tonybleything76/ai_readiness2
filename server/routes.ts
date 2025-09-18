@@ -1,13 +1,29 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { scoreRequestSchema } from "@shared/schema";
+import { scoreRequestSchema, adminLoginSchema } from "@shared/schema";
 import { QuestionLoader } from "./services/questionLoader";
 import { Scorer } from "./services/scorer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const questionLoader = new QuestionLoader();
   const scorer = new Scorer();
+
+  // Admin authentication middleware
+  const authenticateAdmin = (req: any, res: any, next: any) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: "Authorization required" });
+    }
+    
+    const token = authHeader.substring(7);
+    // Simple token validation - in production, use JWT or session tokens
+    if (token !== process.env.ADMIN_PASS) {
+      return res.status(403).json({ message: "Invalid credentials" });
+    }
+    
+    next();
+  };
 
   // Load questions from JSON file
   await questionLoader.loadQuestions();
@@ -77,6 +93,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error getting response:", error);
       res.status(500).json({ message: "Failed to get response" });
+    }
+  });
+
+  // POST /api/admin/login - Admin authentication
+  app.post("/api/admin/login", (req, res) => {
+    try {
+      const parseResult = adminLoginSchema.safeParse(req.body);
+      if (!parseResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid request body",
+          errors: parseResult.error.errors 
+        });
+      }
+
+      const { password } = parseResult.data;
+      
+      if (password !== process.env.ADMIN_PASS) {
+        return res.status(401).json({ message: "Invalid password" });
+      }
+
+      // Return the password as token for simplicity - in production use JWT
+      res.json({ 
+        token: password,
+        message: "Login successful" 
+      });
+    } catch (error) {
+      console.error("Error during admin login:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // GET /api/admin/responses - Get all responses (paginated)
+  app.get("/api/admin/responses", authenticateAdmin, async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const offset = (page - 1) * limit;
+
+      const responses = await storage.getAllResponses(limit, offset);
+      const total = await storage.getResponseCount();
+
+      res.json({
+        data: responses,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit)
+        }
+      });
+    } catch (error) {
+      console.error("Error getting responses:", error);
+      res.status(500).json({ message: "Failed to get responses" });
     }
   });
 

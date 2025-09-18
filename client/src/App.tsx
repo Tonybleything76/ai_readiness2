@@ -7,6 +7,8 @@ import Header from "@/components/layout/header";
 import Landing from "@/pages/landing";
 import Assessment from "@/pages/assessment";
 import Results from "@/pages/results";
+import AdminLogin from "@/pages/admin-login";
+import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -15,6 +17,8 @@ function Router() {
       <Route path="/" component={Landing} />
       <Route path="/assessment" component={Assessment} />
       <Route path="/results/:id?" component={Results} />
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
