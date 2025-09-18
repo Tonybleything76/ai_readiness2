@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,25 @@ interface QuestionCardProps {
   isSubmitting: boolean;
   onNext: () => void;
   onPrevious: () => void;
+  direction: number;
 }
+
+const cardVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 300 : -300,
+    opacity: 0
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? 300 : -300,
+    opacity: 0
+  })
+};
 
 export default function QuestionCard({
   pillar,
@@ -33,9 +52,21 @@ export default function QuestionCard({
   isSubmitting,
   onNext,
   onPrevious,
+  direction,
 }: QuestionCardProps) {
   return (
-    <Card>
+    <motion.div
+      custom={direction}
+      variants={cardVariants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{
+        x: { type: "spring", stiffness: 300, damping: 30 },
+        opacity: { duration: 0.2 }
+      }}
+    >
+      <Card>
       <CardContent className="p-8">
         <div className="mb-6">
           <h3 className="text-xl font-semibold mb-2">{pillar.name}</h3>
@@ -107,5 +138,6 @@ export default function QuestionCard({
         </div>
       </CardContent>
     </Card>
+    </motion.div>
   );
 }

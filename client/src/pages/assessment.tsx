@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ interface AssessmentState {
   currentPillarIndex: number;
   currentQuestionIndex: number;
   answers: Record<string, number>;
+  lastNavDirection: number;
 }
 
 export default function Assessment() {
@@ -31,6 +33,7 @@ export default function Assessment() {
     currentPillarIndex: 0,
     currentQuestionIndex: 0,
     answers: {},
+    lastNavDirection: 1,
   });
 
   // Load questions
@@ -125,13 +128,14 @@ export default function Assessment() {
 
     // Move to next question
     if (state.currentQuestionIndex < currentPillar.questions.length - 1) {
-      setState(prev => ({ ...prev, currentQuestionIndex: prev.currentQuestionIndex + 1 }));
+      setState(prev => ({ ...prev, currentQuestionIndex: prev.currentQuestionIndex + 1, lastNavDirection: 1 }));
     } else if (state.currentPillarIndex < assessmentData.pillars.length - 1) {
       // Move to next pillar
       setState(prev => ({
         ...prev,
         currentPillarIndex: prev.currentPillarIndex + 1,
-        currentQuestionIndex: 0
+        currentQuestionIndex: 0,
+        lastNavDirection: 1
       }));
     } else {
       // Assessment complete - submit
@@ -145,13 +149,14 @@ export default function Assessment() {
 
   const handlePrevious = () => {
     if (state.currentQuestionIndex > 0) {
-      setState(prev => ({ ...prev, currentQuestionIndex: prev.currentQuestionIndex - 1 }));
+      setState(prev => ({ ...prev, currentQuestionIndex: prev.currentQuestionIndex - 1, lastNavDirection: -1 }));
     } else if (state.currentPillarIndex > 0) {
       const prevPillar = assessmentData.pillars[state.currentPillarIndex - 1];
       setState(prev => ({
         ...prev,
         currentPillarIndex: prev.currentPillarIndex - 1,
-        currentQuestionIndex: prevPillar.questions.length - 1
+        currentQuestionIndex: prevPillar.questions.length - 1,
+        lastNavDirection: -1
       }));
     }
   };
@@ -220,28 +225,32 @@ export default function Assessment() {
           </Card>
         </div>
       ) : (
-        <div className="max-w-3xl mx-auto">
-          {currentQuestion && (
-            <QuestionCard
-              pillar={currentPillar}
-              question={currentQuestion}
-              selectedValue={state.answers[currentQuestion.id]}
-              onAnswerChange={handleAnswerChange}
-              currentQuestionNumber={
-                assessmentData.pillars
-                  .slice(0, state.currentPillarIndex)
-                  .reduce((sum, p) => sum + p.questions.length, 0) + 
-                state.currentQuestionIndex + 1
-              }
-              totalQuestions={totalQuestions}
-              canGoNext={canGoNext}
-              canGoPrevious={canGoPrevious}
-              isLastQuestion={isLastQuestion}
-              isSubmitting={submitScoreMutation.isPending}
-              onNext={handleNext}
-              onPrevious={handlePrevious}
-            />
-          )}
+        <div className="max-w-3xl mx-auto" style={{ minHeight: '600px' }}>
+          <AnimatePresence mode="wait" initial={false}>
+            {currentQuestion && (
+              <QuestionCard
+                key={`${state.currentPillarIndex}-${state.currentQuestionIndex}`}
+                direction={state.lastNavDirection}
+                pillar={currentPillar}
+                question={currentQuestion}
+                selectedValue={state.answers[currentQuestion.id]}
+                onAnswerChange={handleAnswerChange}
+                currentQuestionNumber={
+                  assessmentData.pillars
+                    .slice(0, state.currentPillarIndex)
+                    .reduce((sum, p) => sum + p.questions.length, 0) + 
+                  state.currentQuestionIndex + 1
+                }
+                totalQuestions={totalQuestions}
+                canGoNext={canGoNext}
+                canGoPrevious={canGoPrevious}
+                isLastQuestion={isLastQuestion}
+                isSubmitting={submitScoreMutation.isPending}
+                onNext={handleNext}
+                onPrevious={handlePrevious}
+              />
+            )}
+          </AnimatePresence>
         </div>
       )}
 
