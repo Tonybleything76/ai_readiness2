@@ -5,12 +5,13 @@ import { scoreRequestSchema, adminLoginSchema } from "@shared/schema";
 import { QuestionLoader } from "./services/questionLoader";
 import { Scorer } from "./services/scorer";
 import { insightsService } from "./insights";
+import { JWTService } from "./auth/jwt";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const questionLoader = new QuestionLoader();
   const scorer = new Scorer();
 
-  // Admin authentication middleware
+  // JWT-based admin authentication middleware
   const authenticateAdmin = (req: any, res: any, next: any) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -18,11 +19,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     const token = authHeader.substring(7);
-    // Simple token validation - in production, use JWT or session tokens
-    if (token !== process.env.ADMIN_PASS) {
-      return res.status(403).json({ message: "Invalid credentials" });
+    const payload = JWTService.verifyToken(token);
+    
+    if (!payload) {
+      return res.status(403).json({ message: "Invalid or expired token" });
     }
     
+    // Attach admin info to request for potential future use
+    req.admin = { type: payload.type };
     next();
   };
 
@@ -169,9 +173,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid password" });
       }
 
-      // Return the password as token for simplicity - in production use JWT
+      // Generate JWT token for admin authentication
+      const token = JWTService.generateAdminToken();
       res.json({ 
-        token: password,
+        token,
         message: "Login successful" 
       });
     } catch (error) {

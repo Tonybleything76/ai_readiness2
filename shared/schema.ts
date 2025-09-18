@@ -1,26 +1,29 @@
 import { z } from "zod";
+import { pgTable, varchar, timestamp, json, real } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { sql } from "drizzle-orm";
 
-// Prisma Response types (will be generated)
-export type Response = {
-  id: string;
-  createdAt: Date;
-  orgName: string | null;
-  industry: string | null;
-  answersJson: any; // JSON type
-  pillarScores: any; // JSON type
-  overall: number;
-  category: string;
-};
-
-export const insertResponseSchema = z.object({
-  orgName: z.string().nullable().optional(),
-  industry: z.string().nullable().optional(),
-  answersJson: z.any(),
-  pillarScores: z.any(),
-  overall: z.number(),
-  category: z.string(),
+// Drizzle table definition for assessment responses
+export const responses = pgTable("responses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  orgName: varchar("org_name", { length: 255 }),
+  industry: varchar("industry", { length: 255 }),
+  answersJson: json("answers_json").notNull(),
+  pillarScores: json("pillar_scores").notNull(),
+  overall: real("overall").notNull(),
+  category: varchar("category", { length: 50 }).notNull(),
 });
 
+// Generated schemas from Drizzle table
+export const insertResponseSchema = createInsertSchema(responses).omit({
+  id: true,
+  createdAt: true,
+});
+export const selectResponseSchema = createSelectSchema(responses);
+
+// Types
+export type Response = typeof responses.$inferSelect;
 export type InsertResponse = z.infer<typeof insertResponseSchema>;
 
 // Types for the question structure
