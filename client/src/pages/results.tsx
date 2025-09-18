@@ -91,23 +91,52 @@ export default function Results() {
     });
   };
 
-  const handleDownloadPDF = () => {
-    // Enter print mode for 2-page summary layout
-    setIsPrintMode(true);
-    
-    // Wait for layout reflow and chart resize
-    requestAnimationFrame(() => {
+  const handleDownloadPDF = async () => {
+    if (!responseId) {
+      // For demo mode, still use print
+      setIsPrintMode(true);
       requestAnimationFrame(() => {
-        // Trigger resize event for charts
-        window.dispatchEvent(new Event('resize'));
-        
-        // Wait a bit more for charts to reflow, then print
-        setTimeout(() => {
-          window.print();
-          // isPrintMode will be reset by afterprint listener
-        }, 300);
+        requestAnimationFrame(() => {
+          window.dispatchEvent(new Event('resize'));
+          setTimeout(() => {
+            window.print();
+          }, 300);
+        });
       });
-    });
+      return;
+    }
+
+    try {
+      // Fetch PDF from server
+      const response = await fetch(`/api/report/pdf/${responseId}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF report');
+      }
+
+      // Create blob and download
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ai-readiness-report-${responseId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      // Fallback to print mode
+      setIsPrintMode(true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.dispatchEvent(new Event('resize'));
+          setTimeout(() => {
+            window.print();
+          }, 300);
+        });
+      });
+    }
   };
 
   // Demo data for when no responseId is provided

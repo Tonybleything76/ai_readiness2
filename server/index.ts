@@ -1,10 +1,94 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { productionConfig, validateProductionEnvironment } from "./config/production";
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'", "'unsafe-eval'"], // unsafe-eval needed for Vite in development
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'", "ws:", "wss:"], // WebSocket for Vite HMR
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Disable for compatibility
+}));
+
+// CORS configuration - allow frontend origin
+const allowedOrigins = [
+  "http://localhost:5000",
+  "https://localhost:5000",
+  process.env.REPLIT_DOMAIN ? `https://${process.env.REPLIT_DOMAIN}` : null,
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+// Rate limiting for API endpoints
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Stricter rate limiting for score submission
+const scoreLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 5, // Limit each IP to 5 score submissions per 5 minutes
+  message: 'Too many assessment submissions, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiting to API routes
+app.use('/api', apiLimiter);
+app.use('/api/score', scoreLimiter);
+
+// Force HTTPS in production (except for health checks)
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    // Skip HTTPS redirect for health checks
+    if (req.path === '/api/health') {
+      return next();
+    }
+    
+    // Check if request is HTTPS
+    const isSecure = req.headers['x-forwarded-proto'] === 'https' || req.secure;
+    
+    if (!isSecure) {
+      return res.redirect(301, `https://${req.headers.host}${req.url}`);
+    }
+    
+    next();
+  });
+}
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 app.use((req, res, next) => {
   const start = Date.now();

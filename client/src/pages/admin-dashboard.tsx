@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
@@ -18,7 +20,10 @@ import {
   Briefcase,
   LogOut,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  FileDown,
+  Filter,
+  X
 } from "lucide-react";
 
 interface AdminResponse {
@@ -44,6 +49,13 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [page, setPage] = useState(1);
   const [adminToken, setAdminToken] = useState<string | null>(null);
+  const [filters, setFilters] = useState({
+    dateFrom: '',
+    dateTo: '',
+    organization: '',
+    industry: ''
+  });
+  const [showFilters, setShowFilters] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -56,11 +68,20 @@ export default function AdminDashboard() {
   }, [setLocation]);
 
   const { data: responsesData, isLoading, error } = useQuery({
-    queryKey: ["/api/admin/responses", page],
+    queryKey: ["/api/admin/responses", page, filters],
     queryFn: async () => {
       if (!adminToken) throw new Error("No admin token");
       
-      const response = await fetch(`/api/admin/responses?page=${page}&limit=10`, {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '10',
+        ...(filters.dateFrom && { dateFrom: filters.dateFrom }),
+        ...(filters.dateTo && { dateTo: filters.dateTo }),
+        ...(filters.organization && { organization: filters.organization }),
+        ...(filters.industry && { industry: filters.industry })
+      });
+      
+      const response = await fetch(`/api/admin/responses?${params}`, {
         headers: {
           'Authorization': `Bearer ${adminToken}`,
           'Content-Type': 'application/json',
@@ -91,7 +112,13 @@ export default function AdminDashboard() {
 
   const exportCSV = async () => {
     try {
-      const response = await fetch('/api/admin/export/csv', {
+      const params = new URLSearchParams({
+        ...(filters.dateFrom && { dateFrom: filters.dateFrom }),
+        ...(filters.dateTo && { dateTo: filters.dateTo }),
+        ...(filters.organization && { organization: filters.organization }),
+        ...(filters.industry && { industry: filters.industry })
+      });
+      const response = await fetch(`/api/admin/export/csv?${params}`, {
         headers: {
           'Authorization': `Bearer ${adminToken}`,
         },
@@ -158,6 +185,53 @@ export default function AdminDashboard() {
       });
     }
   };
+
+  const exportPDF = async (responseId: string) => {
+    try {
+      const response = await fetch(`/api/admin/export/pdf/${responseId}`, {
+        headers: {
+          'Authorization': `Bearer ${adminToken}`,
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF report');
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `assessment-report-${responseId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "PDF generated",
+        description: "Assessment report downloaded successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "PDF generation failed",
+        description: "Unable to generate PDF report",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      dateFrom: '',
+      dateTo: '',
+      organization: '',
+      industry: ''
+    });
+    setPage(1);
+  };
+
+  const hasActiveFilters = Object.values(filters).some(value => value !== '');
 
   if (!adminToken) {
     return null; // Will redirect to login
@@ -240,6 +314,83 @@ export default function AdminDashboard() {
             </Card>
           </div>
         )}
+
+        {/* Filters Section */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4" />
+                <CardTitle>Filters</CardTitle>
+                {hasActiveFilters && (
+                  <Badge variant="secondary">{Object.values(filters).filter(v => v).length} active</Badge>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {hasActiveFilters && (
+                  <Button variant="outline" size="sm" onClick={clearFilters} data-testid="button-clear-filters">
+                    <X className="w-4 h-4 mr-1" />
+                    Clear
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowFilters(!showFilters)}
+                  data-testid="button-toggle-filters"
+                >
+                  {showFilters ? 'Hide' : 'Show'} Filters
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          {showFilters && (
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="dateFrom">From Date</Label>
+                  <Input
+                    id="dateFrom"
+                    type="date"
+                    value={filters.dateFrom}
+                    onChange={(e) => setFilters(prev => ({...prev, dateFrom: e.target.value}))}
+                    data-testid="input-date-from"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="dateTo">To Date</Label>
+                  <Input
+                    id="dateTo"
+                    type="date"
+                    value={filters.dateTo}
+                    onChange={(e) => setFilters(prev => ({...prev, dateTo: e.target.value}))}
+                    data-testid="input-date-to"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="organization">Organization</Label>
+                  <Input
+                    id="organization"
+                    placeholder="Search by organization..."
+                    value={filters.organization}
+                    onChange={(e) => setFilters(prev => ({...prev, organization: e.target.value}))}
+                    data-testid="input-organization"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="industry">Industry</Label>
+                  <Input
+                    id="industry"
+                    placeholder="Search by industry..."
+                    value={filters.industry}
+                    onChange={(e) => setFilters(prev => ({...prev, industry: e.target.value}))}
+                    data-testid="input-industry"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          )}
+        </Card>
 
         {/* Responses Table */}
         <Card>
@@ -324,8 +475,18 @@ export default function AdminDashboard() {
                                 size="sm"
                                 onClick={() => exportJSON(response.id)}
                                 data-testid={`button-export-json-${response.id}`}
+                                title="Export as JSON"
                               >
                                 <Download className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => exportPDF(response.id)}
+                                data-testid={`button-export-pdf-${response.id}`}
+                                title="Download PDF Report"
+                              >
+                                <FileDown className="w-4 h-4" />
                               </Button>
                             </div>
                           </TableCell>

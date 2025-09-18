@@ -6,6 +6,7 @@ import { QuestionLoader } from "./services/questionLoader";
 import { Scorer } from "./services/scorer";
 import { insightsService } from "./insights";
 import { JWTService } from "./auth/jwt";
+import { PDFGenerator } from "./services/pdfGenerator";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const questionLoader = new QuestionLoader();
@@ -33,9 +34,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Load questions from JSON file
   await questionLoader.loadQuestions();
 
-  // GET /api/health - Health check endpoint for Playwright readiness
+  // GET /api/health - Basic health check endpoint
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok" });
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
+  // GET /api/health/detailed - Comprehensive health check for production
+  app.get("/api/health/detailed", async (req, res) => {
+    const healthCheck = {
+      status: "ok",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || "development",
+      checks: {
+        database: "unknown",
+        questions: "unknown",
+        jwt: "unknown"
+      }
+    };
+
+    try {
+      // Test database connectivity
+      const testResponse = await storage.getResponses(1, 1);
+      healthCheck.checks.database = "ok";
+    } catch (error) {
+      healthCheck.checks.database = "error";
+      healthCheck.status = "degraded";
+    }
+
+    try {
+      // Test question loading
+      const questions = questionLoader.getQuestions();
+      healthCheck.checks.questions = questions && Object.keys(questions).length > 0 ? "ok" : "error";
+    } catch (error) {
+      healthCheck.checks.questions = "error";
+      healthCheck.status = "degraded";
+    }
+
+    try {
+      // Test JWT service
+      const testToken = JWTService.generateToken({ type: "admin" });
+      const verified = JWTService.verifyToken(testToken);
+      healthCheck.checks.jwt = verified ? "ok" : "error";
+    } catch (error) {
+      healthCheck.checks.jwt = "error";
+      healthCheck.status = "degraded";
+    }
+
+    const httpStatus = healthCheck.status === "ok" ? 200 : 503;
+    res.status(httpStatus).json(healthCheck);
   });
 
   // GET /api/questions - Return normalized structure from JSON
@@ -261,6 +308,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error exporting JSON:", error);
       res.status(500).json({ message: "Failed to export JSON" });
+    }
+  });
+
+  // GET /api/admin/export/pdf/:id - Export single response as PDF (admin)
+  app.get("/api/admin/export/pdf/:id", authenticateAdmin, async (req, res) => {
+    try {
+      const response = await storage.getResponse(req.params.id);
+      if (!response) {
+        return res.status(404).json({ message: "Response not found" });
+      }
+
+      // Generate PDF with custom branding options
+      const pdfBuffer = await PDFGenerator.generateAssessmentReport(response, {
+        customBranding: {
+          primaryColor: '#3b82f6',
+          secondaryColor: '#1e40af',
+          companyName: 'AI Readiness Assessment Platform',
+        }
+      });
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="assessment-report-${response.id}.pdf"`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Error generating PDF report:", error);
+      res.status(500).json({ message: "Failed to generate PDF report" });
+    }
+  });
+
+  // GET /api/report/pdf/:id - Public PDF export for assessment results
+  app.get("/api/report/pdf/:id", async (req, res) => {
+    try {
+      const response = await storage.getResponse(req.params.id);
+      if (!response) {
+        return res.status(404).json({ message: "Response not found" });
+      }
+
+      // Generate PDF with default branding
+      const pdfBuffer = await PDFGenerator.generateAssessmentReport(response, {
+        customBranding: {
+          primaryColor: '#3b82f6',
+          secondaryColor: '#1e40af',
+          companyName: 'AI Readiness Assessment Platform',
+        }
+      });
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="ai-readiness-report-${response.id}.pdf"`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Error generating PDF report:", error);
+      res.status(500).json({ message: "Failed to generate PDF report" });
     }
   });
 
