@@ -1,0 +1,75 @@
+Project Name: AI Readiness Assessment
+Interaction Language with Replit Agent: English
+Application UI Language: English
+
+Goal:
+Build a web app that runs an AI readiness questionnaire across multiple pillars, calculates weighted pillar + overall scores (0–100), and shows results with a radar chart (pillars) and a gauge/progress (overall). Use a JSON question bank where each question has custom response labels (1–5), meanings per response, and a numeric weight.
+
+Stack:
+- Frontend: React (Vite) + TypeScript + Recharts
+- Backend: Node.js + Express + TypeScript
+- DB: SQLite with Prisma
+- Build/Run: one workspace with dev scripts for FE/BE (Vite on 5173, API on 5000); Vite dev server proxies /api -> 5000
+
+Source of Truth:
+We will upload `./data/ai_readiness_custom_responses.json` (contains pillars → questions → {responses{1..5}, meanings{1..5}, weight, weight_rationale}).
+
+Folder Structure:
+root/
+  frontend/ (React, Vite, TS)
+  backend/  (Express, TS)
+  data/
+    ai_readiness_custom_responses.json  # uploaded by me
+  README.md
+
+Backend Requirements:
+- Endpoints:
+  - GET /api/questions → return the normalized structure from JSON (pillars, questions, responses, meanings, weights)
+  - POST /api/score → body: { orgName?, industry?, answers: { [questionId]: 1..5 } }
+    * scoring: normalized = (value-1)/4; weightedQuestion = normalized * weight
+    * pillarScore = (sum weightedQuestion) / (sum weights) * 100
+    * overall = average(pillarScore across pillars)
+    * return: { pillarScores:{pillarId:number}, overall:number, category:string, color:string, message:string, answers:{ qId:{ value:number, label:string, meaning:string } } }
+- Persist each submission:
+  Prisma model Response { id, createdAt, orgName?, industry?, answersJson Json, pillarScores Json, overall Float, category String }
+- Validation:
+  - If a question has null weight, default to 0.06 (or configurable constant) and log a warning.
+  - Ensure each question has responses & meanings for keys "1".."5".
+- Include a scorer module with unit tests (Jest).
+
+Frontend Requirements:
+- Routes:
+  - / : landing with CTA “Start Assessment”
+  - /assessment : multi-step wizard (one step per pillar); radio inputs show the custom label for each value 1..5; autosave to localStorage
+  - /results : radar chart (pillar scores) + gauge/progress (overall) + category chip + interpretation; show each answered item’s selected label + meaning in a collapsible list
+- Accessibility: keyboard navigation for radios; visible focus; aria labels
+- Vite proxy: /api → http://localhost:5000
+
+Charts:
+- Recharts Radar for pillars
+- Simple gauge/progress (or circular progress) for overall
+
+Non-Functional:
+- CORS (frontend origin only), basic rate limit on POST /api/score
+- Error boundaries on FE
+- Mobile responsive
+
+Dev Scripts:
+- root: "dev" runs both FE (5173) and BE (5000)
+- backend: ts-node-dev / nodemon for hot reload
+- prisma: migrate dev; generate
+
+Acceptance Criteria for MVP:
+- I can upload the JSON to /data and see questions via GET /api/questions
+- I can complete the wizard and submit; I get back pillarScores + overall + category
+- Results page shows radar + gauge + interpretation
+- Responses persist to SQLite; I can see a responseId in the score response
+
+Tasks:
+1) Scaffold monorepo with frontend/, backend/, data/ and baseline configs
+2) Implement backend: Prisma schema, loader for JSON, scorer with tests, GET /api/questions, POST /api/score
+3) Implement frontend wizard + results pages; integrate charts
+4) Wire dev scripts; set Vite proxy; run locally; deliver a working MVP
+5) Provide instructions to deploy on Replit and a public URL
+
+Please propose a brief execution plan, then create files and run the app.
