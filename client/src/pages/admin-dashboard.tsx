@@ -89,6 +89,76 @@ export default function AdminDashboard() {
     setLocation(`/results/${responseId}`);
   };
 
+  const exportCSV = async () => {
+    try {
+      const response = await fetch('/api/admin/export/csv', {
+        headers: {
+          'Authorization': `Bearer ${adminToken}`,
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Export failed');
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ai-readiness-responses-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "Export successful",
+        description: "CSV file has been downloaded",
+      });
+    } catch (error) {
+      toast({
+        title: "Export failed",
+        description: "Unable to export CSV file",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const exportJSON = async (responseId: string) => {
+    try {
+      const response = await fetch(`/api/admin/export/json/${responseId}`, {
+        headers: {
+          'Authorization': `Bearer ${adminToken}`,
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Export failed');
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `response-${responseId}.json`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "Export successful",
+        description: "JSON file has been downloaded",
+      });
+    } catch (error) {
+      toast({
+        title: "Export failed",
+        description: "Unable to export JSON file",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (!adminToken) {
     return null; // Will redirect to login
   }
@@ -173,8 +243,17 @@ export default function AdminDashboard() {
 
         {/* Responses Table */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Assessment Responses</CardTitle>
+            <Button 
+              variant="outline" 
+              onClick={exportCSV}
+              disabled={!responses.length}
+              data-testid="button-export-csv"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Export CSV
+            </Button>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -231,14 +310,24 @@ export default function AdminDashboard() {
                             <Badge variant="outline">{response.category}</Badge>
                           </TableCell>
                           <TableCell>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => viewResponse(response.id)}
-                              data-testid={`button-view-${response.id}`}
-                            >
-                              View Results
-                            </Button>
+                            <div className="flex space-x-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => viewResponse(response.id)}
+                                data-testid={`button-view-${response.id}`}
+                              >
+                                View
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => exportJSON(response.id)}
+                                data-testid={`button-export-json-${response.id}`}
+                              >
+                                <Download className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
