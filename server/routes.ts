@@ -1,38 +1,54 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { scoreRequestSchema, adminLoginSchema } from "@shared/schema";
+import { scoreRequestSchema, adminLoginSchema, AdminRole } from "@shared/schema";
 import { QuestionLoader } from "./services/questionLoader";
 import { Scorer } from "./services/scorer";
 import { insightsService } from "./insights";
-import { JWTService } from "./auth/jwt";
+import { SessionAuthService } from "./auth/sessionAuth";
+import { PasswordService } from "./auth/passwordService";
+import { authenticateAdmin, requireRole, requireOrgAccess, csrfProtection, auditLogger } from "./auth/middleware";
 import { PDFGenerator } from "./services/pdfGenerator";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const questionLoader = new QuestionLoader();
   const scorer = new Scorer();
 
-  // JWT-based admin authentication middleware
-  const authenticateAdmin = (req: any, res: any, next: any) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ message: "Authorization required" });
+  // Clean up expired sessions periodically
+  setInterval(async () => {
+    try {
+      const cleaned = await SessionAuthService.cleanupExpiredSessions();
+      if (cleaned > 0) {
+        console.log(`Cleaned up ${cleaned} expired sessions`);
+      }
+    } catch (error) {
+      console.error('Error cleaning up expired sessions:', error);
     }
-    
-    const token = authHeader.substring(7);
-    const payload = JWTService.verifyToken(token);
-    
-    if (!payload) {
-      return res.status(403).json({ message: "Invalid or expired token" });
-    }
-    
-    // Attach admin info to request for potential future use
-    req.admin = { type: payload.type };
-    next();
-  };
+  }, 60 * 60 * 1000); // Every hour
 
   // Load questions from JSON file
   await questionLoader.loadQuestions();
+
+  // GET /api/auth/csrf - Get CSRF token for authenticated requests
+  app.get("/api/auth/csrf", (req, res) => {
+    try {
+      const csrfToken = SessionAuthService.generateCSRFToken();
+      
+      // Set CSRF token as a cookie (accessible to JavaScript)
+      res.cookie('csrf_token', csrfToken, {
+        httpOnly: false, // Must be accessible to JS for inclusion in headers
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        path: '/',
+      });
+
+      res.json({ csrfToken });
+    } catch (error) {
+      console.error("Error generating CSRF token:", error);
+      res.status(500).json({ message: "Failed to generate CSRF token" });
+    }
+  });
 
   // GET /api/health - Basic health check endpoint
   app.get("/api/health", (req, res) => {
@@ -55,7 +71,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       // Test database connectivity
-      const testResponse = await storage.getResponses(1, 1);
+      const testResponse = await storage.getAllResponses(1, 0);
       healthCheck.checks.database = "ok";
     } catch (error) {
       healthCheck.checks.database = "error";
@@ -72,10 +88,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      // Test JWT service
-      const testToken = JWTService.generateToken({ type: "admin" });
-      const verified = JWTService.verifyToken(testToken);
-      healthCheck.checks.jwt = verified ? "ok" : "error";
+      // Test session auth service
+      const testToken = SessionAuthService.generateCSRFToken();
+      healthCheck.checks.jwt = testToken && testToken.length > 0 ? "ok" : "error";
     } catch (error) {
       healthCheck.checks.jwt = "error";
       healthCheck.status = "degraded";
@@ -203,8 +218,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // POST /api/admin/login - Admin authentication
-  app.post("/api/admin/login", (req, res) => {
+  // POST /api/admin/login - Admin authentication with email/password
+  app.post("/api/admin/login", async (req, res) => {
     try {
       const parseResult = adminLoginSchema.safeParse(req.body);
       if (!parseResult.success) {
@@ -214,17 +229,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const { password } = parseResult.data;
+      const { email, password } = parseResult.data;
       
-      if (password !== process.env.ADMIN_PASS) {
-        return res.status(401).json({ message: "Invalid password" });
+      // Find admin by email
+      const admin = await storage.getAdminByEmail(email);
+      if (!admin || !admin.isActive) {
+        return res.status(401).json({ message: "Invalid email or password" });
       }
 
-      // Generate JWT token for admin authentication
-      const token = JWTService.generateAdminToken();
+      // Verify password
+      const isValidPassword = await PasswordService.verifyPassword(password, admin.passwordHash);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      // Create session
+      const session = await SessionAuthService.createSession(
+        admin,
+        req.ip,
+        req.headers['user-agent'] as string
+      );
+
+      // Set HTTP-only cookies
+      const cookieOptions = SessionAuthService.getCookieOptions();
+      
+      // Access token (shorter lived)
+      res.cookie('access_token', session.accessToken, {
+        ...cookieOptions,
+        maxAge: 15 * 60 * 1000, // 15 minutes
+      });
+      
+      // Refresh token (longer lived)
+      res.cookie('refresh_token', session.refreshToken, cookieOptions);
+
+      // CSRF token
+      const csrfToken = SessionAuthService.generateCSRFToken();
+      res.cookie('csrf_token', csrfToken, {
+        ...cookieOptions,
+        httpOnly: false, // CSRF token needs to be accessible to JS
+      });
+
       res.json({ 
-        token,
-        message: "Login successful" 
+        success: true,
+        message: "Login successful",
+        admin: {
+          id: admin.id,
+          email: admin.email,
+          role: admin.role,
+          orgId: admin.orgId,
+        },
+        csrfToken, // Send CSRF token in response as well
       });
     } catch (error) {
       console.error("Error during admin login:", error);
@@ -232,15 +286,188 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // GET /api/admin/responses - Get all responses (paginated)
-  app.get("/api/admin/responses", authenticateAdmin, async (req, res) => {
+  // POST /api/admin/logout - Admin logout
+  app.post("/api/admin/logout", authenticateAdmin, auditLogger('logout', 'session'), async (req, res) => {
+    try {
+      const sessionId = req.sessionData?.session.id;
+      const adminId = req.sessionData?.admin.id;
+
+      if (sessionId) {
+        await SessionAuthService.logout(sessionId, adminId, req.ip, req.headers['user-agent'] as string);
+      }
+
+      // Clear cookies
+      res.clearCookie('access_token');
+      res.clearCookie('refresh_token');
+      res.clearCookie('csrf_token');
+
+      res.json({ message: "Logged out successfully" });
+    } catch (error) {
+      console.error("Error during admin logout:", error);
+      res.status(500).json({ message: "Logout failed" });
+    }
+  });
+
+  // GET /api/admin/me - Get current admin info
+  app.get("/api/admin/me", authenticateAdmin, async (req, res) => {
+    try {
+      const admin = req.sessionData?.admin;
+      if (!admin) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      // Get organization info
+      const organization = await storage.getOrganization(admin.orgId);
+
+      res.json({
+        admin: {
+          id: admin.id,
+          email: admin.email,
+          role: admin.role,
+          orgId: admin.orgId,
+          isActive: admin.isActive,
+        },
+        organization: organization ? {
+          id: organization.id,
+          name: organization.name,
+          industry: organization.industry,
+        } : null,
+      });
+    } catch (error) {
+      console.error("Error getting admin info:", error);
+      res.status(500).json({ message: "Failed to get admin info" });
+    }
+  });
+
+  // GET /api/auth/csrf - Get CSRF token for client
+  app.get("/api/auth/csrf", (req, res) => {
+    const csrfToken = SessionAuthService.generateCSRFToken();
+    
+    // Set CSRF token as non-httpOnly cookie so frontend can access it
+    res.cookie('csrf_token', csrfToken, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.json({ csrfToken });
+  });
+
+  // Organization management routes
+  // POST /api/admin/organizations - Create organization (super admin only)
+  app.post("/api/admin/organizations", authenticateAdmin, requireRole(AdminRole.SUPER_ADMIN), csrfProtection, auditLogger('create_organization', 'organization'), async (req, res) => {
+    try {
+      const { name, industry } = req.body;
+      
+      if (!name) {
+        return res.status(400).json({ message: "Organization name is required" });
+      }
+
+      // Check if org with this name already exists
+      const existing = await storage.getOrganizationByName(name);
+      if (existing) {
+        return res.status(400).json({ message: "Organization with this name already exists" });
+      }
+
+      const organization = await storage.createOrganization({ name, industry });
+      res.status(201).json({ organization });
+    } catch (error) {
+      console.error("Error creating organization:", error);
+      res.status(500).json({ message: "Failed to create organization" });
+    }
+  });
+
+  // GET /api/admin/organizations - List organizations (super admin only)
+  app.get("/api/admin/organizations", authenticateAdmin, requireRole(AdminRole.SUPER_ADMIN), auditLogger('list_organizations', 'organization'), async (req, res) => {
+    try {
+      const organizations = await storage.getAllOrganizations();
+      res.json({ organizations });
+    } catch (error) {
+      console.error("Error listing organizations:", error);
+      res.status(500).json({ message: "Failed to list organizations" });
+    }
+  });
+
+  // Admin user management routes
+  // POST /api/admin/admins - Create admin user (super admin only)
+  app.post("/api/admin/admins", authenticateAdmin, requireRole(AdminRole.SUPER_ADMIN), csrfProtection, auditLogger('create_admin', 'admin'), async (req, res) => {
+    try {
+      const { email, password, orgId, role } = req.body;
+      
+      if (!email || !password || !orgId || !role) {
+        return res.status(400).json({ message: "Email, password, organization ID, and role are required" });
+      }
+
+      // Validate password strength
+      const passwordValidation = PasswordService.validatePassword(password);
+      if (!passwordValidation.isValid) {
+        return res.status(400).json({ 
+          message: "Password does not meet requirements",
+          errors: passwordValidation.errors
+        });
+      }
+
+      // Check if admin with this email already exists
+      const existing = await storage.getAdminByEmail(email);
+      if (existing) {
+        return res.status(400).json({ message: "Admin with this email already exists" });
+      }
+
+      // Verify organization exists
+      const organization = await storage.getOrganization(orgId);
+      if (!organization) {
+        return res.status(400).json({ message: "Organization not found" });
+      }
+
+      // Hash password and create admin
+      const passwordHash = await PasswordService.hashPassword(password);
+      const admin = await storage.createAdmin({
+        email,
+        passwordHash,
+        orgId,
+        role,
+        isActive: true,
+      });
+
+      // Return admin without password hash
+      res.status(201).json({ 
+        admin: {
+          id: admin.id,
+          email: admin.email,
+          orgId: admin.orgId,
+          role: admin.role,
+          isActive: admin.isActive,
+        }
+      });
+    } catch (error) {
+      console.error("Error creating admin:", error);
+      res.status(500).json({ message: "Failed to create admin" });
+    }
+  });
+
+  // GET /api/admin/responses - Get all responses (paginated) with org filtering
+  app.get("/api/admin/responses", authenticateAdmin, auditLogger('view_responses', 'response'), async (req, res) => {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
       const offset = (page - 1) * limit;
+      const admin = req.sessionData!.admin;
 
-      const responses = await storage.getAllResponses(limit, offset);
-      const total = await storage.getResponseCount();
+      let responses: any[];
+      let total: number;
+
+      // Super admins can see all responses, others only see their org's responses
+      if (admin.role === AdminRole.SUPER_ADMIN) {
+        responses = await storage.getAllResponses(limit, offset);
+        total = await storage.getResponseCount();
+      } else {
+        responses = await storage.getResponsesByOrgId(admin.orgId, limit, offset);
+        // For now, count all responses for the org (we could optimize this with a specific count method)
+        const allOrgResponses = await storage.getResponsesByOrgId(admin.orgId);
+        total = allOrgResponses.length;
+      }
 
       res.json({
         data: responses,

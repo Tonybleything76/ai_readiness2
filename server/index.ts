@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { productionConfig, validateProductionEnvironment } from "./config/production";
@@ -23,28 +24,37 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false, // Disable for compatibility
 }));
 
-// CORS configuration - allow frontend origin
-const allowedOrigins = [
-  "http://localhost:5000",
-  "https://localhost:5000",
-  process.env.REPLIT_DOMAIN ? `https://${process.env.REPLIT_DOMAIN}` : null,
-].filter(Boolean);
+// CORS configuration - more permissive in development
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors({
+    origin: true, // Allow all origins in development
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
+  }));
+} else {
+  // Strict CORS in production
+  const allowedOrigins = [
+    "http://localhost:5000",
+    "https://localhost:5000",
+    process.env.REPLIT_DOMAIN ? `https://${process.env.REPLIT_DOMAIN}` : null,
+  ].filter(Boolean);
 
-app.use(cors({
-  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  app.use(cors({
+    origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
+  }));
+}
 
 // Rate limiting for API endpoints
 const apiLimiter = rateLimit({
@@ -89,6 +99,7 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
+app.use(cookieParser());
 
 app.use((req, res, next) => {
   const start = Date.now();
