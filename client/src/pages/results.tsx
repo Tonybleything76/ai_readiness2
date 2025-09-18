@@ -90,7 +90,11 @@ export default function Results() {
         label: "Advanced data infrastructure",
         meaning: "Well-integrated systems with strong data governance and quality processes"
       }
-    }
+    },
+    // Sample metadata for demo
+    orgName: "Acme Corporation",
+    industry: "Technology",
+    createdAt: new Date("2024-09-18T19:00:00.000Z")
   };
 
   const displayResults = results || mockResults;
@@ -124,7 +128,11 @@ export default function Results() {
   return (
     <div className={`container mx-auto px-4 py-8 ${isPrintMode ? 'print-summary' : ''}`}>
       <div className="max-w-6xl mx-auto">
-        <ResultsHeader />
+        <ResultsHeader 
+          orgName={displayResults.orgName}
+          industry={displayResults.industry}
+          createdAt={displayResults.createdAt}
+        />
 
         {/* Overall Score */}
         <Card data-card className="mb-8">
