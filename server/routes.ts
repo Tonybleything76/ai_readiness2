@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { scoreRequestSchema, adminLoginSchema } from "@shared/schema";
 import { QuestionLoader } from "./services/questionLoader";
 import { Scorer } from "./services/scorer";
+import { insightsService } from "./insights";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const questionLoader = new QuestionLoader();
@@ -71,10 +72,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         category: scoreResult.category,
       });
 
-      // Return score response
+      // Generate personalized recommendations and insights
+      const recommendations = insightsService.generateRecommendations(responseRecord);
+      const insights = insightsService.generateInsightsSummary(responseRecord);
+
+      // Return score response with recommendations and insights
       res.json({
         responseId: responseRecord.id,
         ...scoreResult,
+        recommendations,
+        insights,
       });
     } catch (error) {
       console.error("Error calculating scores:", error);
