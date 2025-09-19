@@ -101,16 +101,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllResponses(limit?: number, offset?: number): Promise<Response[]> {
-    const query = db
+    let query = db
       .select()
       .from(responses)
       .orderBy(desc(responses.createdAt));
     
     if (limit) {
-      query.limit(limit);
+      query = query.limit(limit);
     }
     if (offset) {
-      query.offset(offset);
+      query = query.offset(offset);
     }
     
     return await query;
@@ -147,17 +147,17 @@ export class DatabaseStorage implements IStorage {
 
   async getResponsesByOrgId(orgId: string, limit?: number, offset?: number): Promise<Response[]> {
     try {
-      const query = db
+      let query = db
         .select()
         .from(responses)
         .where(eq(responses.orgId, orgId))
         .orderBy(desc(responses.createdAt));
       
       if (limit) {
-        query.limit(limit);
+        query = query.limit(limit);
       }
       if (offset) {
-        query.offset(offset);
+        query = query.offset(offset);
       }
       
       return await query;
@@ -577,7 +577,7 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-import { MemStorage } from './memStorage';
+// MemStorage import removed - using DatabaseStorage only
 
 // Use DatabaseStorage for production-ready persistence
 export const storage = new DatabaseStorage();
