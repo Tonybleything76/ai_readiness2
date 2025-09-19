@@ -39,6 +39,15 @@ interface BenchmarkResponse {
   pillarQuartiles?: Record<string, { q1: number; q3: number }>;
 }
 
+// Mapping from pillar IDs to question prefixes
+const pillarToQuestionPrefix: Record<string, string> = {
+  'technology': 'tech_',
+  'data_management': 'data_',
+  'organizational_culture': 'culture_',
+  'strategic_planning': 'strategy_',
+  'risk_management': 'risk_'
+};
+
 export default function Results() {
   const params = useParams();
   const responseId = params.id;
@@ -393,7 +402,10 @@ export default function Results() {
                 
                 <CollapsibleContent className="mt-4 space-y-4">
                   {Object.entries(displayResults.answers)
-                    .filter(([questionId]) => questionId.startsWith(pillarId))
+                    .filter(([questionId]) => {
+                      const prefix = pillarToQuestionPrefix[pillarId];
+                      return prefix && questionId.startsWith(prefix);
+                    })
                     .map(([questionId, answer]) => (
                     <div key={questionId} className="bg-muted/30 rounded-lg p-4">
                       <h5 className="font-medium mb-2">Question Response</h5>
