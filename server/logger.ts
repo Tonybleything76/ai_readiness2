@@ -28,6 +28,13 @@ const loggerConfig = {
       'req.query.token',
       'req.query.secret',
       'req.query.password',
+      // Response body fields that may contain sensitive data
+      'res.body.csrfToken',
+      'res.body.token',
+      'res.body.accessToken',
+      'res.body.refreshToken',
+      'res.body.password',
+      'res.body.secret',
     ],
     censor: '[REDACTED]'
   },
