@@ -1,0 +1,112 @@
+Goals:
+Deploy the AI Readiness Assessment Platform into the development environment with seeded test data and run a comprehensive internal QA testing cycle to validate stability, security, and functionality before production deployment.
+
+Tasks:
+
+Development Environment Deployment
+
+Configure .replit to run with:
+
+run = "npm run dev --workspace=server"
+
+
+Update replit.nix to include Node 18, PostgreSQL client, Chromium (for Puppeteer).
+
+Add Replit Secrets for development:
+
+NODE_ENV=development
+DATABASE_URL=mem://
+SESSION_SECRET=dev_secret_123
+CSRF_SECRET=dev_csrf_123
+BACKUP_DIR=./backups
+BACKUP_RETENTION_DAYS=7
+
+
+Seed MemStorage with:
+
+2 organizations
+
+2 admin accounts (SuperAdmin, Editor)
+
+2 sample assessment responses
+
+Core Functional QA Testing
+
+Test full assessment flow:
+
+Multi-step questionnaire completion
+
+Auto-save and progress tracking
+
+Results visualizations (radar, gauges)
+
+Test exports:
+
+PDF report generation (single + bulk)
+
+CSV export of admin data
+
+Validate analytics dashboards:
+
+Progress tab (historical tracking)
+
+Industry benchmarking
+
+Super Admin analytics dashboard
+
+Security & Auth Testing
+
+Verify login with valid SuperAdmin and Editor accounts.
+
+Attempt login with invalid credentials → confirm lockout and rate limiting.
+
+Confirm role-based access:
+
+SuperAdmin: access all admin routes
+
+Editor: restricted permissions
+
+Validate audit logs capture admin actions (backup triggers, exports).
+
+Ensure CSP headers block unsafe-eval in production but allow HMR in dev.
+
+Backup & Restore Testing
+
+Trigger manual backup via /api/admin/backup/run.
+
+Verify file presence in /api/admin/backup/list.
+
+Download backup and run manual pg_restore on local Postgres.
+
+Confirm backup cleanup after retention period (7 days in dev).
+
+Monitoring & Observability
+
+Verify /healthz returns { ok: true }.
+
+Verify /readyz runs DB, FS, and Puppeteer checks.
+
+Monitor Pino logs in console:
+
+Requests logged with method, URL, status, duration
+
+Secrets (passwords, tokens, cookies) redacted
+
+QA Sign-Off
+
+At least one additional tester completes a full end-to-end assessment.
+
+Record issues in GitHub Issues (UI bugs, warnings, edge cases).
+
+Validate zero crashes or critical runtime errors during testing.
+
+Confirm all acceptance criteria below are met.
+
+Acceptance Criteria:
+✅ App runs in development with MemStorage and seeded test data.
+✅ Full assessment workflow works end-to-end.
+✅ Admin dashboards and exports functional.
+✅ Backups can be run, listed, and restored manually.
+✅ Security protections (auth, rate limiting, CSP) validated.
+✅ Logs capture structured requests without leaking secrets.
+✅ QA testers sign off that app is stable and ready for production push.
