@@ -60,30 +60,53 @@ export default function Assessment() {
     },
   });
 
-  // Load saved progress
+  // Load saved progress with validation
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
+    if (saved && assessmentData) {
       try {
         const parsedState = JSON.parse(saved);
+        
+        // Validate state against current assessment data
+        const maxPillarIndex = assessmentData.pillars.length - 1;
+        const currentPillar = assessmentData.pillars[parsedState.currentPillarIndex];
+        const maxQuestionIndex = currentPillar?.questions.length - 1;
+        
+        // Reset to beginning if state is invalid
+        if (
+          parsedState.currentPillarIndex < 0 ||
+          parsedState.currentPillarIndex > maxPillarIndex ||
+          !currentPillar ||
+          parsedState.currentQuestionIndex < 0 ||
+          parsedState.currentQuestionIndex > maxQuestionIndex
+        ) {
+          console.warn("Invalid saved state detected, resetting to beginning");
+          localStorage.removeItem(STORAGE_KEY);
+          return;
+        }
+        
         setState(parsedState);
         if (Object.keys(parsedState.answers).length > 0) {
           setShowQuestions(true);
         }
       } catch (error) {
         console.error("Failed to load saved progress:", error);
+        localStorage.removeItem(STORAGE_KEY);
       }
     }
-  }, []);
+  }, [assessmentData]);
 
-  // Auto-save progress
+  // Auto-save progress (with validation)
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }, 1000);
+    // Only save if assessmentData is loaded and state is valid
+    if (assessmentData && currentPillar && currentQuestion) {
+      const timeoutId = setTimeout(() => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }, 1000);
 
-    return () => clearTimeout(timeoutId);
-  }, [state]);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [state, assessmentData, currentPillar, currentQuestion]);
 
   if (isLoading) {
     return (
@@ -126,20 +149,10 @@ export default function Assessment() {
   const handleNext = () => {
     if (!currentPillar) return;
 
-    console.log("DEBUG: handleNext called", {
-      currentPillarIndex: state.currentPillarIndex,
-      currentQuestionIndex: state.currentQuestionIndex,
-      pillarQuestionsLength: currentPillar.questions.length,
-      totalPillars: assessmentData.pillars.length,
-      isLastQuestion
-    });
-
     // Move to next question
     if (state.currentQuestionIndex < currentPillar.questions.length - 1) {
-      console.log("DEBUG: Moving to next question in same pillar");
       setState(prev => ({ ...prev, currentQuestionIndex: prev.currentQuestionIndex + 1, lastNavDirection: 1 }));
     } else if (state.currentPillarIndex < assessmentData.pillars.length - 1) {
-      console.log("DEBUG: Moving to next pillar");
       // Move to next pillar
       setState(prev => ({
         ...prev,
@@ -148,7 +161,6 @@ export default function Assessment() {
         lastNavDirection: 1
       }));
     } else {
-      console.log("DEBUG: Assessment complete - submitting");
       // Assessment complete - submit
       submitScoreMutation.mutate({
         orgName: state.orgName,
@@ -176,19 +188,10 @@ export default function Assessment() {
   const canGoPrevious = state.currentPillarIndex > 0 || state.currentQuestionIndex > 0;
 
   const isLastQuestion = 
+    currentPillar && 
     state.currentPillarIndex === assessmentData.pillars.length - 1 &&
     state.currentQuestionIndex === currentPillar.questions.length - 1;
 
-  // Debug logging
-  console.log("DEBUG: isLastQuestion calculation", {
-    currentPillarIndex: state.currentPillarIndex,
-    totalPillars: assessmentData.pillars.length,
-    isLastPillar: state.currentPillarIndex === assessmentData.pillars.length - 1,
-    currentQuestionIndex: state.currentQuestionIndex,
-    currentPillarQuestionsLength: currentPillar?.questions.length,
-    isLastQuestionInPillar: state.currentQuestionIndex === (currentPillar?.questions.length - 1),
-    isLastQuestion
-  });
 
   return (
     <div className="container mx-auto px-4 py-8">
