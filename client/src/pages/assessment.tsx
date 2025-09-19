@@ -126,10 +126,20 @@ export default function Assessment() {
   const handleNext = () => {
     if (!currentPillar) return;
 
+    console.log("DEBUG: handleNext called", {
+      currentPillarIndex: state.currentPillarIndex,
+      currentQuestionIndex: state.currentQuestionIndex,
+      pillarQuestionsLength: currentPillar.questions.length,
+      totalPillars: assessmentData.pillars.length,
+      isLastQuestion
+    });
+
     // Move to next question
     if (state.currentQuestionIndex < currentPillar.questions.length - 1) {
+      console.log("DEBUG: Moving to next question in same pillar");
       setState(prev => ({ ...prev, currentQuestionIndex: prev.currentQuestionIndex + 1, lastNavDirection: 1 }));
     } else if (state.currentPillarIndex < assessmentData.pillars.length - 1) {
+      console.log("DEBUG: Moving to next pillar");
       // Move to next pillar
       setState(prev => ({
         ...prev,
@@ -138,6 +148,7 @@ export default function Assessment() {
         lastNavDirection: 1
       }));
     } else {
+      console.log("DEBUG: Assessment complete - submitting");
       // Assessment complete - submit
       submitScoreMutation.mutate({
         orgName: state.orgName,
@@ -167,6 +178,17 @@ export default function Assessment() {
   const isLastQuestion = 
     state.currentPillarIndex === assessmentData.pillars.length - 1 &&
     state.currentQuestionIndex === currentPillar.questions.length - 1;
+
+  // Debug logging
+  console.log("DEBUG: isLastQuestion calculation", {
+    currentPillarIndex: state.currentPillarIndex,
+    totalPillars: assessmentData.pillars.length,
+    isLastPillar: state.currentPillarIndex === assessmentData.pillars.length - 1,
+    currentQuestionIndex: state.currentQuestionIndex,
+    currentPillarQuestionsLength: currentPillar?.questions.length,
+    isLastQuestionInPillar: state.currentQuestionIndex === (currentPillar?.questions.length - 1),
+    isLastQuestion
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
