@@ -80,23 +80,30 @@ export default function AdminAnalytics() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      setLocation("/admin/login");
-      return;
-    }
-    setAdminToken(token);
+    // Check if we have admin session by trying to access a protected endpoint
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/admin/responses?page=1&limit=1', {
+          credentials: 'include', // Include cookies
+        });
+        if (response.ok) {
+          setAdminToken('authenticated'); // Just a flag, real auth is via cookies
+        } else {
+          setLocation("/admin/login");
+        }
+      } catch (error) {
+        setLocation("/admin/login");
+      }
+    };
+    
+    checkAuth();
   }, [setLocation]);
 
   const { data: industryData, isLoading: industryLoading } = useQuery({
     queryKey: ["/api/admin/analytics/industry-stats"],
     queryFn: async () => {
-      if (!adminToken) throw new Error("No admin token");
-      
       const response = await fetch("/api/admin/analytics/industry-stats", {
-        headers: {
-          Authorization: `Bearer ${adminToken}`,
-        },
+        credentials: 'include', // Include cookies for authentication
       });
       
       if (!response.ok) {
@@ -111,12 +118,8 @@ export default function AdminAnalytics() {
   const { data: organizationsData, isLoading: orgsLoading } = useQuery({
     queryKey: ["/api/admin/analytics/top-organizations"],
     queryFn: async () => {
-      if (!adminToken) throw new Error("No admin token");
-      
       const response = await fetch("/api/admin/analytics/top-organizations?limit=15", {
-        headers: {
-          Authorization: `Bearer ${adminToken}`,
-        },
+        credentials: 'include', // Include cookies for authentication
       });
       
       if (!response.ok) {
@@ -128,8 +131,16 @@ export default function AdminAnalytics() {
     enabled: !!adminToken,
   });
 
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/logout', { 
+        method: 'POST',
+        credentials: 'include' // Include cookies
+      });
+    } catch (error) {
+      // Even if logout fails, clear local state
+    }
+    localStorage.removeItem("csrfToken");
     setLocation("/admin/login");
   };
 
