@@ -11,7 +11,7 @@ import ResultsHeader from "@/components/results/results-header";
 import RadarChart from "@/components/results/radar-chart";
 import Gauge from "@/components/ui/gauge";
 import { ScoreResponse, Recommendation, InsightsSummary } from "@shared/schema";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Radar, RadarChart as RechartsRadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
 
 // Additional types for Phase 3 features
 interface HistoricalResponse {
@@ -45,6 +45,8 @@ export default function Results() {
   
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [isPrintMode, setIsPrintMode] = useState(false);
+  // Progress tab enhancements
+  const [visiblePillars, setVisiblePillars] = useState<Set<string>>(new Set(['technology', 'data_management', 'organizational_culture', 'strategic_planning', 'risk_management']));
 
   // Print lifecycle management
   useEffect(() => {
@@ -255,7 +257,7 @@ export default function Results() {
               data-testid="tab-history"
             >
               <History className="w-4 h-4" />
-              History {(historicalData?.count ?? 0) > 1 && `(${historicalData.count})`}
+              History {(historicalData?.count ?? 0) > 1 && `(${historicalData?.count})`}
             </TabsTrigger>
           </TabsList>
 
@@ -595,10 +597,44 @@ export default function Results() {
                   </CardContent>
                 </Card>
 
-                {/* Historical Pillar Trends */}
+                {/* Historical Pillar Trends with Toggleable Lines */}
                 <Card>
                   <CardContent className="p-8">
-                    <h3 className="text-xl font-semibold mb-6">Pillar Score Trends</h3>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+                      <h3 className="text-xl font-semibold">Pillar Score Trends</h3>
+                      <div className="flex flex-wrap gap-3 mt-4 sm:mt-0">
+                        {[
+                          { key: 'technology', name: 'Technology', color: 'hsl(var(--chart-1))' },
+                          { key: 'data_management', name: 'Data Management', color: 'hsl(var(--chart-2))' },
+                          { key: 'organizational_culture', name: 'Culture', color: 'hsl(var(--chart-3))' },
+                          { key: 'strategic_planning', name: 'Strategy', color: 'hsl(var(--chart-4))' },
+                          { key: 'risk_management', name: 'Risk Management', color: 'hsl(var(--chart-5))' }
+                        ].map((pillar) => (
+                          <label key={pillar.key} className="flex items-center space-x-2 cursor-pointer text-sm">
+                            <input
+                              type="checkbox"
+                              checked={visiblePillars.has(pillar.key)}
+                              onChange={(e) => {
+                                const newSet = new Set(visiblePillars);
+                                if (e.target.checked) {
+                                  newSet.add(pillar.key);
+                                } else {
+                                  newSet.delete(pillar.key);
+                                }
+                                setVisiblePillars(newSet);
+                              }}
+                              className="rounded border-gray-300"
+                              data-testid={`checkbox-pillar-${pillar.key}`}
+                            />
+                            <div
+                              className="w-3 h-3 rounded-full"
+                              style={{ backgroundColor: pillar.color }}
+                            />
+                            <span>{pillar.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
                     <ResponsiveContainer width="100%" height={400}>
                       <LineChart data={historicalChartData}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -606,16 +642,172 @@ export default function Results() {
                         <YAxis domain={[0, 100]} />
                         <Tooltip />
                         <Legend />
-                        <Line type="monotone" dataKey="technology" stroke="hsl(var(--chart-1))" name="Technology" />
-                        <Line type="monotone" dataKey="data_management" stroke="hsl(var(--chart-2))" name="Data Management" />
-                        <Line type="monotone" dataKey="organizational_culture" stroke="hsl(var(--chart-3))" name="Culture" />
-                        <Line type="monotone" dataKey="strategic_planning" stroke="hsl(var(--chart-4))" name="Strategy" />
-                        <Line type="monotone" dataKey="risk_management" stroke="hsl(var(--chart-5))" name="Risk Management" />
+                        {visiblePillars.has('technology') && (
+                          <Line 
+                            type="monotone" 
+                            dataKey="technology" 
+                            stroke="hsl(var(--chart-1))" 
+                            name="Technology" 
+                            strokeWidth={2}
+                            data-testid="line-technology"
+                          />
+                        )}
+                        {visiblePillars.has('data_management') && (
+                          <Line 
+                            type="monotone" 
+                            dataKey="data_management" 
+                            stroke="hsl(var(--chart-2))" 
+                            name="Data Management" 
+                            strokeWidth={2}
+                            data-testid="line-data-management"
+                          />
+                        )}
+                        {visiblePillars.has('organizational_culture') && (
+                          <Line 
+                            type="monotone" 
+                            dataKey="organizational_culture" 
+                            stroke="hsl(var(--chart-3))" 
+                            name="Culture" 
+                            strokeWidth={2} 
+                          />
+                        )}
+                        {visiblePillars.has('strategic_planning') && (
+                          <Line 
+                            type="monotone" 
+                            dataKey="strategic_planning" 
+                            stroke="hsl(var(--chart-4))" 
+                            name="Strategy" 
+                            strokeWidth={2} 
+                          />
+                        )}
+                        {visiblePillars.has('risk_management') && (
+                          <Line 
+                            type="monotone" 
+                            dataKey="risk_management" 
+                            stroke="hsl(var(--chart-5))" 
+                            name="Risk Management" 
+                            strokeWidth={2} 
+                          />
+                        )}
                       </LineChart>
                     </ResponsiveContainer>
                   </CardContent>
                 </Card>
 
+                {/* Industry Benchmarking Comparison */}
+                {benchmarkData?.available && (
+                  <Card>
+                    <CardContent className="p-8">
+                      <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-semibold">Industry Benchmarking</h3>
+                        <Badge variant="outline" className="text-xs">
+                          {displayResults.industry} • {benchmarkData.count} responses
+                        </Badge>
+                      </div>
+                      
+                      <div className="grid lg:grid-cols-2 gap-8">
+                        {/* Enhanced Radar Chart with Benchmark Overlay */}
+                        <div>
+                          <h4 className="font-medium mb-4">Performance vs Industry Median</h4>
+                          <ResponsiveContainer width="100%" height={350}>
+                            <RechartsRadarChart data={Object.entries(displayResults.pillarScores).map(([key, value]) => ({
+                              pillar: pillarNames[key as keyof typeof pillarNames] || key,
+                              yourScore: value,
+                              industryMedian: benchmarkData.pillarMedians?.[key] || 0,
+                              fullMark: 100,
+                            }))}>
+                              <PolarGrid />
+                              <PolarAngleAxis 
+                                dataKey="pillar" 
+                                className="text-xs sm:text-sm"
+                                tick={{ fontSize: 12 }}
+                              />
+                              <PolarRadiusAxis
+                                angle={90}
+                                domain={[0, 100]}
+                                className="text-xs sm:text-sm"
+                                tick={{ fontSize: 11 }}
+                              />
+                              <Radar
+                                name="Your Score"
+                                dataKey="yourScore"
+                                stroke="hsl(var(--primary))"
+                                fill="hsl(var(--primary))"
+                                fillOpacity={0.3}
+                                strokeWidth={3}
+                                data-testid="radar-user-score"
+                              />
+                              <Radar
+                                name="Industry Median"
+                                dataKey="industryMedian"
+                                stroke="hsl(var(--chart-2))"
+                                fill="hsl(var(--chart-2))"
+                                fillOpacity={0.1}
+                                strokeWidth={2}
+                                strokeDasharray="5 5"
+                              />
+                            </RechartsRadarChart>
+                          </ResponsiveContainer>
+                          
+                          <div className="flex items-center justify-center gap-6 mt-4">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 rounded-full bg-primary"></div>
+                              <span className="text-sm">Your Score</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 rounded-full bg-chart-2 opacity-70" style={{ background: 'repeating-linear-gradient(45deg, hsl(var(--chart-2)), hsl(var(--chart-2)) 2px, transparent 2px, transparent 4px)' }}></div>
+                              <span className="text-sm">Industry Median</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Enhanced Percentile Display */}
+                        <div>
+                          <h4 className="font-medium mb-4">Industry Position</h4>
+                          <div className="space-y-4">
+                            {/* Overall Percentile */}
+                            <div className="text-center p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border">
+                              <div className="text-4xl font-bold text-primary mb-2">
+                                {userPercentile || 'N/A'}
+                              </div>
+                              <div className="text-sm text-muted-foreground mb-3">Overall Percentile</div>
+                              <div className="text-xs text-muted-foreground">
+                                You scored better than {userPercentile?.replace(/[^0-9]/g, '') || '0'}% of organizations in {displayResults.industry}
+                              </div>
+                            </div>
+                            
+                            {/* Pillar Comparisons */}
+                            <div className="space-y-3">
+                              <h5 className="text-sm font-medium text-muted-foreground">Pillar Performance vs Industry</h5>
+                              {Object.entries(displayResults.pillarScores).map(([key, value]) => {
+                                const median = benchmarkData.pillarMedians?.[key] || 0;
+                                const diff = value - median;
+                                const isAbove = diff > 0;
+                                return (
+                                  <div key={key} className="flex items-center justify-between py-2 px-3 rounded border bg-background/50">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-sm font-medium">{pillarNames[key as keyof typeof pillarNames] || key}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-sm font-mono">{value}</span>
+                                      <Badge 
+                                        variant={isAbove ? "default" : "secondary"}
+                                        className={`text-xs ${isAbove ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' : 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300'}`}
+                                      >
+                                        {isAbove ? '+' : ''}{Math.round(diff)}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+                
                 {/* Historical Summary */}
                 <Card>
                   <CardContent className="p-8">
