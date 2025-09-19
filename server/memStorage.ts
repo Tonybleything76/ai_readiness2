@@ -12,6 +12,7 @@ import {
   AdminRole
 } from "@shared/schema";
 import { IStorage, HistoricalResponse } from "./storage";
+import { PasswordService } from "./auth/passwordService";
 
 /**
  * In-memory storage implementation for development and testing
@@ -32,14 +33,15 @@ export class MemStorage implements IStorage {
   private auditLogIdCounter = 1;
 
   constructor() {
-    this.seedDevelopmentData();
+    // Call async seeding in constructor - passwords will be properly hashed
+    this.seedDevelopmentData().catch(console.error);
   }
 
   private generateId(): string {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }
 
-  private seedDevelopmentData() {
+  private async seedDevelopmentData() {
     // Create default organization
     const defaultOrg: Organization = {
       id: this.generateId(),
@@ -61,10 +63,11 @@ export class MemStorage implements IStorage {
     this.organizations.set(sampleOrg.id, sampleOrg);
 
     // Create super admin for default org (password: Admin123!@#)
+    const superAdminPasswordHash = await PasswordService.hashPassword('Admin123!@#');
     const superAdmin: Admin = {
       id: this.generateId(),
       email: 'admin@example.com',
-      passwordHash: '$2b$12$K2LoC5g5zQvQ5Q5K5g5zQ5vQ5g5zQ5vQ5g5zQ5vQ5g5zQ5vQ5g5zQ', // Admin123!@#
+      passwordHash: superAdminPasswordHash,
       orgId: defaultOrg.id,
       role: AdminRole.SUPER_ADMIN,
       isActive: true,
@@ -74,10 +77,11 @@ export class MemStorage implements IStorage {
     this.admins.set(superAdmin.id, superAdmin);
 
     // Create editor admin for sample org (password: Editor123!@#)
+    const editorPasswordHash = await PasswordService.hashPassword('Editor123!@#');
     const editorAdmin: Admin = {
       id: this.generateId(),
       email: 'editor@sample.com', 
-      passwordHash: '$2b$12$L3MpD6h6zRwR6R6L6h6zR6wR6h6zR6wR6h6zR6wR6h6zR6wR6h6zR', // Editor123!@#
+      passwordHash: editorPasswordHash,
       orgId: sampleOrg.id,
       role: AdminRole.EDITOR,
       isActive: true,
