@@ -18,7 +18,7 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      scriptSrc: ["'self'"].concat(process.env.NODE_ENV === 'development' ? ["'unsafe-eval'"] : []), // unsafe-eval only in development
+      scriptSrc: ["'self'"].concat(process.env.NODE_ENV === 'development' ? ["'unsafe-eval'", "'unsafe-inline'"] : []), // unsafe-eval and unsafe-inline for development
       imgSrc: ["'self'", "data:"],
       connectSrc: ["'self'"].concat(process.env.NODE_ENV === 'development' ? ["ws:", "wss:"] : []), // WebSocket only in development
     },
