@@ -49,7 +49,9 @@ if (process.env.NODE_ENV === 'development') {
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        // Log CORS rejection but respond with 403 instead of throwing
+        logger.warn(`CORS rejected origin: ${origin}`);
+        callback(null, false);
       }
     },
     credentials: true,
@@ -84,7 +86,7 @@ app.use('/api/score', scoreLimiter);
 if (process.env.NODE_ENV === 'production') {
   app.use((req, res, next) => {
     // Skip HTTPS redirect for health checks
-    if (req.path === '/api/health') {
+    if (req.path === '/healthz' || req.path === '/readyz' || req.path === '/api/health' || req.path === '/api/health/detailed') {
       return next();
     }
     
@@ -113,8 +115,9 @@ app.use(requestLogger);
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
+    logger.error(err, `Request error: ${message}`);
     res.status(status).json({ message });
-    throw err;
+    // Do not rethrow after responding - prevents server crashes
   });
 
   // importantly only setup vite in development and after
