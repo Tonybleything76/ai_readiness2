@@ -23,7 +23,8 @@ import {
   ChevronRight,
   FileDown,
   Filter,
-  X
+  X,
+  Database
 } from "lucide-react";
 
 interface AdminResponse {
@@ -287,6 +288,14 @@ export default function AdminDashboard() {
             >
               <BarChart3 className="w-4 h-4 mr-2" />
               Analytics
+            </Button>
+            <Button 
+              variant="default" 
+              onClick={() => setLocation("/admin/backups")}
+              data-testid="button-admin-backups"
+            >
+              <Database className="w-4 h-4 mr-2" />
+              Backups
             </Button>
             <Button variant="outline" onClick={handleLogout} data-testid="button-admin-logout">
               <LogOut className="w-4 h-4 mr-2" />

@@ -17,7 +17,8 @@ import {
   ArrowLeft,
   Building,
   PieChart,
-  Activity
+  Activity,
+  Database
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -169,9 +170,19 @@ export default function AdminAnalytics() {
                 Industry insights and organizational performance metrics
               </p>
             </div>
-            <Button variant="outline" onClick={handleLogout} data-testid="button-logout">
-              Logout
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="default" 
+                onClick={() => setLocation("/admin/backups")}
+                data-testid="button-admin-backups"
+              >
+                <Database className="w-4 h-4 mr-2" />
+                Backups
+              </Button>
+              <Button variant="outline" onClick={handleLogout} data-testid="button-logout">
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
 
