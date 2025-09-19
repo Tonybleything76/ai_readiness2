@@ -96,17 +96,6 @@ export default function Assessment() {
     }
   }, [assessmentData]);
 
-  // Auto-save progress (with validation)
-  useEffect(() => {
-    // Only save if assessmentData is loaded and state is valid
-    if (assessmentData && currentPillar && currentQuestion) {
-      const timeoutId = setTimeout(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      }, 1000);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [state, assessmentData, currentPillar, currentQuestion]);
 
   if (isLoading) {
     return (
@@ -191,6 +180,18 @@ export default function Assessment() {
     currentPillar && 
     state.currentPillarIndex === assessmentData.pillars.length - 1 &&
     state.currentQuestionIndex === currentPillar.questions.length - 1;
+
+  // Auto-save progress (with validation)
+  useEffect(() => {
+    // Only save if assessmentData is loaded and state is valid
+    if (assessmentData && currentPillar && currentQuestion) {
+      const timeoutId = setTimeout(() => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }, 1000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [state, assessmentData, currentPillar, currentQuestion]);
 
 
   return (
