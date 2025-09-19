@@ -495,22 +495,35 @@ export class DatabaseStorage implements IStorage {
 
   async getAuditLogs(orgId?: string, limit?: number, offset?: number): Promise<AuditLog[]> {
     try {
-      let baseQuery = db.select().from(auditLogs);
-      
+      // Build query explicitly to avoid complex Drizzle type inference
       if (orgId) {
-        baseQuery = baseQuery.where(eq(auditLogs.orgId, orgId));
+        let query = db
+          .select()
+          .from(auditLogs)
+          .where(eq(auditLogs.orgId, orgId))
+          .orderBy(desc(auditLogs.createdAt));
+        
+        if (limit) {
+          query = query.limit(limit);
+        }
+        if (offset) {
+          query = query.offset(offset);
+        }
+        return await query;
+      } else {
+        let query = db
+          .select()
+          .from(auditLogs)
+          .orderBy(desc(auditLogs.createdAt));
+        
+        if (limit) {
+          query = query.limit(limit);
+        }
+        if (offset) {
+          query = query.offset(offset);
+        }
+        return await query;
       }
-      
-      let finalQuery = baseQuery.orderBy(desc(auditLogs.createdAt));
-      
-      if (limit) {
-        finalQuery = finalQuery.limit(limit);
-      }
-      if (offset) {
-        finalQuery = finalQuery.offset(offset);
-      }
-
-      return await finalQuery;
     } catch (error) {
       console.error("Error fetching audit logs:", error);
       return [];
@@ -541,14 +554,18 @@ export class DatabaseStorage implements IStorage {
 
   async getAuditLogsCount(orgId?: string): Promise<number> {
     try {
-      let baseQuery = db.select({ count: count() }).from(auditLogs);
-      
       if (orgId) {
-        baseQuery = baseQuery.where(eq(auditLogs.orgId, orgId));
+        const [result] = await db
+          .select({ count: count() })
+          .from(auditLogs)
+          .where(eq(auditLogs.orgId, orgId));
+        return result.count;
+      } else {
+        const [result] = await db
+          .select({ count: count() })
+          .from(auditLogs);
+        return result.count;
       }
-
-      const [result] = await baseQuery;
-      return result.count;
     } catch (error) {
       console.error("Error counting audit logs:", error);
       return 0;
