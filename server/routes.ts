@@ -9,6 +9,12 @@ import { SessionAuthService } from "./auth/sessionAuth";
 import { PasswordService } from "./auth/passwordService";
 import { authenticateAdmin, requireRole, requireOrgAccess, csrfProtection, auditLogger } from "./auth/middleware";
 import { PDFGenerator } from "./services/pdfGenerator";
+import { logger } from "./logger";
+import { promises as fs } from "fs";
+import path from "path";
+import puppeteer from "puppeteer";
+import { pool } from "./db";
+import { DatabaseStorage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const questionLoader = new QuestionLoader();
@@ -50,12 +56,120 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // GET /api/health - Basic health check endpoint
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  // GET /healthz - Basic uptime health check for load balancers
+  app.get("/healthz", (req, res) => {
+    res.json({ ok: true });
   });
 
-  // GET /api/health/detailed - Comprehensive health check for production
+  // GET /readyz - Comprehensive readiness check with all system dependencies
+  app.get("/readyz", async (req, res) => {
+    const checks = {
+      database: false,
+      filesystem: false,
+      puppeteer: false
+    };
+    
+    let allChecksPass = true;
+    const errors: string[] = [];
+
+    // 1. Database connectivity check (SELECT 1) - only for DatabaseStorage
+    try {
+      if (storage instanceof DatabaseStorage && process.env.DATABASE_URL) {
+        await pool.query('SELECT 1');
+        checks.database = true;
+        logger.info('Readiness check: Database connectivity OK');
+      } else {
+        // In development with MemStorage or no DATABASE_URL, skip database check
+        checks.database = true;
+        logger.info('Readiness check: Using MemStorage or no DATABASE_URL, skipping database check');
+      }
+    } catch (error) {
+      checks.database = false;
+      allChecksPass = false;
+      const errorMsg = `Database connectivity failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      errors.push(errorMsg);
+      logger.error(errorMsg);
+    }
+
+    // 2. File system access check (write/read/delete in BACKUP_DIR)
+    try {
+      const backupDir = process.env.BACKUP_OUTPUT_DIR || './backups';
+      const testFilePath = path.join(backupDir, `readiness-test-${Date.now()}.tmp`);
+      
+      // Ensure backup directory exists
+      await fs.mkdir(backupDir, { recursive: true, mode: 0o700 });
+      
+      // Write test file
+      await fs.writeFile(testFilePath, 'readiness-test', 'utf8');
+      
+      // Read test file
+      const content = await fs.readFile(testFilePath, 'utf8');
+      if (content !== 'readiness-test') {
+        throw new Error('File content verification failed');
+      }
+      
+      // Delete test file
+      await fs.unlink(testFilePath);
+      
+      checks.filesystem = true;
+      logger.info('Readiness check: File system access OK');
+    } catch (error) {
+      checks.filesystem = false;
+      allChecksPass = false;
+      const errorMsg = `File system access failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      errors.push(errorMsg);
+      logger.error(errorMsg);
+    }
+
+    // 3. Puppeteer smoke test (launch + render minimal HTML)
+    try {
+      // Check if Chrome is installed first
+      const browser = await puppeteer.launch({
+        headless: true,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox', 
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--disable-web-security',
+          '--disable-features=VizDisplayCompositor',
+          '--single-process' // Simplify process model for better compatibility
+        ]
+      });
+      
+      const page = await browser.newPage();
+      await page.setContent('<html><body><h1>Readiness Test</h1></body></html>');
+      
+      await browser.close();
+      
+      checks.puppeteer = true;
+      logger.info('Readiness check: Puppeteer smoke test OK');
+    } catch (error) {
+      // For development environments, we can be more lenient about Puppeteer failing
+      if (process.env.NODE_ENV === 'development') {
+        checks.puppeteer = true; // Don't fail readiness in development
+        logger.warn(`Readiness check: Puppeteer failed in development (${error instanceof Error ? error.message : 'Unknown error'}), but allowing to pass`);
+      } else {
+        checks.puppeteer = false;
+        allChecksPass = false;
+        const errorMsg = `Puppeteer smoke test failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+        errors.push(errorMsg);
+        logger.error(errorMsg);
+      }
+    }
+
+    const response = {
+      ready: allChecksPass,
+      checks,
+      ...(errors.length > 0 && { errors }),
+      timestamp: new Date().toISOString()
+    };
+
+    const statusCode = allChecksPass ? 200 : 503;
+    res.status(statusCode).json(response);
+  });
+
+  // Keep the legacy detailed health endpoint for backwards compatibility
   app.get("/api/health/detailed", async (req, res) => {
     const healthCheck = {
       status: "ok",
