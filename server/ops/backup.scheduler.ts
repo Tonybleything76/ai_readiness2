@@ -2,6 +2,8 @@ import * as cron from 'node-cron';
 import { spawn } from 'child_process';
 import path from 'path';
 import { logger } from '../logger';
+import { storage } from '../storage';
+import type { InsertAuditLog } from '@shared/schema';
 
 /**
  * Backup Scheduler Service
@@ -123,6 +125,20 @@ export class BackupScheduler {
       
       if (result.success) {
         logger.info(`Scheduled backup completed successfully in ${duration}ms`);
+        
+        // Create audit log for successful scheduled backup
+        try {
+          await this.createSystemAuditLog('scheduled_backup_success', 'backup', {
+            duration,
+            outputDir: outputDir || './backups',
+            retentionDays: retentionDays || '30',
+            compressed: true,
+            success: true
+          });
+        } catch (auditError) {
+          logger.error('Failed to create audit log for successful backup:', auditError);
+        }
+        
         return {
           success: true,
           message: `Backup completed successfully in ${(duration / 1000).toFixed(2)}s`,
@@ -130,6 +146,20 @@ export class BackupScheduler {
         };
       } else {
         logger.error('Scheduled backup failed:', result.error);
+        
+        // Create audit log for failed scheduled backup
+        try {
+          await this.createSystemAuditLog('scheduled_backup_failure', 'backup', {
+            duration,
+            error: result.error,
+            outputDir: outputDir || './backups',
+            retentionDays: retentionDays || '30',
+            success: false
+          });
+        } catch (auditError) {
+          logger.error('Failed to create audit log for failed backup:', auditError);
+        }
+        
         return {
           success: false,
           message: `Backup failed: ${result.error}`,
@@ -139,6 +169,18 @@ export class BackupScheduler {
     } catch (error) {
       const duration = Date.now() - startTime;
       logger.error(`Scheduled backup failed after ${duration}ms:`, error);
+      
+      // Create audit log for backup execution error
+      try {
+        await this.createSystemAuditLog('scheduled_backup_error', 'backup', {
+          duration,
+          error: error instanceof Error ? error.message : 'Unknown error',
+          success: false
+        });
+      } catch (auditError) {
+        logger.error('Failed to create audit log for backup error:', auditError);
+      }
+      
       return {
         success: false,
         message: `Backup failed: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -204,6 +246,34 @@ export class BackupScheduler {
         clearTimeout(timeout);
       });
     });
+  }
+
+  /**
+   * Create audit log for system-level backup operations
+   */
+  private async createSystemAuditLog(action: string, resource: string, details: any): Promise<void> {
+    try {
+      const auditLog: InsertAuditLog = {
+        adminId: null, // System-level operation, no specific admin
+        orgId: null, // System-level operation, no specific organization
+        action,
+        resource,
+        resourceId: `scheduled-${Date.now()}`, // Unique identifier for scheduled operations
+        details: {
+          ...details,
+          source: 'system_scheduler',
+          timestamp: new Date().toISOString(),
+          environment: process.env.NODE_ENV || 'development'
+        },
+        ipAddress: '127.0.0.1', // System operations from localhost
+        userAgent: 'system-backup-scheduler',
+      };
+      
+      await storage.createAuditLog(auditLog);
+    } catch (error) {
+      // Don't throw errors for audit logging failures to avoid disrupting backup operations
+      logger.error('Failed to create system audit log:', error);
+    }
   }
 
   /**
