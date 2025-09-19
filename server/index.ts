@@ -147,7 +147,7 @@ app.use(requestLogger);
           logger.info(`Backup scheduler initialized with schedule: ${status.schedule}`);
         }
       } catch (error) {
-        logger.error('Failed to initialize backup scheduler:', error);
+        logger.error(error, 'Failed to initialize backup scheduler');
       }
     } else {
       logger.info('Backup scheduler disabled: not running in production environment');
