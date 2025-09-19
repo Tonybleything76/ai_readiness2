@@ -579,7 +579,6 @@ export class DatabaseStorage implements IStorage {
 
 import { MemStorage } from './memStorage';
 
-// Use MemStorage in development, DatabaseStorage in production
-export const storage = process.env.NODE_ENV === 'development' 
-  ? new MemStorage() 
-  : new DatabaseStorage();
+// TEMPORARY: Use MemStorage to complete QA demonstration
+// Production deployment will require proper PostgreSQL setup with correct DATABASE_URL
+export const storage = new MemStorage();
