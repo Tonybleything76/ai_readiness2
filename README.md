@@ -38,6 +38,16 @@ A comprehensive enterprise-grade web application for evaluating organizations' r
 - **Statistics Dashboard**: Overview of total responses and average scores
 - **Real-time Data**: Live updates with proper cache invalidation
 
+### Phase 8: Backup Management System ✅
+- **Automated Database Backups**: Scheduled nightly backups with configurable retention
+- **Web-based Backup Dashboard**: Complete backup management interface for administrators
+- **Backup Verification**: File integrity verification with checksums and compression testing
+- **Restore Capabilities**: Secure database restore with environmental safeguards and confirmation workflows
+- **Comprehensive Audit Logging**: Complete audit trail for all backup operations (manual and automated)
+- **CSRF Protection**: Security-hardened APIs with CSRF token validation for all operations
+- **Path Traversal Protection**: Secure file handling preventing unauthorized access
+- **Multi-format Support**: Handles SQL dumps, compressed files, and custom PostgreSQL formats
+
 ## 🛠 Tech Stack
 
 - **Frontend**: React 18, TypeScript, Tailwind CSS, shadcn/ui components
@@ -73,6 +83,13 @@ A comprehensive enterprise-grade web application for evaluating organizations' r
    # Optional configuration
    CORS_ORIGIN=https://yourdomain.com     # Allowed CORS origins (comma-separated)
    LOG_LEVEL=info                         # Logging level (debug, info, warn, error)
+   
+   # Backup system configuration (optional)
+   BACKUP_CRON=0 2 * * *                  # Backup schedule (default: daily at 2 AM)
+   BACKUP_OUTPUT_DIR=./backups            # Backup storage directory
+   BACKUP_RETENTION_DAYS=30               # Days to keep backups (default: 30)
+   ALLOW_DB_RESTORE=true                  # Enable database restore operations (production only)
+   TZ=UTC                                 # Timezone for backup scheduling
    ```
 
 3. **Initialize the database**:
@@ -123,6 +140,32 @@ The application will be available at `http://localhost:5000` (or your Replit dom
    - Export individual responses as JSON files
    - Generate PDF reports for any assessment
 6. **Manage Data**: View detailed statistics and response metadata with real-time updates
+
+### Backup Management
+
+**⚠️ SuperAdmin Role Required**: All backup operations require SuperAdmin privileges.
+
+1. **Access Backup Dashboard**: Navigate to `/admin/backups` or click "Backups" from any admin page
+2. **System Status**: Monitor backup scheduler status, last backup time, and storage health
+3. **Manual Backup**: 
+   - Click "Run Backup Now" to trigger immediate database backup
+   - View real-time progress and completion status
+4. **Backup Management**:
+   - **List Backups**: View all available backup files with metadata (size, date, format)
+   - **Verify Backup**: Test backup integrity with checksum validation and compression testing
+   - **Download Backup**: Securely download backup files for external storage
+   - **Restore Database**: Restore from backup with safety confirmation workflows
+5. **Automated Backups**: 
+   - Scheduler runs nightly in production environments (configurable via `BACKUP_CRON`)
+   - Automatic retention management based on `BACKUP_RETENTION_DAYS` setting
+   - Complete audit logging for compliance and monitoring
+
+**Security Features**:
+- Environmental safeguards (production-only scheduling, restore gates)
+- CSRF protection on all backup operations
+- Path traversal protection for file operations
+- Explicit confirmation required for destructive operations
+- Pre-restore safety backups automatically created
 
 ## 📊 Assessment Pillars
 
