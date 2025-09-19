@@ -59,12 +59,23 @@ export default function AdminDashboard() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      setLocation("/admin/login");
-      return;
-    }
-    setAdminToken(token);
+    // Check if we have admin session by trying to access a protected endpoint
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/admin/responses?page=1&limit=1', {
+          credentials: 'include', // Include cookies
+        });
+        if (response.ok) {
+          setAdminToken('authenticated'); // Just a flag, real auth is via cookies
+        } else {
+          setLocation("/admin/login");
+        }
+      } catch (error) {
+        setLocation("/admin/login");
+      }
+    };
+    
+    checkAuth();
   }, [setLocation]);
 
   const { data: responsesData, isLoading, error } = useQuery({
@@ -82,8 +93,8 @@ export default function AdminDashboard() {
       });
       
       const response = await fetch(`/api/admin/responses?${params}`, {
+        credentials: 'include', // Include cookies for authentication
         headers: {
-          'Authorization': `Bearer ${adminToken}`,
           'Content-Type': 'application/json',
         },
       });
@@ -97,10 +108,18 @@ export default function AdminDashboard() {
     enabled: !!adminToken,
   });
 
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/logout', { 
+        method: 'POST',
+        credentials: 'include' // Include cookies
+      });
+    } catch (error) {
+      // Even if logout fails, clear local state
+    }
+    localStorage.removeItem("csrfToken");
     toast({
-      title: "Logged out",
+      title: "Logged out", 
       description: "You have been logged out successfully",
     });
     setLocation("/admin/login");
@@ -119,9 +138,7 @@ export default function AdminDashboard() {
         ...(filters.industry && { industry: filters.industry })
       });
       const response = await fetch(`/api/admin/export/csv?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${adminToken}`,
-        },
+        credentials: 'include', // Include cookies for authentication
       });
       
       if (!response.ok) {
@@ -154,9 +171,7 @@ export default function AdminDashboard() {
   const exportJSON = async (responseId: string) => {
     try {
       const response = await fetch(`/api/admin/export/json/${responseId}`, {
-        headers: {
-          'Authorization': `Bearer ${adminToken}`,
-        },
+        credentials: 'include', // Include cookies for authentication
       });
       
       if (!response.ok) {
@@ -189,9 +204,7 @@ export default function AdminDashboard() {
   const exportPDF = async (responseId: string) => {
     try {
       const response = await fetch(`/api/admin/export/pdf/${responseId}`, {
-        headers: {
-          'Authorization': `Bearer ${adminToken}`,
-        },
+        credentials: 'include', // Include cookies for authentication
       });
       
       if (!response.ok) {

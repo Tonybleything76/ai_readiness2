@@ -29,8 +29,10 @@ export default function AdminLogin() {
       return response.json();
     },
     onSuccess: (data: any) => {
-      // Store admin token in localStorage
-      localStorage.setItem("adminToken", data.token);
+      // Store CSRF token for future requests (cookies are set automatically by backend)
+      if (data.csrfToken) {
+        localStorage.setItem("csrfToken", data.csrfToken);
+      }
       toast({
         title: "Login successful",
         description: "Welcome to the admin dashboard",
