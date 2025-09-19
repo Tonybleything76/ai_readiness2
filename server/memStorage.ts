@@ -356,11 +356,18 @@ export class MemStorage implements IStorage {
   // Audit log methods
   async createAuditLog(auditLog: InsertAuditLog): Promise<AuditLog> {
     const newLog: AuditLog = {
-      id: this.generateId(),
-      ...auditLog,
+      id: this.auditLogIdCounter++,
+      adminId: auditLog.adminId ?? null,
+      orgId: auditLog.orgId ?? null,
+      action: auditLog.action,
+      resource: auditLog.resource ?? null,
+      resourceId: auditLog.resourceId ?? null,
+      details: auditLog.details ?? null,
+      ipAddress: auditLog.ipAddress ?? null,
+      userAgent: auditLog.userAgent ?? null,
       createdAt: new Date(),
     };
-    this.auditLogs.set(newLog.id, newLog);
+    this.auditLogs.set(newLog.id.toString(), newLog);
     return newLog;
   }
 
