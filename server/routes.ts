@@ -590,6 +590,97 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // GET /api/admin/analytics/industry-stats - Get analytics data for all industries
+  app.get("/api/admin/analytics/industry-stats", authenticateAdmin, requireRole(['super_admin', 'editor']), async (req, res) => {
+    try {
+      // Get all unique industries with sufficient data for k-anonymity
+      const allResponses = await storage.getAllResponses();
+      
+      // Group responses by industry
+      const industryGroups = allResponses.reduce((acc, response) => {
+        const industry = response.industry || 'Unknown';
+        if (!acc[industry]) {
+          acc[industry] = [];
+        }
+        acc[industry].push(response);
+        return acc;
+      }, {} as Record<string, any[]>);
+
+      // Calculate stats for each industry with k-anonymity protection
+      const industryStats = await Promise.all(
+        Object.entries(industryGroups)
+          .filter(([_, responses]) => responses.length >= 10) // K-anonymity: minimum 10 responses
+          .map(async ([industry, responses]) => {
+            const stats = await storage.getIndustryStatistics(industry);
+            return {
+              industry,
+              responseCount: responses.length,
+              averageOverallScore: stats?.overallMedian || 0,
+              ...stats
+            };
+          })
+      );
+
+      res.json({
+        industries: industryStats.sort((a, b) => b.responseCount - a.responseCount),
+        totalIndustries: industryStats.length,
+        totalResponsesAnalyzed: industryStats.reduce((sum, stat) => sum + stat.responseCount, 0)
+      });
+    } catch (error) {
+      console.error("Error getting industry analytics:", error);
+      res.status(500).json({ message: "Failed to get industry analytics" });
+    }
+  });
+
+  // GET /api/admin/analytics/top-organizations - Get top performing organizations (anonymized)
+  app.get("/api/admin/analytics/top-organizations", authenticateAdmin, requireRole(['super_admin', 'editor']), async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 20;
+      const allResponses = await storage.getAllResponses();
+      
+      // Group by organization and get their latest/best scores
+      const orgGroups = allResponses.reduce((acc, response) => {
+        const orgKey = response.orgName || 'Anonymous';
+        if (!acc[orgKey]) {
+          acc[orgKey] = [];
+        }
+        acc[orgKey].push(response);
+        return acc;
+      }, {} as Record<string, any[]>);
+
+      // Calculate organization performance (use latest assessment per org)
+      const orgStats = Object.entries(orgGroups)
+        .map(([orgName, responses]) => {
+          // Get the most recent response for each org
+          const latestResponse = responses.sort((a, b) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )[0];
+
+          return {
+            // Anonymize organization names for privacy
+            organizationId: orgName.substring(0, 3).toUpperCase() + '***',
+            industry: latestResponse.industry || 'Unknown',
+            overallScore: latestResponse.overall,
+            pillarScores: latestResponse.pillarScores,
+            category: latestResponse.category,
+            assessmentDate: latestResponse.createdAt,
+            totalAssessments: responses.length
+          };
+        })
+        .sort((a, b) => b.overallScore - a.overallScore)
+        .slice(0, limit);
+
+      res.json({
+        organizations: orgStats,
+        totalOrganizations: Object.keys(orgGroups).length,
+        averageScore: orgStats.reduce((sum, org) => sum + org.overallScore, 0) / orgStats.length
+      });
+    } catch (error) {
+      console.error("Error getting top organizations:", error);
+      res.status(500).json({ message: "Failed to get top organizations" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

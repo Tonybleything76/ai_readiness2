@@ -10,6 +10,7 @@ import Assessment from "@/pages/assessment";
 import Results from "@/pages/results";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AdminAnalytics from "@/pages/admin-analytics";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/assessment" component={Assessment} />
       <Route path="/results/:id?" component={Results} />
       <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin/analytics" component={AdminAnalytics} />
       <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>

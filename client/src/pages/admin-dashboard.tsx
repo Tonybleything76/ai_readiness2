@@ -266,10 +266,20 @@ export default function AdminDashboard() {
               AI Readiness Assessment - Response Management
             </p>
           </div>
-          <Button variant="outline" onClick={handleLogout} data-testid="button-admin-logout">
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="default" 
+              onClick={() => setLocation("/admin/analytics")}
+              data-testid="button-admin-analytics"
+            >
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Analytics
+            </Button>
+            <Button variant="outline" onClick={handleLogout} data-testid="button-admin-logout">
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
