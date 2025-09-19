@@ -7,6 +7,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { productionConfig, validateProductionEnvironment } from "./config/production";
 import { requestLogger, logger } from "./logger";
+import { backupScheduler } from "./ops/backup.scheduler";
 
 const app = express();
 
@@ -136,5 +137,20 @@ app.use(requestLogger);
     reusePort: true,
   }, () => {
     logger.info(`Server started on port ${port}`);
+    
+    // Initialize backup scheduler for production
+    if (process.env.NODE_ENV === 'production') {
+      try {
+        backupScheduler.start();
+        const status = backupScheduler.getStatus();
+        if (status.running) {
+          logger.info(`Backup scheduler initialized with schedule: ${status.schedule}`);
+        }
+      } catch (error) {
+        logger.error('Failed to initialize backup scheduler:', error);
+      }
+    } else {
+      logger.info('Backup scheduler disabled: not running in production environment');
+    }
   });
 })();
