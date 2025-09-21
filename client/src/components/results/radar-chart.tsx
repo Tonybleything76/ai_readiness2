@@ -7,11 +7,11 @@ interface RadarChartProps {
 }
 
 export default function RadarChart({ data, pillarNames }: RadarChartProps) {
-  const chartData = Object.entries(data).map(([key, value]) => ({
+  const chartData = data ? Object.entries(data).map(([key, value]) => ({
     pillar: pillarNames[key] || key,
     score: value,
     fullMark: 100,
-  }));
+  })) : [];
 
   return (
     <Card>
@@ -44,7 +44,7 @@ export default function RadarChart({ data, pillarNames }: RadarChartProps) {
         </ResponsiveContainer>
 
         <div className="grid grid-cols-1 gap-3 mt-6">
-          {Object.entries(data).map(([key, value], index) => (
+          {data && Object.entries(data).map(([key, value], index) => (
             <div key={key} className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <div 

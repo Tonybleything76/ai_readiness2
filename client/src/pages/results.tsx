@@ -379,7 +379,7 @@ export default function Results() {
           </div>
           
           <div className="divide-y divide-border">
-            {Object.entries(displayResults.pillarScores).map(([pillarId, score]) => (
+            {displayResults?.pillarScores && Object.entries(displayResults.pillarScores).map(([pillarId, score]) => (
               <Collapsible key={pillarId} className="p-6">
                 <CollapsibleTrigger 
                   className="w-full flex items-center justify-between text-left"
@@ -401,7 +401,7 @@ export default function Results() {
                 </CollapsibleTrigger>
                 
                 <CollapsibleContent className="mt-4 space-y-4">
-                  {Object.entries(displayResults.answers)
+                  {displayResults?.answers && Object.entries(displayResults.answers)
                     .filter(([questionId]) => {
                       const prefix = pillarToQuestionPrefix[pillarId];
                       return prefix && questionId.startsWith(prefix);
@@ -722,12 +722,12 @@ export default function Results() {
                         <div>
                           <h4 className="font-medium mb-4">Performance vs Industry Median</h4>
                           <ResponsiveContainer width="100%" height={350}>
-                            <RechartsRadarChart data={Object.entries(displayResults.pillarScores).map(([key, value]) => ({
+                            <RechartsRadarChart data={displayResults?.pillarScores ? Object.entries(displayResults.pillarScores).map(([key, value]) => ({
                               pillar: pillarNames[key as keyof typeof pillarNames] || key,
                               yourScore: value,
                               industryMedian: benchmarkData.pillarMedians?.[key] || 0,
                               fullMark: 100,
-                            }))}>
+                            })) : []}>
                               <PolarGrid />
                               <PolarAngleAxis 
                                 dataKey="pillar" 
@@ -791,7 +791,7 @@ export default function Results() {
                             {/* Pillar Comparisons */}
                             <div className="space-y-3">
                               <h5 className="text-sm font-medium text-muted-foreground">Pillar Performance vs Industry</h5>
-                              {Object.entries(displayResults.pillarScores).map(([key, value]) => {
+                              {displayResults?.pillarScores && Object.entries(displayResults.pillarScores).map(([key, value]) => {
                                 const median = benchmarkData.pillarMedians?.[key] || 0;
                                 const diff = value - median;
                                 const isAbove = diff > 0;
