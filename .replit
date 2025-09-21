@@ -98,5 +98,14 @@ author = "agent"
 task = "shell.exec"
 args = ""
 
+[[workflows.workflow]]
+name = "Dev Server"
+mode = "sequential"
+author = 42699436
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev "
+
 [agent]
 integrations = ["javascript_database:1.0.0"]
