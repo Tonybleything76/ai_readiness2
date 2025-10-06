@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { storage } from './storage';
-import { insertResponseSchema } from '@shared/schema';
+import { storage } from './storage.js';
+import { insertResponseSchema } from '../shared/schema.js';
 import {
   ASSESSMENT_SECTIONS,
   calculateSectionScore,
   calculateOverallScore,
   getReadinessLevel,
-} from '@shared/assessment-data';
+} from '../shared/assessment-data.js';
 
 const router = Router();
 

@@ -1,4 +1,4 @@
-import { Response, InsertResponse } from '@shared/schema';
+import { Response, InsertResponse } from '../shared/schema.js';
 
 export interface IStorage {
   createResponse(response: InsertResponse): Promise<Response>;

@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
-import { apiRequest, queryClient } from '@/lib/queryClient';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Progress } from '../components/ui/progress';
+import { apiRequest, queryClient } from '../lib/queryClient';
 import { Server, Database, Users, Target, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
-import type { AssessmentSection } from '@shared/assessment-data';
+import type { AssessmentSection } from '../../../shared/assessment-data';
 
 const ICON_MAP = {
   Server,

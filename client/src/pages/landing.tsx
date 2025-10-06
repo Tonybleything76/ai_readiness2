@@ -1,8 +1,8 @@
 import { Link } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Server, Database, Users, Target, Shield, CheckCircle2, ArrowRight } from 'lucide-react';
-import { READINESS_LEVELS, ASSESSMENT_SECTIONS } from '@shared/assessment-data';
+import { READINESS_LEVELS, ASSESSMENT_SECTIONS } from '../../../shared/assessment-data';
 
 export function Landing() {
   return (

@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams, Link } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Progress } from '../components/ui/progress';
 import { Home, Download, TrendingUp, CheckCircle2 } from 'lucide-react';
-import { READINESS_LEVELS, ASSESSMENT_SECTIONS } from '@shared/assessment-data';
-import type { Response } from '@shared/schema';
+import { READINESS_LEVELS, ASSESSMENT_SECTIONS } from '../../../shared/assessment-data';
+import type { Response } from '../../../shared/schema';
 
 export function Results() {
   const params = useParams();
