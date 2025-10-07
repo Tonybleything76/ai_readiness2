@@ -1,0 +1,508 @@
+{
+  "Technology": [
+    {
+      "question": "1. Are clear performance metrics established for AI initiatives aligned to business objectives?",
+      "purpose": "Measures whether AI success is tracked relative to organizational goals",
+      "responses": {
+        "1": "No clear metrics",
+        "2": "Vague or partial metrics",
+        "3": "Metrics partially defined.",
+        "4": "Clear metrics mostly defined.",
+        "5": "Well-established metrics"
+      },
+      "meanings": {
+        "1": "AI efforts are unmanaged and impact unknown",
+        "2": "Some outcomes measured but lack relevance or clarity",
+        "3": "Metrics exist but inconsistently applied",
+        "4": "Metrics largely align with strategy and initiatives",
+        "5": "Metrics aligned closely with business goals"
+      },
+      "weight": 0.1,
+      "weight_rationale": "Clear metrics are fundamental for measuring and managing AI value delivery."
+    },
+    {
+      "question": "2. Is performance data collected consistently and accurately across AI projects?",
+      "purpose": "Ensures reliability of performance management",
+      "responses": {
+        "1": "No consistent data collection",
+        "2": "Sporadic or incomplete data",
+        "3": "Data collection inconsistent",
+        "4": "Good data collection",
+        "5": "Accurate and comprehensive data"
+      },
+      "meanings": {
+        "1": "Data gaps and inconsistencies reduce reliability",
+        "2": "Some data gaps impacting analysis quality",
+        "3": "Data inconsistently gathered or stored",
+        "4": "Reliable data available for most AI projects",
+        "5": "Data underpins effective AI management and learning"
+      },
+      "weight": 0.09,
+      "weight_rationale": "Reliable data collection supports informed decision making and accountability."
+    },
+    {
+      "question": "3. Are AI project KPIs regularly reviewed by leadership and stakeholders?",
+      "purpose": "Supports oversight and guides corrective actions",
+      "responses": {
+        "1": "No KPI reviews",
+        "2": "Infrequent reviews",
+        "3": "Periodic KPIs reviews",
+        "4": "Regular KPI reviews",
+        "5": "Continuous stakeholder reviews"
+      },
+      "meanings": {
+        "1": "Progress unknown, problems unaddressed",
+        "2": "Insufficient monitoring of AI project health",
+        "3": "KPI reviews occur but not systematically",
+        "4": "Enables ongoing performance management",
+        "5": "Drives adaptive management and alignment"
+      },
+      "weight": 0.09,
+      "weight_rationale": "Regular KPI review promotes transparency and timely interventions."
+    },
+    {
+      "question": "4. Are AI system outputs quality and accuracy continuously monitored?",
+      "purpose": "Ensures AI delivers reliable and effective results",
+      "responses": {
+        "1": "No monitoring of outputs",
+        "2": "Inconsistent monitoring",
+        "3": "Some monitoring",
+        "4": "Effective continuous monitoring",
+        "5": "Real-time automated monitoring"
+      },
+      "meanings": {
+        "1": "AI system failures remain undetected",
+        "2": "Delayed detection of errors or accuracy degradation",
+        "3": "Partial effectiveness in detecting quality issues",
+        "4": "Continuous assurance of AI system quality",
+        "5": "Maintains trust and operational performance"
+      },
+      "weight": 0.08,
+      "weight_rationale": "Continuous output monitoring is essential to ensure ongoing AI effectiveness."
+    },
+    {
+      "question": "5. Is there a formal process to identify and address issues in AI performance?",
+      "purpose": "Enables systematic problem resolution and improvement",
+      "responses": {
+        "1": "No issue management process",
+        "2": "Informal process",
+        "3": "Partial process",
+        "4": "Formal issue management",
+        "5": "Mature problem management"
+      },
+      "meanings": {
+        "1": "Issues remain unresolved or poorly handled",
+        "2": "Problems addressed inconsistently or reactively",
+        "3": "Some issue management but lacks standardization",
+        "4": "Ensures consistent problem resolution",
+        "5": "Drives continuous performance improvement"
+      },
+      "weight": 0.08,
+      "weight_rationale": "Formal issue resolution processes increase AI reliability and user confidence."
+    },
+    {
+      "question": "6. Does the organization track AI adoption rates across relevant business units?",
+      "purpose": "Measures breadth and depth of AI usage",
+      "responses": {
+        "1": "Adoption rates not tracked",
+        "2": "Partial adoption tracking",
+        "3": "Some adoption metrics",
+        "4": "Regular adoption tracking",
+        "5": "Comprehensive adoption analytics"
+      },
+      "meanings": {
+        "1": "No visibility into AI deployment progress",
+        "2": "Adoption insights limited or delayed",
+        "3": "Adoption tracking irregular or incomplete",
+        "4": "Supports targeted interventions",
+        "5": "Maximizes adoption effectiveness and ROI"
+      },
+      "weight": 0.07,
+      "weight_rationale": "Adoption tracking informs effective change management and resource allocation."
+    },
+    {
+      "question": "7. Are lessons learned from AI projects documented and shared across the organization?",
+      "purpose": "Supports knowledge retention and prevents repeated mistakes",
+      "responses": {
+        "1": "No lessons documented",
+        "2": "Some lessons captured",
+        "3": "Lessons captured partially",
+        "4": "Lessons widely shared",
+        "5": "Embedded continuous learning"
+      },
+      "meanings": {
+        "1": "Repetitive errors and lost opportunities",
+        "2": "Documentation inconsistent or siloed",
+        "3": "Lessons often documented but not widely shared",
+        "4": "Drives organizational learning and process improvement",
+        "5": "Sustains AI capability development and growth"
+      },
+      "weight": 0.07,
+      "weight_rationale": "Sharing lessons accelerates learning and improves future AI initiatives."
+    },
+    {
+      "question": "8. Are AI project results linked to financial or operational outcomes?",
+      "purpose": "Demonstrates tangible business value from AI investments",
+      "responses": {
+        "1": "No linkage to outcomes",
+        "2": "Limited outcome attribution",
+        "3": "Some linkage established",
+        "4": "Clear business impact measurement",
+        "5": "Comprehensive outcome attribution"
+      },
+      "meanings": {
+        "1": "AI impact on business unknown or unmeasured",
+        "2": "AI benefits only partially measured or credited",
+        "3": "Outcomes connected but sometimes unclear or incomplete",
+        "4": "Shows AI contribution to performance improvement",
+        "5": "Maximizes justification and funding for AI projects"
+      },
+      "weight": 0.08,
+      "weight_rationale": "Linking results to outcomes strengthens business case and accountability."
+    }
+  ],
+  "Data Management": [
+    {
+      "question": "1. Is relevant data necessary for AI available and accessible across the organization?",
+      "purpose": "Measures foundational data readiness critical for AI model training and use.",
+      "responses": {
+        "1": "Data is unavailable or siloed.",
+        "2": "Data access is limited.",
+        "3": "Data somewhat accessible.",
+        "4": "Data largely accessible.",
+        "5": "Data fully accessible and integrated."
+      },
+      "meanings": {
+        "1": "Access barriers severely limit AI capabilities.",
+        "2": "Important data is missing or restricted.",
+        "3": "Partial access may cause delays or limited AI performance.",
+        "4": "Most needed data is available for AI use.",
+        "5": "Supports efficient AI operation and development."
+      },
+      "weight": 0.12,
+      "weight_rationale": "Data accessibility is foundational for any AI initiative; high weighting."
+    },
+    {
+      "question": "2. Are processes in place for maintaining high data quality and integrity?",
+      "purpose": "Ensures AI outputs are based on accurate and reliable data.",
+      "responses": {
+        "1": "No quality controls exist.",
+        "2": "Some quality checks but inconsistent.",
+        "3": "Basic data quality controls present.",
+        "4": "Robust data quality controls.",
+        "5": "Advanced automated data governance."
+      },
+      "meanings": {
+        "1": "Poor data quality compromises AI effectiveness.",
+        "2": "Data errors often degrade outcomes.",
+        "3": "Quality measures exist but not comprehensive.",
+        "4": "High confidence in data feeding AI systems.",
+        "5": "Maintains trustworthiness and performance of AI outputs."
+      },
+      "weight": 0.11,
+      "weight_rationale": "Data quality directly impacts AI model accuracy and decisions; critical factor."
+    },
+    {
+      "question": "3. Does the organization have data governance policies addressing AI-specific needs?",
+      "purpose": "Addresses legal, ethical, and operational risks related to AI data use.",
+      "responses": {
+        "1": "No specific governance policies.",
+        "2": "Governance policies incomplete.",
+        "3": "Governance policies under development.",
+        "4": "AI-focused governance policies defined.",
+        "5": "Mature and enforced governance framework."
+      },
+      "meanings": {
+        "1": "High risk of misuse, non-compliance, or bias.",
+        "2": "Policies insufficient for AI use cases.",
+        "3": "Governance evolving but gaps remain.",
+        "4": "Reduces risk and increases compliance.",
+        "5": "Ensures ethical and legal AI data handling."
+      },
+      "weight": 0.1,
+      "weight_rationale": "Governance policies mitigate risks and build organizational trust and compliance."
+    },
+    {
+      "question": "4. Is the IT infrastructure scalable and flexible enough to support current and expected AI workloads?",
+      "purpose": "Ensures tech resources accommodate increasing AI processing demand.",
+      "responses": {
+        "1": "Infrastructure outdated or insufficient.",
+        "2": "Infrastructure partially adequate.",
+        "3": "Moderate scalability present.",
+        "4": "Scalable and flexible infrastructure.",
+        "5": "Cutting-edge, highly scalable infrastructure."
+      },
+      "meanings": {
+        "1": "AI related workloads cannot be supported.",
+        "2": "May limit AI growth or performance.",
+        "3": "Infrastructure upgrades needed to fully support AI.",
+        "4": "Supports expanding AI deployments effectively.",
+        "5": "Future-proofs AI capabilities and business needs."
+      },
+      "weight": 0.12,
+      "weight_rationale": "Scalability ensures AI initiatives can expand without disruption; very high impact."
+    },
+    {
+      "question": "5. Are security protocols adequate to protect AI data and models from breaches?",
+      "purpose": "Protects sensitive AI data and AI model assets from threats.",
+      "responses": {
+        "1": "Security measures absent or weak.",
+        "2": "Security measures limited.",
+        "3": "Basic security implemented.",
+        "4": "Robust security protocols in place.",
+        "5": "Comprehensive, proactive defense mechanisms."
+      },
+      "meanings": {
+        "1": "High risk of data breaches or tampering.",
+        "2": "Vulnerable to attacks with potential severe impact.",
+        "3": "Security needs strengthening for AI workflows.",
+        "4": "Protects AI assets effectively.",
+        "5": "Ensures confidentiality, integrity, and compliance."
+      },
+      "weight": 0.1,
+      "weight_rationale": "Security breaches critically damage trust and violate regulations; essential focus."
+    },
+    {
+      "question": "6. Are AI tools and platforms fully integrated into existing business systems and workflows?",
+      "purpose": "Ensures AI solutions work smoothly within organizational processes.",
+      "responses": {
+        "1": "AI systems isolated and disconnected.",
+        "2": "Partial integration exists.",
+        "3": "Limited integration achieved.",
+        "4": "Good integration with workflows.",
+        "5": "Fully integrated AI platforms."
+      },
+      "meanings": {
+        "1": "Causes inefficiency, duplication, or low adoption.",
+        "2": "Workflows fragmented; risks user frustration.",
+        "3": "Integration efforts underway but incomplete.",
+        "4": "Minimizes friction and enhances AI utility.",
+        "5": "Streamlines processes and optimizes business value."
+      },
+      "weight": 0.09,
+      "weight_rationale": "Integration critical for embedding AI into operational routines for real value."
+    },
+    {
+      "question": "7. Are procedures for procurement, deployment, and lifecycle management of AI technologies mature?",
+      "purpose": "Manages AI tech assets efficiently throughout their lifecycle.",
+      "responses": {
+        "1": "Little or no formal procedures.",
+        "2": "Partial procedures exist.",
+        "3": "Some lifecycle control measures.",
+        "4": "Well-defined lifecycle management.",
+        "5": "Mature lifecycle and procurement governance."
+      },
+      "meanings": {
+        "1": "Increased risks of mismanagement and obsolescence.",
+        "2": "Lifecycle management inconsistent or inefficient.",
+        "3": "Procedures evolving but incomplete.",
+        "4": "Extends AI asset value and reduces downtime.",
+        "5": "Optimizes AI asset performance and cost."
+      },
+      "weight": 0.06,
+      "weight_rationale": "Proper lifecycle management maximizes ROI and uptime, reducing risk."
+    },
+    {
+      "question": "8. Does the organization adopt cloud and edge computing strategically for AI workloads?",
+      "purpose": "Supports flexible and distributed AI processing capabilities.",
+      "responses": {
+        "1": "No cloud or edge AI strategy.",
+        "2": "Limited cloud use; no edge strategy.",
+        "3": "Partial cloud adoption.",
+        "4": "Cloud and edge computing adopted.",
+        "5": "Mature multi-cloud and edge architecture."
+      },
+      "meanings": {
+        "1": "Limited scalability and resilience.",
+        "2": "Cloud adoption fragmented; edge computing unused.",
+        "3": "Edge computing being evaluated or pilot tested.",
+        "4": "Supports scalable, distributed AI processing.",
+        "5": "Facilitates flexible and resilient AI infrastructure."
+      },
+      "weight": 0.06,
+      "weight_rationale": "Strategic cloud/edge adoption enhances performance and cost efficiency."
+    }
+  ],
+  "Strategic Planning": [
+    {
+      "question": "1. Does leadership clearly articulate a compelling AI vision aligned with business objectives?",
+      "purpose": "Measures clarity and alignment of vision critical for unified direction.",
+      "responses": {
+        "1": "No vision or communication.",
+        "2": "Vague or inconsistent vision.",
+        "3": "Partially known vision.",
+        "4": "Clear and consistent vision.",
+        "5": "Inspiring vision embraced."
+      },
+      "meanings": {
+        "1": "Fragmented efforts and lack of direction.",
+        "2": "Risk of confusion and misaligned AI efforts.",
+        "3": "Moderate alignment with risks.",
+        "4": "Enables coordinated efforts.",
+        "5": "Drives unified commitment."
+      },
+      "weight": 0.1,
+      "weight_rationale": "Foundational for all AI initiatives, guiding strategy and resources."
+    },
+    {
+      "question": "2. Is AI adoption actively prioritized and championed by executive leadership?",
+      "purpose": "Evaluates sponsorship driving resource allocation and culture.",
+      "responses": {
+        "1": "Leadership indifferent.",
+        "2": "Limited or inconsistent sponsorship.",
+        "3": "Sporadic sponsorship.",
+        "4": "Visible sponsorship.",
+        "5": "Leadership proactively champions AI."
+      },
+      "meanings": {
+        "1": "Initiatives underfunded, resisted.",
+        "2": "Risks deprioritization or delays.",
+        "3": "Momentum lacks consistency.",
+        "4": "Facilitates resource mobilization.",
+        "5": "Accelerates adoption and acceptance."
+      },
+      "weight": 0.12,
+      "weight_rationale": "Sponsorship is key to success through funding and enthusiasm."
+    },
+    {
+      "question": "3. Is there a dedicated budget allocated specifically for AI initiatives?",
+      "purpose": "Identifies financial commitment for project success and scaling.",
+      "responses": {
+        "1": "No dedicated budget.",
+        "2": "Insufficient funding.",
+        "3": "Partial budget.",
+        "4": "Adequate budget.",
+        "5": "Robust budget."
+      },
+      "meanings": {
+        "1": "Projects fragmented or stalled.",
+        "2": "Limits scope and growth.",
+        "3": "Constraints exist.",
+        "4": "Enables execution.",
+        "5": "Supports scaling and innovation."
+      },
+      "weight": 0.11,
+      "weight_rationale": "Funding is critical for effective AI project delivery."
+    },
+    {
+      "question": "4. Are success metrics and accountability mechanisms clearly defined and communicated?",
+      "purpose": "Ensures leadership ownership and outcome clarity.",
+      "responses": {
+        "1": "No metrics or accountability.",
+        "2": "Weak or informal metrics.",
+        "3": "Partial metrics.",
+        "4": "Clear metrics and ownership.",
+        "5": "Systematic KPI tracking."
+      },
+      "meanings": {
+        "1": "Lack of direction or measurement.",
+        "2": "Little corrective action.",
+        "3": "Weak enforcement.",
+        "4": "Transparency and improvement.",
+        "5": "Drives continuous learning."
+      },
+      "weight": 0.13,
+      "weight_rationale": "Measurement enables progress tracking and improvement."
+    },
+    {
+      "question": "5. How frequently does leadership review and adapt AI strategies based on feedback?",
+      "purpose": "Measures agile governance and responsiveness.",
+      "responses": {
+        "1": "No reviews or updates.",
+        "2": "Irregular reviews.",
+        "3": "Periodic reviews.",
+        "4": "Regular reviews.",
+        "5": "Continuous refinement."
+      },
+      "meanings": {
+        "1": "Strategy becomes irrelevant.",
+        "2": "Slow adaptation.",
+        "3": "Sometimes delayed.",
+        "4": "Proactive changes.",
+        "5": "Sustains AI relevance."
+      },
+      "weight": 0.09,
+      "weight_rationale": "Agility is essential for sustained AI value amid change."
+    },
+    {
+      "question": "6. Does leadership foster a culture supporting AI innovation and experimentation?",
+      "purpose": "Evaluates environment critical for adoption and resilience.",
+      "responses": {
+        "1": "No culture of innovation.",
+        "2": "Limited encouragement.",
+        "3": "Mixed signals.",
+        "4": "Supportive culture.",
+        "5": "Proactive innovation culture."
+      },
+      "meanings": {
+        "1": "Resistance & fear dominate.",
+        "2": "Risk-averse behavior.",
+        "3": "Sporadic encouragement.",
+        "4": "Enables controlled experimentation.",
+        "5": "Drives AI creativity and adoption."
+      },
+      "weight": 0.07,
+      "weight_rationale": "Culture influences motivation and acceptance of AI tools."
+    },
+    {
+      "question": "7. Is AI integrated into long-term organizational strategic planning?",
+      "purpose": "Assesses strategic embedding ensuring sustained support.",
+      "responses": {
+        "1": "AI omitted from plans.",
+        "2": "Occasional inclusion.",
+        "3": "Periodic integration.",
+        "4": "Included in strategy.",
+        "5": "Central to strategic plans."
+      },
+      "meanings": {
+        "1": "Tactical, disconnected efforts.",
+        "2": "Partial alignment only.",
+        "3": "Gaps remain.",
+        "4": "Drives focus and resource alignment.",
+        "5": "Ensures sustainable AI growth."
+      },
+      "weight": 0.08,
+      "weight_rationale": "Embedding in strategy secures longevity and prioritization."
+    },
+    {
+      "question": "8. Does leadership communicate frequently and transparently about AI?",
+      "purpose": "Measures communication effectiveness for trust and engagement.",
+      "responses": {
+        "1": "No AI communication.",
+        "2": "Infrequent or inconsistent.",
+        "3": "Mixed quality.",
+        "4": "Regular updates.",
+        "5": "Open, transparent communication."
+      },
+      "meanings": {
+        "1": "Employee uncertainty and mistrust.",
+        "2": "Misinformation risk.",
+        "3": "Partial transparency.",
+        "4": "Builds trust and awareness.",
+        "5": "Engage and align organization."
+      },
+      "weight": 0.06,
+      "weight_rationale": "Frequent communication reduces fear and builds momentum."
+    },
+    {
+      "question": "9. Does leadership encourage cross-functional collaboration for AI?",
+      "purpose": "Measures cooperation across groups essential for success.",
+      "responses": {
+        "1": "Functional silos.",
+        "2": "Limited collaboration.",
+        "3": "Sporadic collaboration.",
+        "4": "Active collaboration.",
+        "5": "Fully integrated teams."
+      },
+      "meanings": {
+        "1": "Duplication and slow innovation.",
+        "2": "Conflicts and barriers remain.",
+        "3": "Some improvement.",
+        "4": "Fosters knowledge sharing.",
+        "5": "Maximizes AI impact."
+      },
+      "weight": 0.07,
+      "weight_rationale": "Collaboration multiplies AI benefits and accelerates progress."
+    }
+  ]
+}
