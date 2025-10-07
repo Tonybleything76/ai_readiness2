@@ -1,0 +1,1002 @@
+{
+  "technology": [
+    {
+      "id": "tech_1",
+      "text": "How would you describe your organization's cloud infrastructure maturity?",
+      "options": [
+        { "value": 0, "label": "No cloud infrastructure - entirely on-premises" },
+        { "value": 25, "label": "Basic cloud adoption - some workloads migrated" },
+        { "value": 50, "label": "Hybrid cloud - mixed on-premises and cloud" },
+        { "value": 75, "label": "Cloud-first - most workloads in the cloud" },
+        { "value": 100, "label": "Cloud-native - fully optimized cloud architecture" }
+      ]
+    },
+    {
+      "id": "tech_2",
+      "text": "What computational resources do you have available for AI/ML workloads?",
+      "options": [
+        { "value": 0, "label": "No dedicated computational resources" },
+        { "value": 25, "label": "Basic CPU resources only" },
+        { "value": 50, "label": "Some GPU/TPU access available" },
+        { "value": 75, "label": "Dedicated GPU/TPU infrastructure" },
+        { "value": 100, "label": "Advanced distributed computing with AI accelerators" }
+      ]
+    },
+    {
+      "id": "tech_3",
+      "text": "How mature is your data storage and database infrastructure?",
+      "options": [
+        { "value": 0, "label": "Legacy systems with limited scalability" },
+        { "value": 25, "label": "Traditional databases, some modernization" },
+        { "value": 50, "label": "Mix of traditional and modern data stores" },
+        { "value": 75, "label": "Modern cloud-based data lakes and warehouses" },
+        { "value": 100, "label": "Advanced multi-modal data infrastructure" }
+      ]
+    },
+    {
+      "id": "tech_4",
+      "text": "How would you rate your API and integration capabilities?",
+      "options": [
+        { "value": 0, "label": "No API infrastructure" },
+        { "value": 25, "label": "Basic APIs for limited use cases" },
+        { "value": 50, "label": "RESTful APIs with good documentation" },
+        { "value": 75, "label": "Modern API gateway with microservices" },
+        { "value": 100, "label": "Advanced event-driven architecture with real-time integration" }
+      ]
+    },
+    {
+      "id": "tech_5",
+      "text": "How scalable is your current technology infrastructure?",
+      "options": [
+        { "value": 0, "label": "Not scalable - fixed capacity" },
+        { "value": 25, "label": "Manual scaling with significant effort" },
+        { "value": 50, "label": "Some auto-scaling capabilities" },
+        { "value": 75, "label": "Good auto-scaling across most services" },
+        { "value": 100, "label": "Fully elastic infrastructure with automated scaling" }
+      ]
+    },
+    {
+      "id": "tech_6",
+      "text": "What is your organization's network infrastructure capability?",
+      "options": [
+        { "value": 0, "label": "Limited bandwidth with frequent bottlenecks" },
+        { "value": 25, "label": "Basic network with occasional constraints" },
+        { "value": 50, "label": "Adequate network for current needs" },
+        { "value": 75, "label": "High-speed network with good capacity" },
+        { "value": 100, "label": "Enterprise-grade network with redundancy" }
+      ]
+    },
+    {
+      "id": "tech_7",
+      "text": "How modern is your application architecture?",
+      "options": [
+        { "value": 0, "label": "Monolithic legacy applications" },
+        { "value": 25, "label": "Mostly legacy with some updates" },
+        { "value": 50, "label": "Mix of legacy and modern architecture" },
+        { "value": 75, "label": "Microservices-based architecture" },
+        { "value": 100, "label": "Cloud-native with containerization and orchestration" }
+      ]
+    },
+    {
+      "id": "tech_8",
+      "text": "What is your DevOps maturity level?",
+      "options": [
+        { "value": 0, "label": "No DevOps practices" },
+        { "value": 25, "label": "Basic CI/CD pipelines" },
+        { "value": 50, "label": "Established DevOps with automation" },
+        { "value": 75, "label": "Advanced DevOps with monitoring" },
+        { "value": 100, "label": "Full MLOps/AIOps capabilities" }
+      ]
+    },
+    {
+      "id": "tech_9",
+      "text": "How robust is your disaster recovery and backup strategy?",
+      "options": [
+        { "value": 0, "label": "No disaster recovery plan" },
+        { "value": 25, "label": "Basic backups without testing" },
+        { "value": 50, "label": "DR plan with periodic testing" },
+        { "value": 75, "label": "Comprehensive DR with automation" },
+        { "value": 100, "label": "Active-active architecture with instant failover" }
+      ]
+    },
+    {
+      "id": "tech_10",
+      "text": "What is the state of your monitoring and observability tools?",
+      "options": [
+        { "value": 0, "label": "No monitoring capabilities" },
+        { "value": 25, "label": "Basic server monitoring" },
+        { "value": 50, "label": "Application performance monitoring" },
+        { "value": 75, "label": "Full-stack observability" },
+        { "value": 100, "label": "AI-powered monitoring with predictive alerts" }
+      ]
+    },
+    {
+      "id": "tech_11",
+      "text": "How advanced is your data processing infrastructure?",
+      "options": [
+        { "value": 0, "label": "Batch processing only" },
+        { "value": 25, "label": "Scheduled batch jobs" },
+        { "value": 50, "label": "Near real-time processing" },
+        { "value": 75, "label": "Stream processing capabilities" },
+        { "value": 100, "label": "Real-time event streaming at scale" }
+      ]
+    },
+    {
+      "id": "tech_12",
+      "text": "What is your container and orchestration maturity?",
+      "options": [
+        { "value": 0, "label": "No containerization" },
+        { "value": 25, "label": "Basic Docker usage" },
+        { "value": 50, "label": "Container orchestration (Kubernetes)" },
+        { "value": 75, "label": "Production Kubernetes clusters" },
+        { "value": 100, "label": "Advanced service mesh and GitOps" }
+      ]
+    },
+    {
+      "id": "tech_13",
+      "text": "How capable is your edge computing infrastructure?",
+      "options": [
+        { "value": 0, "label": "No edge computing" },
+        { "value": 25, "label": "Exploring edge options" },
+        { "value": 50, "label": "Limited edge deployments" },
+        { "value": 75, "label": "Distributed edge infrastructure" },
+        { "value": 100, "label": "Global edge network with AI capabilities" }
+      ]
+    },
+    {
+      "id": "tech_14",
+      "text": "What is your IoT and sensor integration capability?",
+      "options": [
+        { "value": 0, "label": "No IoT capabilities" },
+        { "value": 25, "label": "Basic sensor data collection" },
+        { "value": 50, "label": "IoT platform with device management" },
+        { "value": 75, "label": "Advanced IoT with real-time analytics" },
+        { "value": 100, "label": "Edge AI with IoT at scale" }
+      ]
+    },
+    {
+      "id": "tech_15",
+      "text": "How mature is your version control and code management?",
+      "options": [
+        { "value": 0, "label": "No version control" },
+        { "value": 25, "label": "Basic version control (Git)" },
+        { "value": 50, "label": "Branching strategies in place" },
+        { "value": 75, "label": "Advanced workflows with code review" },
+        { "value": 100, "label": "Full traceability with automated governance" }
+      ]
+    },
+    {
+      "id": "tech_16",
+      "text": "What is your infrastructure as code (IaC) maturity?",
+      "options": [
+        { "value": 0, "label": "Manual infrastructure management" },
+        { "value": 25, "label": "Some automation scripts" },
+        { "value": 50, "label": "IaC for key infrastructure" },
+        { "value": 75, "label": "Comprehensive IaC with Terraform/CloudFormation" },
+        { "value": 100, "label": "Policy-as-code with automated compliance" }
+      ]
+    },
+    {
+      "id": "tech_17",
+      "text": "How advanced is your testing automation?",
+      "options": [
+        { "value": 0, "label": "Manual testing only" },
+        { "value": 25, "label": "Basic unit tests" },
+        { "value": 50, "label": "Automated testing suite" },
+        { "value": 75, "label": "Comprehensive test automation" },
+        { "value": 100, "label": "AI-powered testing with continuous validation" }
+      ]
+    },
+    {
+      "id": "tech_18",
+      "text": "What is your serverless computing adoption?",
+      "options": [
+        { "value": 0, "label": "No serverless usage" },
+        { "value": 25, "label": "Experimenting with serverless" },
+        { "value": 50, "label": "Serverless for specific workloads" },
+        { "value": 75, "label": "Extensive serverless architecture" },
+        { "value": 100, "label": "Serverless-first with event-driven design" }
+      ]
+    }
+  ],
+  "dataManagement": [
+    {
+      "id": "data_1",
+      "text": "How would you rate the overall quality of your organizational data?",
+      "options": [
+        { "value": 0, "label": "Poor quality - significant errors and inconsistencies" },
+        { "value": 25, "label": "Below average - frequent data quality issues" },
+        { "value": 50, "label": "Moderate - acceptable quality with some issues" },
+        { "value": 75, "label": "Good - high quality with minor issues" },
+        { "value": 100, "label": "Excellent - comprehensive quality management" }
+      ]
+    },
+    {
+      "id": "data_2",
+      "text": "How accessible is data across your organization?",
+      "options": [
+        { "value": 0, "label": "Highly siloed - data trapped in departments" },
+        { "value": 25, "label": "Mostly siloed - limited sharing" },
+        { "value": 50, "label": "Partially integrated - some data sharing" },
+        { "value": 75, "label": "Well integrated - good cross-functional access" },
+        { "value": 100, "label": "Fully democratized - comprehensive data access" }
+      ]
+    },
+    {
+      "id": "data_3",
+      "text": "What level of data governance do you have in place?",
+      "options": [
+        { "value": 0, "label": "No formal governance" },
+        { "value": 25, "label": "Basic policies being developed" },
+        { "value": 50, "label": "Governance framework in place" },
+        { "value": 75, "label": "Mature governance with active enforcement" },
+        { "value": 100, "label": "Advanced governance with automation and monitoring" }
+      ]
+    },
+    {
+      "id": "data_4",
+      "text": "How well documented and catalogued is your data?",
+      "options": [
+        { "value": 0, "label": "No documentation or cataloguing" },
+        { "value": 25, "label": "Limited documentation for critical data" },
+        { "value": 50, "label": "Basic data catalogue in place" },
+        { "value": 75, "label": "Comprehensive metadata management" },
+        { "value": 100, "label": "Advanced data cataloguing with lineage tracking" }
+      ]
+    },
+    {
+      "id": "data_5",
+      "text": "How effective are your data pipeline and ETL processes?",
+      "options": [
+        { "value": 0, "label": "No automated data pipelines" },
+        { "value": 25, "label": "Manual processes with minimal automation" },
+        { "value": 50, "label": "Basic automated pipelines for core data" },
+        { "value": 75, "label": "Well-orchestrated data pipelines with monitoring" },
+        { "value": 100, "label": "Real-time data streaming with advanced orchestration" }
+      ]
+    },
+    {
+      "id": "data_6",
+      "text": "What is your data architecture maturity?",
+      "options": [
+        { "value": 0, "label": "No defined data architecture" },
+        { "value": 25, "label": "Basic relational databases" },
+        { "value": 50, "label": "Data warehouse implementation" },
+        { "value": 75, "label": "Data lake with structured zones" },
+        { "value": 100, "label": "Data mesh or lakehouse architecture" }
+      ]
+    },
+    {
+      "id": "data_7",
+      "text": "How mature is your master data management (MDM)?",
+      "options": [
+        { "value": 0, "label": "No MDM practices" },
+        { "value": 25, "label": "Inconsistent master data" },
+        { "value": 50, "label": "MDM for key entities" },
+        { "value": 75, "label": "Comprehensive MDM strategy" },
+        { "value": 100, "label": "AI-powered MDM with auto-resolution" }
+      ]
+    },
+    {
+      "id": "data_8",
+      "text": "What is your data quality monitoring capability?",
+      "options": [
+        { "value": 0, "label": "No quality monitoring" },
+        { "value": 25, "label": "Manual spot checks" },
+        { "value": 50, "label": "Automated quality checks" },
+        { "value": 75, "label": "Continuous monitoring with alerts" },
+        { "value": 100, "label": "AI-based anomaly detection and auto-remediation" }
+      ]
+    },
+    {
+      "id": "data_9",
+      "text": "How advanced is your data versioning and lineage tracking?",
+      "options": [
+        { "value": 0, "label": "No versioning or lineage" },
+        { "value": 25, "label": "Basic version control for datasets" },
+        { "value": 50, "label": "Lineage tracking for key datasets" },
+        { "value": 75, "label": "Comprehensive lineage across pipelines" },
+        { "value": 100, "label": "End-to-end lineage with impact analysis" }
+      ]
+    },
+    {
+      "id": "data_10",
+      "text": "What is your data security and access control maturity?",
+      "options": [
+        { "value": 0, "label": "No access controls" },
+        { "value": 25, "label": "Basic authentication" },
+        { "value": 50, "label": "Role-based access control (RBAC)" },
+        { "value": 75, "label": "Attribute-based access with encryption" },
+        { "value": 100, "label": "Zero-trust with dynamic access policies" }
+      ]
+    },
+    {
+      "id": "data_11",
+      "text": "How capable is your data integration platform?",
+      "options": [
+        { "value": 0, "label": "Manual data integration" },
+        { "value": 25, "label": "Point-to-point integrations" },
+        { "value": 50, "label": "Integration platform with connectors" },
+        { "value": 75, "label": "Enterprise integration with orchestration" },
+        { "value": 100, "label": "Real-time integration with CDC and streaming" }
+      ]
+    },
+    {
+      "id": "data_12",
+      "text": "What is your unstructured data management capability?",
+      "options": [
+        { "value": 0, "label": "No unstructured data management" },
+        { "value": 25, "label": "Basic file storage" },
+        { "value": 50, "label": "Document management system" },
+        { "value": 75, "label": "Advanced content management with search" },
+        { "value": 100, "label": "AI-powered extraction and classification" }
+      ]
+    },
+    {
+      "id": "data_13",
+      "text": "How mature is your data privacy and anonymization?",
+      "options": [
+        { "value": 0, "label": "No privacy measures" },
+        { "value": 25, "label": "Basic PII identification" },
+        { "value": 50, "label": "Data masking for non-production" },
+        { "value": 75, "label": "Comprehensive anonymization techniques" },
+        { "value": 100, "label": "Differential privacy and federated learning" }
+      ]
+    },
+    {
+      "id": "data_14",
+      "text": "What is your data retention and archival strategy?",
+      "options": [
+        { "value": 0, "label": "No retention policy" },
+        { "value": 25, "label": "Ad-hoc data deletion" },
+        { "value": 50, "label": "Basic retention policies" },
+        { "value": 75, "label": "Automated archival and compliance" },
+        { "value": 100, "label": "Intelligent tiering with lifecycle management" }
+      ]
+    },
+    {
+      "id": "data_15",
+      "text": "How advanced is your data profiling and discovery?",
+      "options": [
+        { "value": 0, "label": "No data profiling" },
+        { "value": 25, "label": "Manual data exploration" },
+        { "value": 50, "label": "Automated profiling tools" },
+        { "value": 75, "label": "AI-assisted data discovery" },
+        { "value": 100, "label": "Autonomous data catalog with recommendations" }
+      ]
+    },
+    {
+      "id": "data_16",
+      "text": "What is your data standardization maturity?",
+      "options": [
+        { "value": 0, "label": "No standards" },
+        { "value": 25, "label": "Department-level standards" },
+        { "value": 50, "label": "Organization-wide data standards" },
+        { "value": 75, "label": "Industry standard adoption" },
+        { "value": 100, "label": "Semantic data models with ontologies" }
+      ]
+    },
+    {
+      "id": "data_17",
+      "text": "How mature is your data observability?",
+      "options": [
+        { "value": 0, "label": "No observability" },
+        { "value": 25, "label": "Basic logging" },
+        { "value": 50, "label": "Monitoring of data pipelines" },
+        { "value": 75, "label": "Comprehensive data observability" },
+        { "value": 100, "label": "Predictive data reliability with SLAs" }
+      ]
+    },
+    {
+      "id": "data_18",
+      "text": "What is your synthetic data generation capability?",
+      "options": [
+        { "value": 0, "label": "No synthetic data usage" },
+        { "value": 25, "label": "Manual test data creation" },
+        { "value": 50, "label": "Rule-based data generation" },
+        { "value": 75, "label": "AI-generated synthetic data" },
+        { "value": 100, "label": "Production-grade synthetic data with privacy guarantees" }
+      ]
+    }
+  ],
+  "organizationalCulture": [
+    {
+      "id": "culture_1",
+      "text": "How strong is executive leadership support for AI initiatives?",
+      "options": [
+        { "value": 0, "label": "No awareness or interest from leadership" },
+        { "value": 25, "label": "Minimal interest - low priority" },
+        { "value": 50, "label": "Moderate support - acknowledged importance" },
+        { "value": 75, "label": "Strong support - actively championed" },
+        { "value": 100, "label": "Full commitment - strategic imperative with resources" }
+      ]
+    },
+    {
+      "id": "culture_2",
+      "text": "What is the current level of AI skills in your organization?",
+      "options": [
+        { "value": 0, "label": "No AI skills or expertise" },
+        { "value": 25, "label": "Limited skills - few individuals with basic knowledge" },
+        { "value": 50, "label": "Developing capabilities - small team building skills" },
+        { "value": 75, "label": "Solid expertise - dedicated AI/ML team" },
+        { "value": 100, "label": "Advanced capabilities - centers of excellence" }
+      ]
+    },
+    {
+      "id": "culture_3",
+      "text": "How would you describe your organizational learning culture?",
+      "options": [
+        { "value": 0, "label": "Resistant to change - traditional approaches preferred" },
+        { "value": 25, "label": "Slow to adopt - cautious about new approaches" },
+        { "value": 50, "label": "Moderately adaptive - open to learning" },
+        { "value": 75, "label": "Learning-oriented - continuous improvement mindset" },
+        { "value": 75, "label": "Innovation-driven - experimentation encouraged" }
+      ]
+    },
+    {
+      "id": "culture_4",
+      "text": "How effective is your change management capability?",
+      "options": [
+        { "value": 0, "label": "No change management processes" },
+        { "value": 25, "label": "Ad-hoc approach to change" },
+        { "value": 50, "label": "Basic change management framework" },
+        { "value": 75, "label": "Structured change management with proven success" },
+        { "value": 100, "label": "Agile change management - highly effective" }
+      ]
+    },
+    {
+      "id": "culture_5",
+      "text": "How well do teams collaborate across departments on data initiatives?",
+      "options": [
+        { "value": 0, "label": "No cross-functional collaboration" },
+        { "value": 25, "label": "Minimal collaboration - mostly siloed" },
+        { "value": 50, "label": "Some cross-functional projects" },
+        { "value": 75, "label": "Strong collaborative culture" },
+        { "value": 100, "label": "Seamless integration with cross-functional teams" }
+      ]
+    },
+    {
+      "id": "culture_6",
+      "text": "What is your investment in AI training and upskilling?",
+      "options": [
+        { "value": 0, "label": "No training budget for AI" },
+        { "value": 25, "label": "Minimal ad-hoc training" },
+        { "value": 50, "label": "Regular training programs" },
+        { "value": 75, "label": "Comprehensive learning paths" },
+        { "value": 100, "label": "Continuous learning with certifications and academies" }
+      ]
+    },
+    {
+      "id": "culture_7",
+      "text": "How mature is your innovation and experimentation culture?",
+      "options": [
+        { "value": 0, "label": "No room for experimentation" },
+        { "value": 25, "label": "Occasional innovation projects" },
+        { "value": 50, "label": "Designated time for innovation" },
+        { "value": 75, "label": "Innovation labs or centers" },
+        { "value": 100, "label": "Fail-fast culture with systematic experimentation" }
+      ]
+    },
+    {
+      "id": "culture_8",
+      "text": "What is your talent acquisition strategy for AI roles?",
+      "options": [
+        { "value": 0, "label": "No AI hiring strategy" },
+        { "value": 25, "label": "Opportunistic hiring" },
+        { "value": 50, "label": "Active recruitment for key roles" },
+        { "value": 75, "label": "Competitive AI talent program" },
+        { "value": 100, "label": "Top-tier talent attraction with AI research partnerships" }
+      ]
+    },
+    {
+      "id": "culture_9",
+      "text": "How strong is your data literacy across the organization?",
+      "options": [
+        { "value": 0, "label": "Very low data literacy" },
+        { "value": 25, "label": "Basic understanding in IT only" },
+        { "value": 50, "label": "Growing data literacy programs" },
+        { "value": 75, "label": "Widespread data-driven decision making" },
+        { "value": 100, "label": "Data-first culture with analytics for all" }
+      ]
+    },
+    {
+      "id": "culture_10",
+      "text": "What is your knowledge management maturity?",
+      "options": [
+        { "value": 0, "label": "No knowledge management" },
+        { "value": 25, "label": "Tribal knowledge dominates" },
+        { "value": 50, "label": "Documentation practices emerging" },
+        { "value": 75, "label": "Knowledge bases and wikis" },
+        { "value": 100, "label": "AI-powered knowledge graphs and discovery" }
+      ]
+    },
+    {
+      "id": "culture_11",
+      "text": "How diverse is your AI team composition?",
+      "options": [
+        { "value": 0, "label": "No diversity consideration" },
+        { "value": 25, "label": "Aware of diversity gaps" },
+        { "value": 50, "label": "Active diversity initiatives" },
+        { "value": 75, "label": "Diverse team with inclusion programs" },
+        { "value": 100, "label": "Leading diversity with measurable outcomes" }
+      ]
+    },
+    {
+      "id": "culture_12",
+      "text": "What is your employee empowerment for AI decisions?",
+      "options": [
+        { "value": 0, "label": "Top-down decisions only" },
+        { "value": 25, "label": "Limited input from teams" },
+        { "value": 50, "label": "Consultative decision making" },
+        { "value": 75, "label": "Distributed decision authority" },
+        { "value": 100, "label": "Autonomous teams with AI ownership" }
+      ]
+    },
+    {
+      "id": "culture_13",
+      "text": "How mature is your internal AI community of practice?",
+      "options": [
+        { "value": 0, "label": "No community" },
+        { "value": 25, "label": "Informal groups" },
+        { "value": 50, "label": "Regular meetups and sharing" },
+        { "value": 75, "label": "Structured community with guilds" },
+        { "value": 100, "label": "Thriving ecosystem with external contributions" }
+      ]
+    },
+    {
+      "id": "culture_14",
+      "text": "What is your approach to AI ethics awareness?",
+      "options": [
+        { "value": 0, "label": "No ethics awareness" },
+        { "value": 25, "label": "Basic awareness of issues" },
+        { "value": 50, "label": "Ethics training programs" },
+        { "value": 75, "label": "Ethics embedded in workflows" },
+        { "value": 100, "label": "Ethics-first culture with accountability" }
+      ]
+    },
+    {
+      "id": "culture_15",
+      "text": "How strong is your performance measurement for AI teams?",
+      "options": [
+        { "value": 0, "label": "No performance metrics" },
+        { "value": 25, "label": "Traditional metrics only" },
+        { "value": 50, "label": "AI-specific KPIs emerging" },
+        { "value": 75, "label": "Balanced scorecard for AI" },
+        { "value": 100, "label": "OKRs aligned with business impact" }
+      ]
+    },
+    {
+      "id": "culture_16",
+      "text": "What is your organizational agility for AI adoption?",
+      "options": [
+        { "value": 0, "label": "Rigid organizational structure" },
+        { "value": 25, "label": "Slow to reorganize" },
+        { "value": 50, "label": "Some agile practices" },
+        { "value": 75, "label": "Agile organization with squads" },
+        { "value": 100, "label": "Fully adaptive with dynamic teaming" }
+      ]
+    },
+    {
+      "id": "culture_17",
+      "text": "How mature is your AI documentation and best practices?",
+      "options": [
+        { "value": 0, "label": "No documentation standards" },
+        { "value": 25, "label": "Ad-hoc documentation" },
+        { "value": 50, "label": "Templates and guidelines" },
+        { "value": 75, "label": "Comprehensive playbooks" },
+        { "value": 100, "label": "Living documentation with AI assistance" }
+      ]
+    },
+    {
+      "id": "culture_18",
+      "text": "What is your openness to external AI partnerships?",
+      "options": [
+        { "value": 0, "label": "Closed to external partnerships" },
+        { "value": 25, "label": "Occasional vendor relationships" },
+        { "value": 50, "label": "Strategic partnerships forming" },
+        { "value": 75, "label": "Ecosystem approach with multiple partners" },
+        { "value": 100, "label": "Open innovation with academia and startups" }
+      ]
+    }
+  ],
+  "strategyPlanning": [
+    {
+      "id": "strategy_1",
+      "text": "Do you have a documented AI strategy?",
+      "options": [
+        { "value": 0, "label": "No AI strategy exists" },
+        { "value": 25, "label": "Informal discussions about AI" },
+        { "value": 50, "label": "Strategy being developed" },
+        { "value": 75, "label": "Documented strategy with clear objectives" },
+        { "value": 100, "label": "Comprehensive strategy integrated with business goals" }
+      ]
+    },
+    {
+      "id": "strategy_2",
+      "text": "How well have you identified and prioritized AI use cases?",
+      "options": [
+        { "value": 0, "label": "No use cases identified" },
+        { "value": 25, "label": "Generic use cases with no prioritization" },
+        { "value": 50, "label": "Some use cases identified and prioritized" },
+        { "value": 75, "label": "Well-defined use cases with business cases" },
+        { "value": 100, "label": "Portfolio of use cases with clear ROI and priorities" }
+      ]
+    },
+    {
+      "id": "strategy_3",
+      "text": "How developed is your AI implementation roadmap?",
+      "options": [
+        { "value": 0, "label": "No roadmap exists" },
+        { "value": 25, "label": "High-level vision with no timeline" },
+        { "value": 50, "label": "Basic roadmap with milestones" },
+        { "value": 75, "label": "Detailed roadmap with resources allocated" },
+        { "value": 100, "label": "Agile roadmap with regular updates and tracking" }
+      ]
+    },
+    {
+      "id": "strategy_4",
+      "text": "How do you measure success for AI initiatives?",
+      "options": [
+        { "value": 0, "label": "No success metrics defined" },
+        { "value": 25, "label": "Technical metrics only" },
+        { "value": 50, "label": "Mix of technical and business metrics" },
+        { "value": 75, "label": "Clear business KPIs for each initiative" },
+        { "value": 100, "label": "Comprehensive measurement framework with ROI tracking" }
+      ]
+    },
+    {
+      "id": "strategy_5",
+      "text": "How aligned is your AI strategy with overall business objectives?",
+      "options": [
+        { "value": 0, "label": "No alignment - AI is disconnected" },
+        { "value": 25, "label": "Minimal alignment - loose connection" },
+        { "value": 50, "label": "Some alignment with key objectives" },
+        { "value": 75, "label": "Strong alignment with business goals" },
+        { "value": 100, "label": "Fully integrated - AI drives business strategy" }
+      ]
+    },
+    {
+      "id": "strategy_6",
+      "text": "What is your AI budget allocation maturity?",
+      "options": [
+        { "value": 0, "label": "No AI budget" },
+        { "value": 25, "label": "Ad-hoc project funding" },
+        { "value": 50, "label": "Dedicated AI budget line" },
+        { "value": 75, "label": "Portfolio-based investment" },
+        { "value": 100, "label": "Strategic capital allocation with VC-style approach" }
+      ]
+    },
+    {
+      "id": "strategy_7",
+      "text": "How mature is your AI governance structure?",
+      "options": [
+        { "value": 0, "label": "No governance" },
+        { "value": 25, "label": "IT leads AI decisions" },
+        { "value": 50, "label": "AI steering committee forming" },
+        { "value": 75, "label": "Cross-functional AI council" },
+        { "value": 100, "label": "Board-level AI oversight with clear accountability" }
+      ]
+    },
+    {
+      "id": "strategy_8",
+      "text": "What is your approach to build vs buy for AI?",
+      "options": [
+        { "value": 0, "label": "No defined approach" },
+        { "value": 25, "label": "Default to buying solutions" },
+        { "value": 50, "label": "Case-by-case evaluation" },
+        { "value": 75, "label": "Strategic framework for decisions" },
+        { "value": 100, "label": "Hybrid strategy with clear criteria and partnerships" }
+      ]
+    },
+    {
+      "id": "strategy_9",
+      "text": "How comprehensive is your AI risk assessment?",
+      "options": [
+        { "value": 0, "label": "No risk assessment" },
+        { "value": 25, "label": "Basic risk awareness" },
+        { "value": 50, "label": "Risk assessment per project" },
+        { "value": 75, "label": "Enterprise risk framework for AI" },
+        { "value": 100, "label": "Continuous risk monitoring with mitigation plans" }
+      ]
+    },
+    {
+      "id": "strategy_10",
+      "text": "What is your AI value realization process?",
+      "options": [
+        { "value": 0, "label": "No value tracking" },
+        { "value": 25, "label": "Post-implementation reviews" },
+        { "value": 50, "label": "Benefits realization tracking" },
+        { "value": 75, "label": "Value stream mapping" },
+        { "value": 100, "label": "Continuous value optimization with feedback loops" }
+      ]
+    },
+    {
+      "id": "strategy_11",
+      "text": "How mature is your AI portfolio management?",
+      "options": [
+        { "value": 0, "label": "No portfolio view" },
+        { "value": 25, "label": "List of AI projects" },
+        { "value": 50, "label": "Portfolio categorization" },
+        { "value": 75, "label": "Active portfolio balancing" },
+        { "value": 100, "label": "Dynamic portfolio optimization with stage gates" }
+      ]
+    },
+    {
+      "id": "strategy_12",
+      "text": "What is your AI stakeholder engagement maturity?",
+      "options": [
+        { "value": 0, "label": "No stakeholder engagement" },
+        { "value": 25, "label": "Informing stakeholders" },
+        { "value": 50, "label": "Regular stakeholder updates" },
+        { "value": 75, "label": "Collaborative planning with stakeholders" },
+        { "value": 100, "label": "Stakeholders as active partners in AI journey" }
+      ]
+    },
+    {
+      "id": "strategy_13",
+      "text": "How advanced is your AI competitive analysis?",
+      "options": [
+        { "value": 0, "label": "No competitive analysis" },
+        { "value": 25, "label": "Aware of competitor AI use" },
+        { "value": 50, "label": "Regular competitive monitoring" },
+        { "value": 75, "label": "Strategic positioning vs competitors" },
+        { "value": 100, "label": "AI as competitive differentiator with market leadership" }
+      ]
+    },
+    {
+      "id": "strategy_14",
+      "text": "What is your AI scaling strategy?",
+      "options": [
+        { "value": 0, "label": "No scaling plan" },
+        { "value": 25, "label": "Pilot projects only" },
+        { "value": 50, "label": "Scaling playbook in development" },
+        { "value": 75, "label": "Proven scaling processes" },
+        { "value": 100, "label": "Industrialized AI with platform approach" }
+      ]
+    },
+    {
+      "id": "strategy_15",
+      "text": "How mature is your AI vendor management?",
+      "options": [
+        { "value": 0, "label": "No vendor strategy" },
+        { "value": 25, "label": "Ad-hoc vendor selection" },
+        { "value": 50, "label": "Vendor evaluation criteria" },
+        { "value": 75, "label": "Strategic vendor partnerships" },
+        { "value": 100, "label": "Ecosystem orchestration with multi-vendor strategy" }
+      ]
+    },
+    {
+      "id": "strategy_16",
+      "text": "What is your AI communication strategy?",
+      "options": [
+        { "value": 0, "label": "No communication plan" },
+        { "value": 25, "label": "Occasional updates" },
+        { "value": 50, "label": "Regular AI newsletters" },
+        { "value": 75, "label": "Multi-channel communication" },
+        { "value": 100, "label": "Storytelling and change narrative with engagement" }
+      ]
+    },
+    {
+      "id": "strategy_17",
+      "text": "How developed is your AI sustainability consideration?",
+      "options": [
+        { "value": 0, "label": "No sustainability consideration" },
+        { "value": 25, "label": "Aware of AI carbon footprint" },
+        { "value": 50, "label": "Measuring AI environmental impact" },
+        { "value": 75, "label": "Green AI practices in place" },
+        { "value": 100, "label": "Carbon-neutral AI with sustainable innovation" }
+      ]
+    },
+    {
+      "id": "strategy_18",
+      "text": "What is your long-term AI vision (3-5 years)?",
+      "options": [
+        { "value": 0, "label": "No long-term vision" },
+        { "value": 25, "label": "Aspirational goals" },
+        { "value": 50, "label": "Defined future state" },
+        { "value": 75, "label": "Transformation roadmap with milestones" },
+        { "value": 100, "label": "North star vision with scenario planning" }
+      ]
+    }
+  ],
+  "riskCompliance": [
+    {
+      "id": "risk_1",
+      "text": "How mature is your AI ethics framework?",
+      "options": [
+        { "value": 0, "label": "No consideration of AI ethics" },
+        { "value": 25, "label": "Aware of ethical issues but no framework" },
+        { "value": 50, "label": "Basic ethical guidelines being developed" },
+        { "value": 75, "label": "Formal ethics framework in place" },
+        { "value": 100, "label": "Comprehensive ethics governance with oversight" }
+      ]
+    },
+    {
+      "id": "risk_2",
+      "text": "How prepared are you for AI-related regulatory compliance?",
+      "options": [
+        { "value": 0, "label": "Unaware of relevant regulations" },
+        { "value": 25, "label": "Aware but no compliance measures" },
+        { "value": 50, "label": "Understanding regulations, planning compliance" },
+        { "value": 75, "label": "Compliance program in development" },
+        { "value": 100, "label": "Full compliance with monitoring and auditing" }
+      ]
+    },
+    {
+      "id": "risk_3",
+      "text": "What security measures are in place for AI systems?",
+      "options": [
+        { "value": 0, "label": "No specific security for AI" },
+        { "value": 25, "label": "Standard IT security applied" },
+        { "value": 50, "label": "Some AI-specific security measures" },
+        { "value": 75, "label": "Comprehensive AI security framework" },
+        { "value": 100, "label": "Advanced security with continuous monitoring" }
+      ]
+    },
+    {
+      "id": "risk_4",
+      "text": "How do you address bias and fairness in AI?",
+      "options": [
+        { "value": 0, "label": "No consideration of bias" },
+        { "value": 25, "label": "Aware of bias issues but no processes" },
+        { "value": 50, "label": "Basic bias testing in development" },
+        { "value": 75, "label": "Systematic bias detection and mitigation" },
+        { "value": 100, "label": "Continuous fairness monitoring with governance" }
+      ]
+    },
+    {
+      "id": "risk_5",
+      "text": "How robust is your data privacy framework?",
+      "options": [
+        { "value": 0, "label": "No privacy framework" },
+        { "value": 25, "label": "Basic privacy awareness" },
+        { "value": 50, "label": "Privacy policies in development" },
+        { "value": 75, "label": "Strong privacy controls and compliance" },
+        { "value": 100, "label": "Advanced privacy-preserving AI techniques" }
+      ]
+    },
+    {
+      "id": "risk_6",
+      "text": "What is your AI model governance maturity?",
+      "options": [
+        { "value": 0, "label": "No model governance" },
+        { "value": 25, "label": "Basic model documentation" },
+        { "value": 50, "label": "Model registry and versioning" },
+        { "value": 75, "label": "Comprehensive model lifecycle governance" },
+        { "value": 100, "label": "Automated governance with model cards and explainability" }
+      ]
+    },
+    {
+      "id": "risk_7",
+      "text": "How mature is your AI incident response capability?",
+      "options": [
+        { "value": 0, "label": "No incident response plan" },
+        { "value": 25, "label": "Generic IT incident response" },
+        { "value": 50, "label": "AI-specific incident protocols" },
+        { "value": 75, "label": "Tested incident response with playbooks" },
+        { "value": 100, "label": "Proactive threat hunting with automated response" }
+      ]
+    },
+    {
+      "id": "risk_8",
+      "text": "What is your approach to AI explainability and transparency?",
+      "options": [
+        { "value": 0, "label": "Black box models only" },
+        { "value": 25, "label": "Aware of explainability needs" },
+        { "value": 50, "label": "Explainability for high-risk models" },
+        { "value": 75, "label": "Systematic explainability practices" },
+        { "value": 100, "label": "Transparent AI with interpretability by design" }
+      ]
+    },
+    {
+      "id": "risk_9",
+      "text": "How comprehensive is your AI audit trail?",
+      "options": [
+        { "value": 0, "label": "No audit logging" },
+        { "value": 25, "label": "Basic system logs" },
+        { "value": 50, "label": "Model decision logging" },
+        { "value": 75, "label": "Comprehensive audit trail" },
+        { "value": 100, "label": "Immutable audit logs with blockchain" }
+      ]
+    },
+    {
+      "id": "risk_10",
+      "text": "What is your AI supply chain security?",
+      "options": [
+        { "value": 0, "label": "No supply chain security" },
+        { "value": 25, "label": "Basic vendor screening" },
+        { "value": 50, "label": "Third-party risk assessment" },
+        { "value": 75, "label": "Supply chain security program" },
+        { "value": 100, "label": "Zero-trust supply chain with SBOM" }
+      ]
+    },
+    {
+      "id": "risk_11",
+      "text": "How mature is your AI adversarial robustness?",
+      "options": [
+        { "value": 0, "label": "No adversarial testing" },
+        { "value": 25, "label": "Aware of adversarial attacks" },
+        { "value": 50, "label": "Basic adversarial testing" },
+        { "value": 75, "label": "Robust model training practices" },
+        { "value": 100, "label": "Certified defenses with continuous red teaming" }
+      ]
+    },
+    {
+      "id": "risk_12",
+      "text": "What is your data sovereignty and residency compliance?",
+      "options": [
+        { "value": 0, "label": "No consideration" },
+        { "value": 25, "label": "Aware of requirements" },
+        { "value": 50, "label": "Regional data controls" },
+        { "value": 75, "label": "Full sovereignty compliance" },
+        { "value": 100, "label": "Automated geo-fencing with policy enforcement" }
+      ]
+    },
+    {
+      "id": "risk_13",
+      "text": "How advanced is your AI IP protection?",
+      "options": [
+        { "value": 0, "label": "No IP protection" },
+        { "value": 25, "label": "Basic confidentiality agreements" },
+        { "value": 50, "label": "Model and data IP policies" },
+        { "value": 75, "label": "Comprehensive IP protection" },
+        { "value": 100, "label": "Advanced techniques like model watermarking" }
+      ]
+    },
+    {
+      "id": "risk_14",
+      "text": "What is your AI insurance and liability coverage?",
+      "options": [
+        { "value": 0, "label": "No AI-specific coverage" },
+        { "value": 25, "label": "Aware of AI risks" },
+        { "value": 50, "label": "Evaluating insurance options" },
+        { "value": 75, "label": "AI liability insurance in place" },
+        { "value": 100, "label": "Comprehensive coverage with risk transfer strategies" }
+      ]
+    },
+    {
+      "id": "risk_15",
+      "text": "How mature is your AI compliance monitoring?",
+      "options": [
+        { "value": 0, "label": "No monitoring" },
+        { "value": 25, "label": "Manual compliance checks" },
+        { "value": 50, "label": "Periodic compliance audits" },
+        { "value": 75, "label": "Continuous compliance monitoring" },
+        { "value": 100, "label": "Automated compliance with real-time alerts" }
+      ]
+    },
+    {
+      "id": "risk_16",
+      "text": "What is your approach to AI model drift detection?",
+      "options": [
+        { "value": 0, "label": "No drift monitoring" },
+        { "value": 25, "label": "Manual performance checks" },
+        { "value": 50, "label": "Automated drift detection" },
+        { "value": 75, "label": "Proactive retraining triggers" },
+        { "value": 100, "label": "Continuous learning with auto-remediation" }
+      ]
+    },
+    {
+      "id": "risk_17",
+      "text": "How comprehensive is your AI documentation for regulators?",
+      "options": [
+        { "value": 0, "label": "No regulatory documentation" },
+        { "value": 25, "label": "Minimal technical docs" },
+        { "value": 50, "label": "Standard documentation practices" },
+        { "value": 75, "label": "Regulatory-ready documentation" },
+        { "value": 100, "label": "Automated compliance reporting with audit trails" }
+      ]
+    },
+    {
+      "id": "risk_18",
+      "text": "What is your AI human oversight framework?",
+      "options": [
+        { "value": 0, "label": "Fully automated decisions" },
+        { "value": 25, "label": "Human review on request" },
+        { "value": 50, "label": "Human-in-the-loop for critical decisions" },
+        { "value": 75, "label": "Structured human oversight" },
+        { "value": 100, "label": "Meaningful human control with escalation protocols" }
+      ]
+    }
+  ]
+}
