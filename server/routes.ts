@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { storage } from './storage.js';
-import { insertResponseSchema } from '../shared/schema.js';
 import {
   ASSESSMENT_SECTIONS,
   calculateSectionScore,
@@ -19,11 +18,42 @@ const submitAssessmentSchema = z.object({
   organizationName: z.string().min(1),
   industry: z.string().min(1),
   answers: z.record(z.number()),
+  assessmentMode: z.enum(['free', 'full']).optional(),
+  questionCount: z.number().optional(),
 });
 
 router.post('/api/assessment/submit', async (req, res) => {
   try {
     const data = submitAssessmentSchema.parse(req.body);
+
+    // Ensure assessmentMode and questionCount are consistent
+    let assessmentMode = data.assessmentMode;
+    let questionCount = data.questionCount;
+    
+    if (assessmentMode && !questionCount) {
+      // Auto-derive questionCount from mode
+      questionCount = assessmentMode === 'free' ? 25 : 90;
+    } else if (!assessmentMode && questionCount) {
+      // Auto-derive assessmentMode from count
+      assessmentMode = questionCount === 25 ? 'free' : questionCount === 90 ? 'full' : undefined;
+      if (!assessmentMode) {
+        res.status(400).json({
+          error: 'Invalid questionCount',
+          message: 'questionCount must be 25 (free tier) or 90 (full tier)'
+        });
+        return;
+      }
+    } else if (assessmentMode && questionCount) {
+      // Validate match if both provided
+      const expectedCount = assessmentMode === 'free' ? 25 : 90;
+      if (questionCount !== expectedCount) {
+        res.status(400).json({
+          error: 'Invalid questionCount',
+          message: `questionCount must be ${expectedCount} for ${assessmentMode} tier`
+        });
+        return;
+      }
+    }
 
     const scores = {
       technology: calculateSectionScore(data.answers, 'technology'),
@@ -37,14 +67,28 @@ router.post('/api/assessment/submit', async (req, res) => {
     const readinessLevel = getReadinessLevel(overall);
 
     const response = await storage.createResponse({
-      organizationName: data.organizationName,
+      orgName: data.organizationName,
       industry: data.industry,
-      answers: data.answers,
-      scores: { ...scores, overall },
-      readinessLevel: readinessLevel.name,
+      answersJson: data.answers,
+      pillarScores: { ...scores, overall },
+      overall,
+      category: readinessLevel.name,
+      assessmentMode,
+      questionCount,
     });
 
-    res.json(response);
+    // Map internal field names to frontend-expected names for backwards compatibility
+    res.json({
+      id: response.id,
+      organizationName: response.orgName,
+      industry: response.industry,
+      answers: response.answersJson,
+      scores: response.pillarScores,
+      readinessLevel: response.category,
+      createdAt: response.createdAt,
+      assessmentMode: response.assessmentMode,
+      questionCount: response.questionCount,
+    });
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ error: 'Invalid input', details: error.errors });
@@ -56,8 +100,8 @@ router.post('/api/assessment/submit', async (req, res) => {
 
 router.get('/api/results/:id', async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = req.params.id;
+    if (!id) {
       res.status(400).json({ error: 'Invalid ID' });
       return;
     }
@@ -68,7 +112,18 @@ router.get('/api/results/:id', async (req, res) => {
       return;
     }
 
-    res.json(response);
+    // Map internal field names to frontend-expected names for backwards compatibility
+    res.json({
+      id: response.id,
+      organizationName: response.orgName,
+      industry: response.industry,
+      answers: response.answersJson,
+      scores: response.pillarScores,
+      readinessLevel: response.category,
+      createdAt: response.createdAt,
+      assessmentMode: response.assessmentMode,
+      questionCount: response.questionCount,
+    });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
