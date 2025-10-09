@@ -13,16 +13,86 @@ export function Landing() {
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent" data-testid="text-hero-title">
             AI Readiness Assessment
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto" data-testid="text-hero-description">
+          <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto" data-testid="text-hero-description">
             Evaluate your organization's preparedness for AI adoption across five critical dimensions. 
             Get detailed insights, actionable recommendations, and understand where you stand on your AI journey.
           </p>
-          <Link href="/assessment">
-            <Button size="lg" className="text-lg px-8" data-testid="button-start-assessment">
-              Start Assessment
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
+          
+          {/* Tier Selection */}
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <Card className="border-2 hover:border-blue-500 transition-colors" data-testid="card-tier-free">
+              <CardHeader>
+                <CardTitle className="text-2xl">Free Assessment</CardTitle>
+                <CardDescription className="text-lg">Quick evaluation to get started</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-bold text-blue-600">25</span>
+                    <span className="text-gray-600">questions</span>
+                  </div>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
+                      <span>5 assessment areas</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
+                      <span>Core readiness insights</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
+                      <span>~10 minutes to complete</span>
+                    </li>
+                  </ul>
+                  <Link href="/assessment?tier=free" className="block">
+                    <Button className="w-full" size="lg" data-testid="button-start-free">
+                      Start Free Assessment
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-blue-500 bg-gradient-to-br from-blue-50 to-indigo-50 hover:border-blue-600 transition-colors" data-testid="card-tier-full">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-2xl">Full Assessment</CardTitle>
+                  <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full">Recommended</span>
+                </div>
+                <CardDescription className="text-lg">Comprehensive deep-dive analysis</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-bold text-blue-600">90</span>
+                    <span className="text-gray-600">questions</span>
+                  </div>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
+                      <span>All 5 assessment areas</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
+                      <span>Detailed readiness analysis</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
+                      <span>~30 minutes to complete</span>
+                    </li>
+                  </ul>
+                  <Link href="/assessment?tier=full" className="block">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700" size="lg" data-testid="button-start-full">
+                      Start Full Assessment
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* How It Works */}
@@ -200,14 +270,22 @@ export function Landing() {
         <div className="text-center bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-12 text-white">
           <h2 className="text-3xl font-bold mb-4" data-testid="text-cta-title">Ready to Get Started?</h2>
           <p className="text-xl mb-8 opacity-90" data-testid="text-cta-description">
-            The assessment takes approximately 10 minutes to complete. You'll receive your results immediately.
+            Start with our free assessment (25 questions, ~10 minutes) or choose the full assessment for deeper insights.
           </p>
-          <Link href="/assessment">
-            <Button size="lg" variant="outline" className="text-blue-600 bg-white hover:bg-gray-100 text-lg px-8" data-testid="button-cta-start">
-              Begin Your Assessment
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
+          <div className="flex gap-4 justify-center">
+            <Link href="/assessment?tier=free">
+              <Button size="lg" variant="outline" className="text-blue-600 bg-white hover:bg-gray-100 text-lg px-8" data-testid="button-cta-start-free">
+                Begin Free Assessment
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/assessment?tier=full">
+              <Button size="lg" variant="outline" className="text-blue-600 bg-white hover:bg-gray-100 border-2 text-lg px-8" data-testid="button-cta-start-full">
+                Begin Full Assessment
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
