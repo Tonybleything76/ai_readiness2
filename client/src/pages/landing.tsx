@@ -106,7 +106,7 @@ export function Landing() {
                 </div>
                 <CardTitle>Answer Questions</CardTitle>
                 <CardDescription>
-                  Complete 20 questions across five key areas of AI readiness. Each question takes about 30 seconds.
+                  Choose between our free assessment (25 questions) or full assessment (90 questions) across five key areas of AI readiness.
                 </CardDescription>
               </CardHeader>
             </Card>
