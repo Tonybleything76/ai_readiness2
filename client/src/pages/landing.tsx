@@ -1,10 +1,66 @@
 import { Link } from 'wouter';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Server, Database, Users, Target, Shield, CheckCircle2, ArrowRight } from 'lucide-react';
-import { READINESS_LEVELS, ASSESSMENT_SECTIONS } from '../../../shared/assessment-data';
+import { ArrowRight, CheckCircle2, Brain, TrendingUp, Database, Cpu, Shield, Heart, Users, RefreshCw, Target } from 'lucide-react';
 
 export function Landing() {
+  const nineDimensions = [
+    {
+      id: 'strategic-leadership',
+      title: 'Strategic Leadership and Vision',
+      icon: Brain,
+      description: 'Executive understanding of AI potential, strategic alignment, and leadership capability to drive AI transformation.',
+    },
+    {
+      id: 'use-case-portfolio',
+      title: 'AI Use Case Portfolio and Prioritization',
+      icon: TrendingUp,
+      description: 'Ability to identify, evaluate, and prioritize AI opportunities that deliver measurable business value.',
+    },
+    {
+      id: 'data-foundation',
+      title: 'Data Foundation and Quality',
+      icon: Database,
+      description: 'Data infrastructure, governance, and quality management that serve as the foundation for AI success.',
+    },
+    {
+      id: 'tech-infrastructure',
+      title: 'Technology Infrastructure and MLOps',
+      icon: Cpu,
+      description: 'Technical capabilities to support AI development, deployment, and operations at scale.',
+    },
+    {
+      id: 'governance-risk',
+      title: 'Governance, Risk, and Security',
+      icon: Shield,
+      description: 'Frameworks for managing AI-related risks, ensuring compliance, and maintaining governance oversight.',
+    },
+    {
+      id: 'responsible-ai',
+      title: 'Responsible AI and Ethics',
+      icon: Heart,
+      description: 'Commitment to and capability for implementing ethical AI practices that ensure fair, transparent, and accountable systems.',
+    },
+    {
+      id: 'people-skills',
+      title: 'People, Skills, and Operating Model',
+      icon: Users,
+      description: 'Human capital capabilities, AI skills, and organizational structures that support AI adoption.',
+    },
+    {
+      id: 'change-management',
+      title: 'Change Management and Adoption',
+      icon: RefreshCw,
+      description: 'Capability to manage organizational changes, stakeholder engagement, and training for AI transformation.',
+    },
+    {
+      id: 'value-realization',
+      title: 'Value Realization and Measurement',
+      icon: Target,
+      description: 'Ability to measure, track, and optimize business value delivered by AI initiatives.',
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <div className="max-w-6xl mx-auto px-4 py-16">
@@ -14,16 +70,107 @@ export function Landing() {
             AI Readiness Assessment
           </h1>
           <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto" data-testid="text-hero-description">
-            Evaluate your organization's preparedness for AI adoption across five critical dimensions. 
-            Get detailed insights, actionable recommendations, and understand where you stand on your AI journey.
+            Discover your organization's preparedness for AI adoption. Our comprehensive assessment evaluates your readiness across nine critical dimensions, providing you with actionable insights to accelerate your AI journey.
           </p>
           
-          {/* Tier Selection */}
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <Card className="border-2 hover:border-blue-500 transition-colors" data-testid="card-tier-free">
+          {/* Main CTAs */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto mb-8">
+            <Link href="/assessment?tier=free" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white" size="lg" data-testid="button-take-free-assessment">
+                Take the Free Assessment Now
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/pricing" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" size="lg" data-testid="button-purchase-full-assessment">
+                Purchase Your Full Assessment
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="text-center">
+            <Link href="/overview" className="text-blue-600 hover:text-blue-700 underline text-sm" data-testid="link-learn-more">
+              Learn more about your full assessment options
+            </Link>
+          </div>
+        </div>
+
+        {/* Benefits Overview */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-8" data-testid="text-benefits-title">
+            Why Complete the AI Readiness Assessment?
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card data-testid="card-benefit-1">
+              <CardHeader>
+                <CardTitle>Identify Your Starting Point</CardTitle>
+                <CardDescription>
+                  Understand your current AI maturity level and where you stand compared to industry benchmarks.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            <Card data-testid="card-benefit-2">
+              <CardHeader>
+                <CardTitle>Prioritize Your Investments</CardTitle>
+                <CardDescription>
+                  Get clear guidance on which areas need attention first to maximize your AI success.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            <Card data-testid="card-benefit-3">
+              <CardHeader>
+                <CardTitle>Build Your AI Strategy</CardTitle>
+                <CardDescription>
+                  Use your results as the foundation for creating a comprehensive AI transformation roadmap.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </section>
+
+        {/* Nine Dimensions Methodology */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-4" data-testid="text-methodology-title">
+            Our Comprehensive 9-Dimension Framework
+          </h2>
+          <p className="text-center text-gray-600 mb-8 max-w-3xl mx-auto" data-testid="text-methodology-description">
+            Based on extensive analysis of leading frameworks from premier consulting firms and research institutions, our assessment evaluates nine critical dimensions that determine AI readiness. This comprehensive approach ensures you understand all aspects of your organization's preparedness for successful AI transformation.
+          </p>
+          <div className="space-y-4">
+            {nineDimensions.map((dimension) => {
+              const IconComponent = dimension.icon;
+              return (
+                <Card key={dimension.id} data-testid={`card-dimension-${dimension.id}`}>
+                  <CardHeader>
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 rounded-lg bg-blue-100 flex-shrink-0">
+                        <IconComponent className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <CardTitle className="mb-2">{dimension.title}</CardTitle>
+                        <CardDescription className="text-base">
+                          {dimension.description}
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Assessment Tiers Comparison */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-8" data-testid="text-tiers-title">
+            Choose Your Assessment Level
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <Card className="border-2 hover:border-blue-500 transition-colors" data-testid="card-free-tier">
               <CardHeader>
                 <CardTitle className="text-2xl">Free Assessment</CardTitle>
-                <CardDescription className="text-lg">Quick evaluation to get started</CardDescription>
+                <CardDescription className="text-lg">Quick diagnostic evaluation</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -34,7 +181,7 @@ export function Landing() {
                   <ul className="space-y-2 text-sm text-gray-600">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
-                      <span>5 assessment areas</span>
+                      <span>All 9 assessment dimensions</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
@@ -44,244 +191,71 @@ export function Landing() {
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
                       <span>~10 minutes to complete</span>
                     </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
+                      <span>Instant results and scoring</span>
+                    </li>
                   </ul>
-                  <Link href="/assessment?tier=free" className="block">
-                    <Button className="w-full" size="lg" data-testid="button-start-free">
-                      Start Free Assessment
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-2 border-blue-500 bg-gradient-to-br from-blue-50 to-indigo-50 hover:border-blue-600 transition-colors" data-testid="card-tier-full">
+            <Card className="border-2 border-indigo-500 bg-gradient-to-br from-indigo-50 to-blue-50 hover:border-indigo-600 transition-colors" data-testid="card-full-tier">
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <CardTitle className="text-2xl">Full Assessment</CardTitle>
-                  <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full">Recommended</span>
+                  <span className="px-2 py-1 bg-indigo-600 text-white text-xs rounded-full">Comprehensive</span>
                 </div>
-                <CardDescription className="text-lg">Comprehensive deep-dive analysis</CardDescription>
+                <CardDescription className="text-lg">Deep-dive analysis with expert insights</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold text-blue-600">90</span>
+                    <span className="text-4xl font-bold text-indigo-600">90</span>
                     <span className="text-gray-600">questions</span>
                   </div>
                   <ul className="space-y-2 text-sm text-gray-600">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
-                      <span>All 5 assessment areas</span>
+                      <span>Complete evaluation of all 9 dimensions</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
-                      <span>Detailed readiness analysis</span>
+                      <span>Detailed analysis and recommendations</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
                       <span>~30 minutes to complete</span>
                     </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
+                      <span>Actionable roadmap and benchmarking</span>
+                    </li>
                   </ul>
-                  <Link href="/assessment?tier=full" className="block">
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700" size="lg" data-testid="button-start-full">
-                      Start Full Assessment
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
                 </div>
               </CardContent>
             </Card>
           </div>
-        </div>
-
-        {/* How It Works */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-8" data-testid="text-how-it-works-title">How It Works</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card data-testid="card-step-1">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                  <span className="text-2xl font-bold text-blue-600">1</span>
-                </div>
-                <CardTitle>Answer Questions</CardTitle>
-                <CardDescription>
-                  Choose between our free assessment (25 questions) or full assessment (90 questions) across five key areas of AI readiness.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card data-testid="card-step-2">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                  <span className="text-2xl font-bold text-blue-600">2</span>
-                </div>
-                <CardTitle>Get Your Score</CardTitle>
-                <CardDescription>
-                  Receive detailed scores for each dimension and an overall AI readiness rating from "Getting Started" to "AI Ready".
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card data-testid="card-step-3">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                  <span className="text-2xl font-bold text-blue-600">3</span>
-                </div>
-                <CardTitle>Take Action</CardTitle>
-                <CardDescription>
-                  Use your results to prioritize improvements, build your AI strategy, and track progress over time.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
         </section>
 
-        {/* Assessment Sections Overview */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-4" data-testid="text-sections-title">Assessment Areas</h2>
-          <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto" data-testid="text-sections-description">
-            The assessment evaluates five critical dimensions that determine your organization's AI readiness
-          </p>
-          <div className="space-y-6">
-            {ASSESSMENT_SECTIONS.map((section) => {
-              const IconComponent = {
-                Server,
-                Database,
-                Users,
-                Target,
-                Shield,
-              }[section.icon] || Server;
-
-              return (
-                <Card key={section.id} data-testid={`card-section-${section.id}`}>
-                  <CardHeader>
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-lg bg-blue-100">
-                        <IconComponent className="h-6 w-6 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <CardTitle className="mb-2">{section.title}</CardTitle>
-                        <CardDescription className="text-base mb-3">
-                          {section.description}
-                        </CardDescription>
-                        <div className="space-y-2 text-sm">
-                          <div>
-                            <span className="font-semibold text-gray-700">Why It Matters:</span>
-                            <p className="text-gray-600 mt-1">{section.importance}</p>
-                          </div>
-                          <div>
-                            <span className="font-semibold text-gray-700">What We Assess:</span>
-                            <p className="text-gray-600 mt-1">{section.whatItAssesses}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Readiness Levels */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-4" data-testid="text-levels-title">Readiness Levels</h2>
-          <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto" data-testid="text-levels-description">
-            Your assessment score will place you in one of four readiness levels, each with specific characteristics and recommended next steps
-          </p>
-          <div className="grid md:grid-cols-2 gap-6">
-            {READINESS_LEVELS.map((level) => (
-              <Card 
-                key={level.name} 
-                className="border-l-4" 
-                style={{ borderLeftColor: level.color }}
-                data-testid={`card-level-${level.name.toLowerCase().replace(/\s+/g, '-')}`}
-              >
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: level.color }} />
-                    {level.name}
-                    <span className="text-sm font-normal text-gray-500">
-                      ({level.range[0]}-{level.range[1]}%)
-                    </span>
-                  </CardTitle>
-                  <CardDescription className="text-base pt-2">
-                    {level.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <p className="font-semibold text-sm text-gray-700">Key Characteristics:</p>
-                    <ul className="space-y-1">
-                      {level.characteristics.map((char, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm text-gray-600">
-                          <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                          <span>{char}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Scoring Methodology */}
-        <section className="mb-16">
-          <Card data-testid="card-methodology">
-            <CardHeader>
-              <CardTitle>How We Calculate Your Score</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-gray-600">
-                Your overall AI readiness score is calculated using a weighted average of your scores across the five assessment dimensions:
-              </p>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium">Data Management & Quality</span>
-                  <span className="text-blue-600 font-bold">25%</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium">Technology Infrastructure</span>
-                  <span className="text-blue-600 font-bold">20%</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium">Organizational Culture</span>
-                  <span className="text-blue-600 font-bold">20%</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium">Strategy & Planning</span>
-                  <span className="text-blue-600 font-bold">20%</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium">Risk & Compliance</span>
-                  <span className="text-blue-600 font-bold">15%</span>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mt-4">
-                Data Management receives the highest weight because quality data is the foundation of successful AI implementation. 
-                Without strong data practices, even the best technology and strategy will struggle to deliver value.
-              </p>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* CTA */}
+        {/* Final CTA */}
         <div className="text-center bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-12 text-white">
-          <h2 className="text-3xl font-bold mb-4" data-testid="text-cta-title">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 opacity-90" data-testid="text-cta-description">
-            Start with our free assessment (25 questions, ~10 minutes) or choose the full assessment for deeper insights.
+          <h2 className="text-3xl font-bold mb-4" data-testid="text-final-cta-title">
+            Ready to Understand Your AI Readiness?
+          </h2>
+          <p className="text-xl mb-8 opacity-90" data-testid="text-final-cta-description">
+            Take the first step toward successful AI transformation today.
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/assessment?tier=free">
-              <Button size="lg" variant="outline" className="text-blue-600 bg-white hover:bg-gray-100 text-lg px-8" data-testid="button-cta-start-free">
-                Begin Free Assessment
+              <Button size="lg" variant="outline" className="text-blue-600 bg-white hover:bg-gray-100 text-lg px-8" data-testid="button-final-cta-free">
+                Start Free Assessment
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/assessment?tier=full">
-              <Button size="lg" variant="outline" className="text-blue-600 bg-white hover:bg-gray-100 border-2 text-lg px-8" data-testid="button-cta-start-full">
-                Begin Full Assessment
+            <Link href="/pricing">
+              <Button size="lg" variant="outline" className="text-indigo-600 bg-white hover:bg-gray-100 border-2 text-lg px-8" data-testid="button-final-cta-full">
+                View Full Assessment Options
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>

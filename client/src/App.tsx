@@ -4,6 +4,8 @@ import { queryClient } from './lib/queryClient';
 import { Landing } from './pages/landing';
 import { Assessment } from './pages/assessment';
 import { Results } from './pages/results';
+import { Overview } from './pages/overview';
+import { Pricing } from './pages/pricing';
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
         <Route path="/" component={Landing} />
         <Route path="/assessment" component={Assessment} />
         <Route path="/results/:id" component={Results} />
+        <Route path="/overview" component={Overview} />
+        <Route path="/pricing" component={Pricing} />
         <Route>
           <div className="min-h-screen flex items-center justify-center">
             <div className="text-center">
