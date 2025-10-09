@@ -1,8 +1,23 @@
 modules = ["nodejs-20", "postgresql-16"]
 
 [[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
 localPort = 5000
 externalPort = 80
 
 [nix]
 channel = "stable-25_05"
+
+[workflows]
+
+[[workflows.workflow]]
+name = "Start Applicatioan"
+mode = "parallel"
+author = 42699436
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
