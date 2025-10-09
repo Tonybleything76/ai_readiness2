@@ -9,6 +9,10 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
+localPort = 5001
+externalPort = 4200
+
+[[ports]]
 localPort = 38161
 externalPort = 3002
 
@@ -22,14 +26,3 @@ externalPort = 3001
 
 [nix]
 channel = "stable-25_05"
-
-[workflows]
-
-[[workflows.workflow]]
-name = "Start Applicatioan"
-mode = "parallel"
-author = 42699436
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "./start-dev.sh"
