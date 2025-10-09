@@ -2,11 +2,16 @@
 
 ## Overview
 
-A comprehensive AI Readiness Assessment web application designed as a diagnostic tool for organizations to evaluate their preparedness for AI implementation. The application provides detailed guidance, scoring, and insights across five critical dimensions of AI readiness.
+A comprehensive AI Readiness Assessment web application designed as a diagnostic tool for organizations to evaluate their preparedness for AI implementation. The application offers **two assessment tiers** to accommodate different organizational needs and time commitments, providing detailed guidance, scoring, and insights across five critical dimensions of AI readiness.
 
 ## Features
 
-### Comprehensive Assessment Framework
+### Two-Tier Assessment System
+- **Free Tier:** 25 questions (~10 minutes) - Quick diagnostic assessment
+- **Full Tier:** 90 questions (~30 minutes) - Comprehensive evaluation
+- Both tiers cover all 5 assessment dimensions with proportional question distribution
+
+### Assessment Framework
 - **5 Assessment Dimensions:**
   1. Technology Infrastructure (20% weight)
   2. Data Management & Quality (25% weight - highest priority)
@@ -20,9 +25,9 @@ A comprehensive AI Readiness Assessment web application designed as a diagnostic
   3. Good Progress (60-80%)
   4. AI Ready (80-100%)
 
-- **20 Total Questions** (4 per dimension) with detailed response options
-
 ### Landing Page
+- **Tier Selection Cards** with clear differentiation between free and full assessments
+- Visual comparison of time commitment and question count
 - Comprehensive instructions on how to use the assessment
 - Complete explanation of scoring methodology with weights
 - Detailed overview of each assessment section including:
@@ -30,7 +35,7 @@ A comprehensive AI Readiness Assessment web application designed as a diagnostic
   - Why the section is important
   - What capabilities are being assessed
 - Full description of all readiness levels with characteristics
-- Visual cards for easy navigation and understanding
+- Multiple CTAs for starting either tier
 
 ### Assessment Flow
 - Guided step-by-step experience
@@ -65,10 +70,13 @@ A comprehensive AI Readiness Assessment web application designed as a diagnostic
 
 ### Backend
 - **Framework:** Express.js with TypeScript
-- **Storage:** In-memory storage (MemStorage implementation)
+- **Storage:** PostgreSQL database with Drizzle ORM
+- **Question Loading:** Dynamic tier-based loading from JSON files
+  - `data/ai_readiness_free_25.json` - Free tier questions
+  - `data/ai_readiness_full_90.json` - Full tier questions
 - **API Routes:**
-  - `GET /api/assessment` - Fetch assessment sections and questions
-  - `POST /api/assessment/submit` - Submit assessment and calculate scores
+  - `GET /api/assessment?tier=free|full` - Fetch tier-specific questions
+  - `POST /api/assessment/submit` - Submit assessment with tier metadata
   - `GET /api/results/:id` - Retrieve specific assessment results
 
 ### Data Model
@@ -77,13 +85,20 @@ A comprehensive AI Readiness Assessment web application designed as a diagnostic
   - All question answers
   - Calculated scores (overall + per-section)
   - Readiness level classification
+  - **Assessment tier:** assessmentMode (free/full) and questionCount (25/90)
   - Timestamp
+
+### Tier System Implementation
+- **Backend Validation:** Ensures assessmentMode matches questionCount (free=25, full=90)
+- **Dynamic Scoring:** Tier-specific question sets built from constants (FREE_COUNT, FULL_COUNT)
+- **Backward Compatibility:** Existing results without tier info still work
+- **Type Safety:** All tier parameters properly typed across frontend and backend
 
 ### Scoring Logic
 - Weighted average calculation across all dimensions
 - Data Management receives highest weight (25%) as it's foundational to AI success
 - Each answer normalized to 0-100 scale
-- Section scores averaged from question responses
+- Section scores averaged from question responses (tier-specific)
 - Overall score computed from weighted section scores
 - Readiness level determined by score ranges
 
@@ -107,19 +122,24 @@ Builds the production-ready application.
 ├── client/src/
 │   ├── components/ui/       # Reusable UI components
 │   ├── pages/              # Main application pages
-│   │   ├── landing.tsx     # Landing page with instructions
-│   │   ├── assessment.tsx  # Assessment flow
-│   │   └── results.tsx     # Results display
+│   │   ├── landing.tsx     # Landing page with tier selection
+│   │   ├── assessment.tsx  # Tier-aware assessment flow
+│   │   └── results.tsx     # Results display with tier info
 │   ├── lib/                # Utilities and query client
 │   ├── App.tsx             # Main app component with routing
 │   └── main.tsx            # Application entry point
 ├── server/
-│   ├── routes.ts           # API route handlers
+│   ├── routes.ts           # API route handlers with tier support
 │   ├── storage.ts          # Data storage interface
+│   ├── utils/
+│   │   └── questionLoader.ts  # Tier-based question loading
 │   └── index.ts            # Express server setup
 ├── shared/
-│   ├── schema.ts           # Database schema and types
-│   └── assessment-data.ts  # Assessment content and logic
+│   ├── schema.ts           # Database schema with tier fields
+│   └── assessment-data.ts  # Assessment content and scoring logic
+├── data/
+│   ├── ai_readiness_free_25.json   # Free tier questions
+│   └── ai_readiness_full_90.json   # Full tier questions
 └── package.json            # Dependencies and scripts
 ```
 
@@ -149,7 +169,6 @@ Evaluates ethics framework, regulatory compliance, security measures, and bias m
 5. **Educational Content:** Users learn about AI readiness while completing the assessment
 
 ## Future Enhancements (Potential)
-- Database persistence (currently in-memory)
 - PDF report generation
 - Historical tracking and progress over time
 - Comparison with industry benchmarks
