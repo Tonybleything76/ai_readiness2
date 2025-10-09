@@ -7,16 +7,8 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Progress } from '../components/ui/progress';
 import { apiRequest } from '../lib/queryClient';
-import { Server, Database, Users, Target, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { AssessmentSection } from '../../../shared/assessment-data';
-
-const ICON_MAP = {
-  Server,
-  Database,
-  Users,
-  Target,
-  Shield,
-};
 
 export function Assessment() {
   const [, setLocation] = useLocation();
@@ -36,6 +28,7 @@ export function Assessment() {
     sections: AssessmentSection[];
     tier: string;
     questionCount: number;
+    overviews: Record<string, { title: string; overview: string }>;
   }>({
     queryKey: ['/api/assessment', tier],
     queryFn: async () => {
@@ -79,7 +72,10 @@ export function Assessment() {
   const progress = (currentStep / totalSteps) * 100;
 
   const canProceedInfo = orgName.trim() && industry.trim();
-  const canProceedQuestion = currentSection && answers[currentSection.questions[0]?.id] !== undefined;
+  
+  // Check if ALL questions in current section are answered
+  const canProceedQuestion = currentSection && currentSection.questions.every(q => answers[q.id] !== undefined);
+  
   const isLastSection = currentStep === sections.length;
 
   const handleNext = () => {
@@ -153,41 +149,19 @@ export function Assessment() {
         {/* Question Step */}
         {!isInfoStep && currentSection && (
           <div className="space-y-6">
-            {/* Section Overview */}
-            <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0" data-testid={`card-section-overview-${currentSection.id}`}>
-              <CardHeader>
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-white/20">
-                    {ICON_MAP[currentSection.icon as keyof typeof ICON_MAP] && (
-                      <div className="h-6 w-6 text-white">
-                        {(() => {
-                          const IconComponent = ICON_MAP[currentSection.icon as keyof typeof ICON_MAP];
-                          return <IconComponent />;
-                        })()}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <CardTitle className="text-white mb-2">{currentSection.title}</CardTitle>
-                    <CardDescription className="text-white/90 text-base">
-                      {currentSection.description}
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-3 text-sm">
-                  <div className="bg-white/10 rounded-lg p-3">
-                    <span className="font-semibold">Why This Matters:</span>
-                    <p className="mt-1 opacity-90">{currentSection.importance}</p>
-                  </div>
-                  <div className="bg-white/10 rounded-lg p-3">
-                    <span className="font-semibold">What We're Assessing:</span>
-                    <p className="mt-1 opacity-90">{currentSection.whatItAssesses}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Dimension Overview */}
+            {assessmentData?.overviews?.[currentSection.id] && (
+              <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0" data-testid={`card-dimension-overview-${currentSection.id}`}>
+                <CardHeader>
+                  <CardTitle className="text-white text-2xl mb-3">
+                    {assessmentData.overviews[currentSection.id].title}
+                  </CardTitle>
+                  <CardDescription className="text-white/95 text-base leading-relaxed">
+                    {assessmentData.overviews[currentSection.id].overview}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            )}
 
             {/* Questions */}
             {currentSection.questions.map((question, qIndex) => (

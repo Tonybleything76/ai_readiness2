@@ -13,11 +13,15 @@ export const responses = pgTable('responses', {
   answersJson: json('answers_json').notNull().$type<Record<string, number>>(),
   pillarScores: json('pillar_scores').notNull().$type<{
     overall: number;
-    technology: number;
-    dataManagement: number;
-    organizationalCulture: number;
-    strategyPlanning: number;
-    riskCompliance: number;
+    strategicLeadership: number;
+    useCasePortfolio: number;
+    dataFoundation: number;
+    techInfrastructure: number;
+    governanceRisk: number;
+    responsibleAI: number;
+    peopleSkills: number;
+    changeManagement: number;
+    valueRealization: number;
   }>(),
   overall: real('overall').notNull(),
   category: varchar('category', { length: 50 }).notNull(),

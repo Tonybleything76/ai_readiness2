@@ -1,322 +1,295 @@
 {
-  "strategicLeadership": {
-    "overview": "This dimension evaluates your organization's executive leadership understanding of AI, their commitment to AI transformation, and their ability to articulate and execute on a compelling AI vision that drives organizational change.",
-    "questions": [
-      {
-        "id": "strategic_1",
-        "text": "How strong is executive leadership support for AI initiatives?",
-        "options": [
-          { "value": 0, "label": "No awareness or interest from leadership" },
-          { "value": 25, "label": "Minimal interest - low priority" },
-          { "value": 50, "label": "Moderate support - acknowledged importance" },
-          { "value": 75, "label": "Strong support - actively championed" },
-          { "value": 100, "label": "Full commitment - strategic imperative with resources" }
-        ]
-      },
-      {
-        "id": "strategic_2",
-        "text": "Do you have a documented AI strategy?",
-        "options": [
-          { "value": 0, "label": "No AI strategy exists" },
-          { "value": 25, "label": "Informal discussions about AI" },
-          { "value": 50, "label": "Strategy being developed" },
-          { "value": 75, "label": "Documented strategy with clear objectives" },
-          { "value": 100, "label": "Comprehensive strategy integrated with business goals" }
-        ]
-      },
-      {
-        "id": "strategic_3",
-        "text": "How aligned is your AI strategy with overall business objectives?",
-        "options": [
-          { "value": 0, "label": "No alignment - AI is disconnected" },
-          { "value": 25, "label": "Minimal alignment - loose connection" },
-          { "value": 50, "label": "Some alignment with key objectives" },
-          { "value": 75, "label": "Strong alignment with business goals" },
-          { "value": 100, "label": "Fully integrated - AI drives business strategy" }
-        ]
-      }
-    ]
-  },
-  "useCasePortfolio": {
-    "overview": "This dimension assesses your organization's ability to identify, prioritize, and execute AI use cases that deliver tangible business value, from quick wins to transformational initiatives.",
-    "questions": [
-      {
-        "id": "usecase_1",
-        "text": "How well have you identified and prioritized AI use cases?",
-        "options": [
-          { "value": 0, "label": "No use cases identified" },
-          { "value": 25, "label": "Generic use cases with no prioritization" },
-          { "value": 50, "label": "Some use cases identified and prioritized" },
-          { "value": 75, "label": "Well-defined use cases with business cases" },
-          { "value": 100, "label": "Portfolio of use cases with clear ROI and priorities" }
-        ]
-      },
-      {
-        "id": "usecase_2",
-        "text": "How developed is your AI implementation roadmap?",
-        "options": [
-          { "value": 0, "label": "No roadmap exists" },
-          { "value": 25, "label": "High-level vision with no timeline" },
-          { "value": 50, "label": "Basic roadmap with milestones" },
-          { "value": 75, "label": "Detailed roadmap with resources allocated" },
-          { "value": 100, "label": "Agile roadmap with regular updates and tracking" }
-        ]
-      },
-      {
-        "id": "usecase_3",
-        "text": "What is your approach to scaling successful AI pilots to production?",
-        "options": [
-          { "value": 0, "label": "No pilots scaled to production" },
-          { "value": 25, "label": "Ad-hoc scaling attempts with limited success" },
-          { "value": 50, "label": "Some pilots successfully scaled" },
-          { "value": 75, "label": "Structured scaling methodology" },
-          { "value": 100, "label": "Industrialized deployment pipeline with clear criteria" }
-        ]
-      }
-    ]
-  },
-  "dataFoundation": {
-    "overview": "This dimension evaluates the quality, accessibility, governance, and management of your organization's data assets - the fundamental fuel for AI success.",
-    "questions": [
-      {
-        "id": "data_1",
-        "text": "How would you rate the overall quality of your organizational data?",
-        "options": [
-          { "value": 0, "label": "Poor quality - significant errors and inconsistencies" },
-          { "value": 25, "label": "Below average - frequent data quality issues" },
-          { "value": 50, "label": "Moderate - acceptable quality with some issues" },
-          { "value": 75, "label": "Good - high quality with minor issues" },
-          { "value": 100, "label": "Excellent - comprehensive quality management" }
-        ]
-      },
-      {
-        "id": "data_2",
-        "text": "How accessible is data across your organization?",
-        "options": [
-          { "value": 0, "label": "Highly siloed - data trapped in departments" },
-          { "value": 25, "label": "Mostly siloed - limited sharing" },
-          { "value": 50, "label": "Partially integrated - some data sharing" },
-          { "value": 75, "label": "Well integrated - good cross-functional access" },
-          { "value": 100, "label": "Fully democratized - comprehensive data access" }
-        ]
-      },
-      {
-        "id": "data_3",
-        "text": "What level of data governance do you have in place?",
-        "options": [
-          { "value": 0, "label": "No formal governance" },
-          { "value": 25, "label": "Basic policies being developed" },
-          { "value": 50, "label": "Governance framework in place" },
-          { "value": 75, "label": "Mature governance with active enforcement" },
-          { "value": 100, "label": "Advanced governance with automation and monitoring" }
-        ]
-      }
-    ]
-  },
-  "techInfrastructure": {
-    "overview": "This dimension assesses your organization's technological capabilities including cloud infrastructure, computing resources, platforms, and integration capabilities necessary for AI implementation.",
-    "questions": [
-      {
-        "id": "tech_1",
-        "text": "How would you describe your organization's cloud infrastructure maturity?",
-        "options": [
-          { "value": 0, "label": "No cloud infrastructure - entirely on-premises" },
-          { "value": 25, "label": "Basic cloud adoption - some workloads migrated" },
-          { "value": 50, "label": "Hybrid cloud - mixed on-premises and cloud" },
-          { "value": 75, "label": "Cloud-first - most workloads in the cloud" },
-          { "value": 100, "label": "Cloud-native - fully optimized cloud architecture" }
-        ]
-      },
-      {
-        "id": "tech_2",
-        "text": "What computational resources do you have available for AI/ML workloads?",
-        "options": [
-          { "value": 0, "label": "No dedicated computational resources" },
-          { "value": 25, "label": "Basic CPU resources only" },
-          { "value": 50, "label": "Some GPU/TPU access available" },
-          { "value": 75, "label": "Dedicated GPU/TPU infrastructure" },
-          { "value": 100, "label": "Advanced distributed computing with AI accelerators" }
-        ]
-      },
-      {
-        "id": "tech_3",
-        "text": "How scalable is your current technology infrastructure?",
-        "options": [
-          { "value": 0, "label": "Not scalable - fixed capacity" },
-          { "value": 25, "label": "Manual scaling with significant effort" },
-          { "value": 50, "label": "Some auto-scaling capabilities" },
-          { "value": 75, "label": "Good auto-scaling across most services" },
-          { "value": 100, "label": "Fully elastic infrastructure with automated scaling" }
-        ]
-      }
-    ]
-  },
-  "governanceRisk": {
-    "overview": "This dimension examines your organization's approach to AI governance, risk management, regulatory compliance, and security measures to ensure responsible and safe AI deployment.",
-    "questions": [
-      {
-        "id": "governance_1",
-        "text": "How prepared are you for AI-related regulatory compliance?",
-        "options": [
-          { "value": 0, "label": "Unaware of relevant regulations" },
-          { "value": 25, "label": "Aware but no compliance measures" },
-          { "value": 50, "label": "Understanding regulations, planning compliance" },
-          { "value": 75, "label": "Compliance program in development" },
-          { "value": 100, "label": "Full compliance with monitoring and auditing" }
-        ]
-      },
-      {
-        "id": "governance_2",
-        "text": "What security measures are in place for AI systems?",
-        "options": [
-          { "value": 0, "label": "No specific security for AI" },
-          { "value": 25, "label": "Standard IT security applied" },
-          { "value": 50, "label": "Some AI-specific security measures" },
-          { "value": 75, "label": "Comprehensive AI security framework" },
-          { "value": 100, "label": "Advanced security with continuous monitoring" }
-        ]
-      },
-      {
-        "id": "governance_3",
-        "text": "What is your data privacy framework for AI applications?",
-        "options": [
-          { "value": 0, "label": "No privacy framework" },
-          { "value": 25, "label": "Basic privacy awareness" },
-          { "value": 50, "label": "Privacy policies in development" },
-          { "value": 75, "label": "Strong privacy controls and compliance" },
-          { "value": 100, "label": "Advanced privacy-preserving AI techniques" }
-        ]
-      }
-    ]
-  },
-  "responsibleAI": {
-    "overview": "This dimension evaluates your organization's commitment to ethical AI practices including fairness, transparency, accountability, and bias mitigation to ensure AI systems are developed and deployed responsibly.",
-    "questions": [
-      {
-        "id": "responsible_1",
-        "text": "How mature is your AI ethics framework?",
-        "options": [
-          { "value": 0, "label": "No consideration of AI ethics" },
-          { "value": 25, "label": "Aware of ethical issues but no framework" },
-          { "value": 50, "label": "Basic ethical guidelines being developed" },
-          { "value": 75, "label": "Formal ethics framework in place" },
-          { "value": 100, "label": "Comprehensive ethics governance with oversight" }
-        ]
-      },
-      {
-        "id": "responsible_2",
-        "text": "How do you address bias and fairness in AI?",
-        "options": [
-          { "value": 0, "label": "No consideration of bias" },
-          { "value": 25, "label": "Aware of bias issues but no processes" },
-          { "value": 50, "label": "Basic bias testing in development" },
-          { "value": 75, "label": "Systematic bias detection and mitigation" },
-          { "value": 100, "label": "Continuous fairness monitoring with governance" }
-        ]
-      }
-    ]
-  },
-  "peopleSkills": {
-    "overview": "This dimension assesses your organization's AI talent capabilities, skills development programs, and ability to attract, develop, and retain AI expertise across the workforce.",
-    "questions": [
-      {
-        "id": "people_1",
-        "text": "What is the current level of AI skills in your organization?",
-        "options": [
-          { "value": 0, "label": "No AI skills or expertise" },
-          { "value": 25, "label": "Limited skills - few individuals with basic knowledge" },
-          { "value": 50, "label": "Developing capabilities - small team building skills" },
-          { "value": 75, "label": "Solid expertise - dedicated AI/ML team" },
-          { "value": 100, "label": "Advanced capabilities - centers of excellence" }
-        ]
-      },
-      {
-        "id": "people_2",
-        "text": "What is your investment in AI training and upskilling?",
-        "options": [
-          { "value": 0, "label": "No training budget for AI" },
-          { "value": 25, "label": "Minimal ad-hoc training" },
-          { "value": 50, "label": "Regular training programs" },
-          { "value": 75, "label": "Comprehensive learning paths" },
-          { "value": 100, "label": "Continuous learning with certifications and academies" }
-        ]
-      },
-      {
-        "id": "people_3",
-        "text": "How strong is your data literacy across the organization?",
-        "options": [
-          { "value": 0, "label": "Very low data literacy" },
-          { "value": 25, "label": "Basic understanding in IT only" },
-          { "value": 50, "label": "Growing data literacy programs" },
-          { "value": 75, "label": "Widespread data-driven decision making" },
-          { "value": 100, "label": "Data-first culture with analytics for all" }
-        ]
-      }
-    ]
-  },
-  "changeManagement": {
-    "overview": "This dimension evaluates your organization's cultural readiness for AI transformation, including adaptability, learning culture, innovation mindset, and ability to manage organizational change effectively.",
-    "questions": [
-      {
-        "id": "change_1",
-        "text": "How would you describe your organizational learning culture?",
-        "options": [
-          { "value": 0, "label": "Resistant to change - traditional approaches preferred" },
-          { "value": 25, "label": "Slow to adopt - cautious about new approaches" },
-          { "value": 50, "label": "Moderately adaptive - open to learning" },
-          { "value": 75, "label": "Learning-oriented - continuous improvement mindset" },
-          { "value": 100, "label": "Innovation-driven - experimentation encouraged" }
-        ]
-      },
-      {
-        "id": "change_2",
-        "text": "How effective is your change management capability?",
-        "options": [
-          { "value": 0, "label": "No change management processes" },
-          { "value": 25, "label": "Ad-hoc approach to change" },
-          { "value": 50, "label": "Basic change management framework" },
-          { "value": 75, "label": "Structured change management with proven success" },
-          { "value": 100, "label": "Agile change management - highly effective" }
-        ]
-      },
-      {
-        "id": "change_3",
-        "text": "How well do teams collaborate across departments on AI initiatives?",
-        "options": [
-          { "value": 0, "label": "No cross-functional collaboration" },
-          { "value": 25, "label": "Minimal collaboration - mostly siloed" },
-          { "value": 50, "label": "Some cross-functional projects" },
-          { "value": 75, "label": "Strong collaborative culture" },
-          { "value": 100, "label": "Seamless integration with cross-functional teams" }
-        ]
-      }
-    ]
-  },
-  "valueRealization": {
-    "overview": "This dimension assesses your organization's ability to measure, track, and realize tangible business value from AI investments, including ROI tracking, benefits realization, and continuous optimization.",
-    "questions": [
-      {
-        "id": "value_1",
-        "text": "How do you measure success for AI initiatives?",
-        "options": [
-          { "value": 0, "label": "No success metrics defined" },
-          { "value": 25, "label": "Technical metrics only" },
-          { "value": 50, "label": "Mix of technical and business metrics" },
-          { "value": 75, "label": "Clear business KPIs for each initiative" },
-          { "value": 100, "label": "Comprehensive measurement framework with ROI tracking" }
-        ]
-      },
-      {
-        "id": "value_2",
-        "text": "What is your approach to AI business case development?",
-        "options": [
-          { "value": 0, "label": "No business cases required" },
-          { "value": 25, "label": "High-level cost estimates only" },
-          { "value": 50, "label": "Basic ROI calculations" },
-          { "value": 75, "label": "Comprehensive business cases with NPV analysis" },
-          { "value": 100, "label": "Sophisticated value modeling with scenario analysis" }
-        ]
-      }
-    ]
-  }
+  "strategicLeadership": [
+    {
+      "id": "strategic_1",
+      "text": "How strong is executive leadership support for AI initiatives?",
+      "options": [
+        { "value": 0, "label": "No awareness or interest from leadership" },
+        { "value": 25, "label": "Minimal interest - low priority" },
+        { "value": 50, "label": "Moderate support - acknowledged importance" },
+        { "value": 75, "label": "Strong support - actively championed" },
+        { "value": 100, "label": "Full commitment - strategic imperative with resources" }
+      ]
+    },
+    {
+      "id": "strategic_2",
+      "text": "Do you have a documented AI strategy aligned with business objectives?",
+      "options": [
+        { "value": 0, "label": "No AI strategy exists" },
+        { "value": 25, "label": "Informal discussions about AI" },
+        { "value": 50, "label": "Strategy being developed with basic objectives" },
+        { "value": 75, "label": "Documented strategy with clear business alignment" },
+        { "value": 100, "label": "Comprehensive strategy fully integrated with business goals" }
+      ]
+    },
+    {
+      "id": "strategic_3",
+      "text": "How does your leadership team understand and communicate AI's transformative potential?",
+      "options": [
+        { "value": 0, "label": "No understanding or communication of AI capabilities" },
+        { "value": 25, "label": "Aware of AI hype but limited knowledge or communication" },
+        { "value": 50, "label": "Basic understanding with occasional AI vision messaging" },
+        { "value": 75, "label": "Good grasp of AI impact with consistent communication" },
+        { "value": 100, "label": "Deep expertise with inspiring AI narrative embedded in culture" }
+      ]
+    }
+  ],
+  "useCasePortfolio": [
+    {
+      "id": "usecase_1",
+      "text": "How well have you identified and prioritized AI use cases?",
+      "options": [
+        { "value": 0, "label": "No use cases identified" },
+        { "value": 25, "label": "Generic use cases with no prioritization" },
+        { "value": 50, "label": "Some use cases identified and prioritized" },
+        { "value": 75, "label": "Well-defined use cases with business cases" },
+        { "value": 100, "label": "Portfolio of use cases with clear ROI and strategic priorities" }
+      ]
+    },
+    {
+      "id": "usecase_2",
+      "text": "What is your approach to balancing quick wins versus transformational AI initiatives?",
+      "options": [
+        { "value": 0, "label": "No structured approach to portfolio balance" },
+        { "value": 25, "label": "Focus only on easy wins or only on long-term" },
+        { "value": 50, "label": "Mix of quick wins and longer-term projects" },
+        { "value": 75, "label": "Strategic portfolio balancing short and long-term value" },
+        { "value": 100, "label": "Optimized portfolio with innovation pipeline and clear roadmap" }
+      ]
+    },
+    {
+      "id": "usecase_3",
+      "text": "How effective is your approach to scaling successful AI pilots to production?",
+      "options": [
+        { "value": 0, "label": "No pilots scaled to production" },
+        { "value": 25, "label": "Ad-hoc scaling attempts with limited success" },
+        { "value": 50, "label": "Some pilots successfully scaled with lessons learned" },
+        { "value": 75, "label": "Structured scaling methodology with clear criteria" },
+        { "value": 100, "label": "Industrialized deployment pipeline with proven track record" }
+      ]
+    }
+  ],
+  "dataFoundation": [
+    {
+      "id": "data_1",
+      "text": "How would you rate the overall quality and governance of your organizational data?",
+      "options": [
+        { "value": 0, "label": "Poor quality with no governance" },
+        { "value": 25, "label": "Below average quality with basic policies being developed" },
+        { "value": 50, "label": "Moderate quality with governance framework in place" },
+        { "value": 75, "label": "Good quality with mature governance and active enforcement" },
+        { "value": 100, "label": "Excellent quality with advanced governance and automation" }
+      ]
+    },
+    {
+      "id": "data_2",
+      "text": "How accessible and democratized is data across your organization?",
+      "options": [
+        { "value": 0, "label": "Highly siloed - data trapped in departments" },
+        { "value": 25, "label": "Mostly siloed with limited sharing mechanisms" },
+        { "value": 50, "label": "Partially integrated with some cross-functional access" },
+        { "value": 75, "label": "Well integrated with good data accessibility" },
+        { "value": 100, "label": "Fully democratized with comprehensive self-service access" }
+      ]
+    },
+    {
+      "id": "data_3",
+      "text": "How mature are your data pipelines, architecture, and quality monitoring?",
+      "options": [
+        { "value": 0, "label": "No automated pipelines or quality monitoring" },
+        { "value": 25, "label": "Manual processes with basic databases" },
+        { "value": 50, "label": "Basic automated pipelines with data warehouse" },
+        { "value": 75, "label": "Well-orchestrated pipelines with data lake and monitoring" },
+        { "value": 100, "label": "Advanced architecture with real-time streaming and AI-based monitoring" }
+      ]
+    }
+  ],
+  "techInfrastructure": [
+    {
+      "id": "tech_1",
+      "text": "How mature is your cloud infrastructure and computational resources for AI/ML workloads?",
+      "options": [
+        { "value": 0, "label": "No cloud infrastructure or dedicated AI compute resources" },
+        { "value": 25, "label": "Basic cloud adoption with CPU resources only" },
+        { "value": 50, "label": "Hybrid cloud with some GPU/TPU access available" },
+        { "value": 75, "label": "Cloud-first with dedicated GPU/TPU infrastructure" },
+        { "value": 100, "label": "Cloud-native with advanced distributed computing and AI accelerators" }
+      ]
+    },
+    {
+      "id": "tech_2",
+      "text": "How scalable and modern is your technology infrastructure?",
+      "options": [
+        { "value": 0, "label": "Not scalable with monolithic legacy applications" },
+        { "value": 25, "label": "Manual scaling with mostly legacy architecture" },
+        { "value": 50, "label": "Some auto-scaling with mix of legacy and modern" },
+        { "value": 75, "label": "Good auto-scaling with microservices architecture" },
+        { "value": 100, "label": "Fully elastic cloud-native with containerization and orchestration" }
+      ]
+    },
+    {
+      "id": "tech_3",
+      "text": "How advanced are your DevOps/MLOps capabilities and ML platforms?",
+      "options": [
+        { "value": 0, "label": "No DevOps practices or ML platforms" },
+        { "value": 25, "label": "Basic CI/CD pipelines with individual ML tools used ad-hoc" },
+        { "value": 50, "label": "Established DevOps with some ML tools and frameworks adopted" },
+        { "value": 75, "label": "Advanced DevOps with integrated ML platform for development" },
+        { "value": 100, "label": "Full MLOps/AIOps with enterprise ML platform for end-to-end lifecycle" }
+      ]
+    }
+  ],
+  "governanceRisk": [
+    {
+      "id": "governance_1",
+      "text": "How prepared are you for AI-related regulatory compliance and risk management?",
+      "options": [
+        { "value": 0, "label": "Unaware of regulations with no risk assessment" },
+        { "value": 25, "label": "Aware of regulations but no compliance or risk framework" },
+        { "value": 50, "label": "Understanding regulations with basic risk assessment framework" },
+        { "value": 75, "label": "Compliance program in development with systematic risk management" },
+        { "value": 100, "label": "Full compliance with proactive risk management and continuous monitoring" }
+      ]
+    },
+    {
+      "id": "governance_2",
+      "text": "What security measures and data privacy frameworks are in place for AI systems?",
+      "options": [
+        { "value": 0, "label": "No specific security or privacy framework for AI" },
+        { "value": 25, "label": "Standard IT security with basic privacy awareness" },
+        { "value": 50, "label": "Some AI-specific security with privacy policies in development" },
+        { "value": 75, "label": "Comprehensive AI security with strong privacy controls" },
+        { "value": 100, "label": "Advanced security and privacy-preserving AI techniques with continuous monitoring" }
+      ]
+    },
+    {
+      "id": "governance_3",
+      "text": "How mature is your AI model governance and audit capability?",
+      "options": [
+        { "value": 0, "label": "No model governance or audit trails" },
+        { "value": 25, "label": "Basic logging of AI outputs" },
+        { "value": 50, "label": "Monitoring of key AI systems with some documentation" },
+        { "value": 75, "label": "Comprehensive monitoring with audit trails and model registry" },
+        { "value": 100, "label": "Advanced governance with automated compliance checking and full auditability" }
+      ]
+    }
+  ],
+  "responsibleAI": [
+    {
+      "id": "responsible_1",
+      "text": "How mature is your AI ethics framework and governance?",
+      "options": [
+        { "value": 0, "label": "No consideration of AI ethics" },
+        { "value": 25, "label": "Aware of ethical issues but no framework" },
+        { "value": 50, "label": "Basic ethical guidelines being developed" },
+        { "value": 75, "label": "Formal ethics framework with governance oversight" },
+        { "value": 100, "label": "Comprehensive ethics governance with active board and enforcement" }
+      ]
+    },
+    {
+      "id": "responsible_2",
+      "text": "How do you address bias, fairness, and transparency in AI systems?",
+      "options": [
+        { "value": 0, "label": "No consideration of bias, fairness, or transparency" },
+        { "value": 25, "label": "Aware of issues but no processes or testing" },
+        { "value": 50, "label": "Basic bias testing and some explainability efforts" },
+        { "value": 75, "label": "Systematic bias detection with transparency mechanisms" },
+        { "value": 100, "label": "Continuous fairness monitoring with advanced explainability and stakeholder engagement" }
+      ]
+    },
+    {
+      "id": "responsible_3",
+      "text": "What is your approach to stakeholder impact assessment and responsible AI practices?",
+      "options": [
+        { "value": 0, "label": "No stakeholder impact assessment or responsible AI practices" },
+        { "value": 25, "label": "Minimal consideration of stakeholder impacts" },
+        { "value": 50, "label": "Basic impact assessment for major initiatives" },
+        { "value": 75, "label": "Systematic stakeholder impact analysis with accountability structures" },
+        { "value": 100, "label": "Comprehensive responsible AI framework with continuous stakeholder engagement" }
+      ]
+    }
+  ],
+  "peopleSkills": [
+    {
+      "id": "people_1",
+      "text": "What is the current level of AI skills and expertise in your organization?",
+      "options": [
+        { "value": 0, "label": "No AI skills or expertise" },
+        { "value": 25, "label": "Limited skills - few individuals with basic knowledge" },
+        { "value": 50, "label": "Developing capabilities - small team building skills" },
+        { "value": 75, "label": "Solid expertise - dedicated AI/ML team with proven track record" },
+        { "value": 100, "label": "Advanced capabilities - centers of excellence with deep expertise" }
+      ]
+    },
+    {
+      "id": "people_2",
+      "text": "How strong is your investment in AI training, upskilling, and data literacy?",
+      "options": [
+        { "value": 0, "label": "No training budget or data literacy programs" },
+        { "value": 25, "label": "Minimal ad-hoc training with low data literacy" },
+        { "value": 50, "label": "Regular training programs with growing data literacy" },
+        { "value": 75, "label": "Comprehensive learning paths with widespread data-driven culture" },
+        { "value": 100, "label": "Continuous learning ecosystem with certifications and data-first culture" }
+      ]
+    }
+  ],
+  "changeManagement": [
+    {
+      "id": "change_1",
+      "text": "How would you describe your organizational learning culture and adaptability?",
+      "options": [
+        { "value": 0, "label": "Resistant to change - traditional approaches strongly preferred" },
+        { "value": 25, "label": "Slow to adopt - very cautious about new approaches" },
+        { "value": 50, "label": "Moderately adaptive - open to learning with support" },
+        { "value": 75, "label": "Learning-oriented - continuous improvement mindset embedded" },
+        { "value": 100, "label": "Innovation-driven - experimentation actively encouraged and rewarded" }
+      ]
+    },
+    {
+      "id": "change_2",
+      "text": "How effective is your change management capability for AI transformation?",
+      "options": [
+        { "value": 0, "label": "No change management processes or support" },
+        { "value": 25, "label": "Ad-hoc approach to change with limited success" },
+        { "value": 50, "label": "Basic change management framework being applied" },
+        { "value": 75, "label": "Structured change management with proven success" },
+        { "value": 100, "label": "Agile change management - highly effective with AI-specific expertise" }
+      ]
+    },
+    {
+      "id": "change_3",
+      "text": "How well do teams collaborate cross-functionally on AI initiatives?",
+      "options": [
+        { "value": 0, "label": "No cross-functional collaboration - strong silos" },
+        { "value": 25, "label": "Minimal collaboration - mostly department-isolated work" },
+        { "value": 50, "label": "Some cross-functional projects with mixed success" },
+        { "value": 75, "label": "Strong collaborative culture with effective cross-functional teams" },
+        { "value": 100, "label": "Seamless integration with high-performing cross-functional AI teams" }
+      ]
+    }
+  ],
+  "valueRealization": [
+    {
+      "id": "value_1",
+      "text": "How do you measure success and track ROI for AI initiatives?",
+      "options": [
+        { "value": 0, "label": "No success metrics or ROI tracking defined" },
+        { "value": 25, "label": "Technical metrics only with no business value tracking" },
+        { "value": 50, "label": "Mix of technical and business metrics with basic ROI" },
+        { "value": 75, "label": "Clear business KPIs with comprehensive ROI tracking" },
+        { "value": 100, "label": "Sophisticated value framework with real-time ROI dashboards and optimization" }
+      ]
+    },
+    {
+      "id": "value_2",
+      "text": "What is your approach to AI business case development and value modeling?",
+      "options": [
+        { "value": 0, "label": "No business cases required or value modeling" },
+        { "value": 25, "label": "High-level cost estimates only" },
+        { "value": 50, "label": "Basic ROI calculations and simple business cases" },
+        { "value": 75, "label": "Comprehensive business cases with NPV analysis and benefits tracking" },
+        { "value": 100, "label": "Sophisticated value modeling with scenario analysis and continuous optimization" }
+      ]
+    }
+  ]
 }

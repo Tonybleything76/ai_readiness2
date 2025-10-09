@@ -7,7 +7,7 @@ import {
   calculateOverallScore,
   getReadinessLevel,
 } from '../shared/assessment-data.js';
-import { freeJson, fullJson, FREE_COUNT, FULL_COUNT } from './utils/questionLoader.js';
+import { freeJson, fullJson, dimensionOverviews, FREE_COUNT, FULL_COUNT } from './utils/questionLoader.js';
 
 const router = Router();
 
@@ -44,7 +44,8 @@ router.get('/api/assessment', (req, res) => {
   res.json({ 
     sections, 
     tier: selectedTier,
-    questionCount 
+    questionCount,
+    overviews: dimensionOverviews
   });
 });
 

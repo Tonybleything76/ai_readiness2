@@ -1,0 +1,38 @@
+{
+  "strategicLeadership": {
+    "title": "Strategic Leadership and Vision",
+    "overview": "This section assesses your executive team's understanding of AI potential, strategic commitment to transformation, and ability to articulate a compelling AI vision. We'll evaluate leadership's AI literacy, investment commitment, governance structures, and capability to drive organizational change. Your responses help us understand how well your leadership is positioned to guide successful AI adoption."
+  },
+  "useCasePortfolio": {
+    "title": "AI Use Case Portfolio and Prioritization",
+    "overview": "This section evaluates your organization's ability to identify, prioritize, and execute AI opportunities that deliver measurable business value. We'll assess your use case discovery processes, prioritization frameworks, pilot-to-production pathways, and portfolio management capabilities. Your responses reveal how effectively you balance quick wins with transformational initiatives."
+  },
+  "dataFoundation": {
+    "title": "Data Foundation and Quality",
+    "overview": "This section examines the quality, accessibility, governance, and management of your data assets—the fundamental fuel for AI success. We'll evaluate data quality standards, accessibility mechanisms, governance frameworks, architecture maturity, and management processes. Your responses show how well your data foundation supports AI initiatives."
+  },
+  "techInfrastructure": {
+    "title": "Technology Infrastructure and MLOps",
+    "overview": "This section assesses your technological capabilities including cloud infrastructure, computing resources, ML platforms, and integration capabilities necessary for AI implementation. We'll evaluate cloud maturity, computational resources, scalability, DevOps practices, and ML platform capabilities. Your responses indicate your technical readiness to support AI at scale."
+  },
+  "governanceRisk": {
+    "title": "Governance, Risk, and Security",
+    "overview": "This section examines your approach to AI governance, risk management, regulatory compliance, and security measures to ensure responsible and safe AI deployment. We'll assess compliance readiness, security frameworks, risk management processes, model governance, and incident response capabilities. Your responses reveal how well you manage AI-related risks."
+  },
+  "responsibleAI": {
+    "title": "Responsible AI and Ethics",
+    "overview": "This section evaluates your commitment to ethical AI practices including fairness, transparency, accountability, and bias mitigation. We'll assess ethics frameworks, bias detection and mitigation practices, transparency mechanisms, accountability structures, and stakeholder impact assessment processes. Your responses show your dedication to responsible AI development."
+  },
+  "peopleSkills": {
+    "title": "People, Skills, and Operating Model",
+    "overview": "This section assesses your AI talent capabilities, skills development programs, and ability to attract, develop, and retain AI expertise. We'll evaluate AI skills inventory, training programs, talent acquisition strategies, data literacy levels, and knowledge management practices. Your responses indicate your human capital readiness for AI transformation."
+  },
+  "changeManagement": {
+    "title": "Change Management and Adoption",
+    "overview": "This section evaluates your organization's cultural readiness for AI transformation, including adaptability, learning culture, innovation mindset, and ability to manage change effectively. We'll assess learning culture, change management capabilities, cross-functional collaboration, innovation practices, and employee engagement approaches. Your responses reveal your cultural preparedness for AI adoption."
+  },
+  "valueRealization": {
+    "title": "Value Realization and Measurement",
+    "overview": "This section assesses your ability to measure, track, and realize tangible business value from AI investments. We'll evaluate measurement frameworks, business case development, ROI tracking, benefits realization processes, and value optimization practices. Your responses show how well you capture and maximize the business value of AI initiatives."
+  }
+}
