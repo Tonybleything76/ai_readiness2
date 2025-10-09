@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { Button } from '../components/ui/button';
@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Progress } from '../components/ui/progress';
-import { apiRequest, queryClient } from '../lib/queryClient';
+import { apiRequest } from '../lib/queryClient';
 import { Server, Database, Users, Target, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { AssessmentSection } from '../../../shared/assessment-data';
 
@@ -25,8 +25,24 @@ export function Assessment() {
   const [industry, setIndustry] = useState('');
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
-  const { data: assessmentData, isLoading } = useQuery<{ sections: AssessmentSection[] }>({
-    queryKey: ['/api/assessment'],
+  // Get tier from URL query parameter
+  const tier = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tierParam = params.get('tier');
+    return tierParam === 'full' ? 'full' : 'free'; // Default to free
+  }, []);
+
+  const { data: assessmentData, isLoading } = useQuery<{ 
+    sections: AssessmentSection[];
+    tier: string;
+    questionCount: number;
+  }>({
+    queryKey: ['/api/assessment', tier],
+    queryFn: async () => {
+      const response = await fetch(`/api/assessment?tier=${tier}`);
+      if (!response.ok) throw new Error('Failed to fetch assessment');
+      return response.json();
+    },
   });
 
   const submitMutation = useMutation({
@@ -35,6 +51,8 @@ export function Assessment() {
         organizationName: orgName,
         industry,
         answers,
+        assessmentMode: assessmentData?.tier || tier,
+        questionCount: assessmentData?.questionCount,
       });
     },
     onSuccess: (data) => {
