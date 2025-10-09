@@ -81,9 +81,9 @@ export function Landing() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/pricing" className="w-full sm:w-auto">
-              <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" size="lg" data-testid="button-purchase-full-assessment">
-                Purchase Your Full Assessment
+            <Link href="/assessment?tier=full" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" size="lg" data-testid="button-start-full-assessment">
+                Try Full Assessment (90 Questions)
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>

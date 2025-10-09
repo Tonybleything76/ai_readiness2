@@ -31,8 +31,9 @@ A comprehensive AI Readiness Assessment web application designed as a diagnostic
 
 ### Landing Page
 - **Sales-focused design** with clear value proposition
-- Two primary CTAs: "Take the Free Assessment Now" and "Purchase Your Full Assessment"
-- 9-dimension framework overview with strategic focus
+- Two primary CTAs: "Take the Free Assessment Now" and "Try Full Assessment (90 Questions)"
+- **9-dimension methodology framework** displayed on landing page as "Our Comprehensive 9-Dimension Framework" section
+- Direct access to both free and full assessments from main CTAs
 - Links to Full Assessment Overview page and Pricing page
 - Professional branding and messaging
 
@@ -45,9 +46,11 @@ A comprehensive AI Readiness Assessment web application designed as a diagnostic
 
 ### Pricing Page (/pricing)
 - Pricing tiers for full assessment
-- Feature comparison
-- Get Started CTA (currently placeholder - no payment processing)
-- Future: Payment integration planned
+- Feature comparison between Free and Full tiers
+- **Direct access to Full Assessment** - "Start Full Assessment" button available (no payment required)
+- Enterprise and custom solutions section
+- FAQ section addressing common questions
+- Note: Payment integration planned for future release
 
 ### Assessment Flow
 - Guided step-by-step experience

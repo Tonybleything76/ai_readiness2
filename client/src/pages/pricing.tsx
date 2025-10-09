@@ -107,12 +107,14 @@ export function Pricing() {
                   <span>Industry benchmarking</span>
                 </li>
               </ul>
-              <Button className="w-full bg-indigo-600 hover:bg-indigo-700" size="lg" data-testid="button-pricing-full">
-                Coming Soon - Contact Us
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Link href="/assessment?tier=full" className="block">
+                <Button className="w-full bg-indigo-600 hover:bg-indigo-700" size="lg" data-testid="button-pricing-full">
+                  Start Full Assessment
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
               <p className="text-sm text-gray-600 text-center mt-3">
-                Payment functionality available in next release
+                No payment required - Try the full 90-question assessment now
               </p>
             </CardContent>
           </Card>
