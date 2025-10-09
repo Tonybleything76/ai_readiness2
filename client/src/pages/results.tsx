@@ -3,15 +3,34 @@ import { useParams, Link } from 'wouter';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Progress } from '../components/ui/progress';
-import { Home, Download, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { Home, Download, TrendingUp, CheckCircle2, Award } from 'lucide-react';
 import { READINESS_LEVELS, ASSESSMENT_SECTIONS } from '../../../shared/assessment-data';
-import type { Response } from '../../../shared/schema';
+
+// API response type (different from database schema due to field mapping)
+interface AssessmentResult {
+  id: string;
+  organizationName: string;
+  industry: string;
+  answers: Record<string, number>;
+  scores: {
+    technology: number;
+    dataManagement: number;
+    organizationalCulture: number;
+    strategyPlanning: number;
+    riskCompliance: number;
+    overall: number;
+  };
+  readinessLevel: string;
+  createdAt: string;
+  assessmentMode?: 'free' | 'full';
+  questionCount?: number;
+}
 
 export function Results() {
   const params = useParams();
   const resultId = params.id;
 
-  const { data: result, isLoading, error } = useQuery<Response>({
+  const { data: result, isLoading, error } = useQuery<AssessmentResult>({
     queryKey: ['/api/results', resultId],
     queryFn: async () => {
       const response = await fetch(`/api/results/${resultId}`);
@@ -77,6 +96,16 @@ export function Results() {
               day: 'numeric' 
             })}
           </p>
+          {result.assessmentMode && result.questionCount && (
+            <div className="flex items-center justify-center gap-2 mt-3" data-testid="info-assessment-tier">
+              <Award className="h-4 w-4 text-blue-600" />
+              <span className="text-sm font-medium text-gray-700">
+                {result.assessmentMode === 'free' ? 'Free' : 'Full'} Assessment
+              </span>
+              <span className="text-sm text-gray-500">•</span>
+              <span className="text-sm text-gray-600">{result.questionCount} questions</span>
+            </div>
+          )}
         </div>
 
         {/* Overall Score */}
