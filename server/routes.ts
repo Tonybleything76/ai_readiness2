@@ -93,11 +93,15 @@ router.post('/api/assessment/submit', async (req, res) => {
     const tierSections = assessmentMode ? buildSectionsForTier(assessmentMode) : ASSESSMENT_SECTIONS;
 
     const scores = {
-      technology: calculateSectionScore(data.answers, 'technology', tierSections),
-      dataManagement: calculateSectionScore(data.answers, 'dataManagement', tierSections),
-      organizationalCulture: calculateSectionScore(data.answers, 'organizationalCulture', tierSections),
-      strategyPlanning: calculateSectionScore(data.answers, 'strategyPlanning', tierSections),
-      riskCompliance: calculateSectionScore(data.answers, 'riskCompliance', tierSections),
+      strategicLeadership: calculateSectionScore(data.answers, 'strategicLeadership', tierSections),
+      useCasePortfolio: calculateSectionScore(data.answers, 'useCasePortfolio', tierSections),
+      dataFoundation: calculateSectionScore(data.answers, 'dataFoundation', tierSections),
+      techInfrastructure: calculateSectionScore(data.answers, 'techInfrastructure', tierSections),
+      governanceRisk: calculateSectionScore(data.answers, 'governanceRisk', tierSections),
+      responsibleAI: calculateSectionScore(data.answers, 'responsibleAI', tierSections),
+      peopleSkills: calculateSectionScore(data.answers, 'peopleSkills', tierSections),
+      changeManagement: calculateSectionScore(data.answers, 'changeManagement', tierSections),
+      valueRealization: calculateSectionScore(data.answers, 'valueRealization', tierSections),
     };
 
     const overall = calculateOverallScore(scores);
