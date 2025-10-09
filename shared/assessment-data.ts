@@ -362,8 +362,12 @@ export function getReadinessLevel(score: number): ReadinessLevel {
   ) || READINESS_LEVELS[0];
 }
 
-export function calculateSectionScore(answers: Record<string, number>, sectionId: string): number {
-  const section = ASSESSMENT_SECTIONS.find(s => s.id === sectionId);
+export function calculateSectionScore(
+  answers: Record<string, number>, 
+  sectionId: string,
+  sections: AssessmentSection[] = ASSESSMENT_SECTIONS
+): number {
+  const section = sections.find(s => s.id === sectionId);
   if (!section) return 0;
 
   const questionIds = section.questions.map(q => q.id);

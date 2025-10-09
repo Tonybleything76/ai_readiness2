@@ -7,11 +7,45 @@ import {
   calculateOverallScore,
   getReadinessLevel,
 } from '../shared/assessment-data.js';
+import { freeJson, fullJson, FREE_COUNT, FULL_COUNT } from './utils/questionLoader.js';
 
 const router = Router();
 
-router.get('/api/assessment', (_req, res) => {
-  res.json({ sections: ASSESSMENT_SECTIONS });
+// Helper function to build sections with tier-specific questions
+function buildSectionsForTier(tier: 'free' | 'full') {
+  const questionData = tier === 'free' ? freeJson : fullJson;
+  
+  return ASSESSMENT_SECTIONS.map(section => {
+    const sectionQuestions = questionData[section.id] || [];
+    return {
+      ...section,
+      questions: sectionQuestions
+    };
+  });
+}
+
+router.get('/api/assessment', (req, res) => {
+  const tier = req.query.tier as string;
+  
+  // Validate tier parameter
+  if (tier && tier !== 'free' && tier !== 'full') {
+    res.status(400).json({ 
+      error: 'Invalid tier', 
+      message: 'Tier must be either "free" or "full"' 
+    });
+    return;
+  }
+  
+  // Default to free tier if not specified
+  const selectedTier = (tier as 'free' | 'full') || 'free';
+  const sections = buildSectionsForTier(selectedTier);
+  const questionCount = selectedTier === 'free' ? FREE_COUNT : FULL_COUNT;
+  
+  res.json({ 
+    sections, 
+    tier: selectedTier,
+    questionCount 
+  });
 });
 
 const submitAssessmentSchema = z.object({
@@ -32,20 +66,20 @@ router.post('/api/assessment/submit', async (req, res) => {
     
     if (assessmentMode && !questionCount) {
       // Auto-derive questionCount from mode
-      questionCount = assessmentMode === 'free' ? 25 : 90;
+      questionCount = assessmentMode === 'free' ? FREE_COUNT : FULL_COUNT;
     } else if (!assessmentMode && questionCount) {
       // Auto-derive assessmentMode from count
-      assessmentMode = questionCount === 25 ? 'free' : questionCount === 90 ? 'full' : undefined;
+      assessmentMode = questionCount === FREE_COUNT ? 'free' : questionCount === FULL_COUNT ? 'full' : undefined;
       if (!assessmentMode) {
         res.status(400).json({
           error: 'Invalid questionCount',
-          message: 'questionCount must be 25 (free tier) or 90 (full tier)'
+          message: `questionCount must be ${FREE_COUNT} (free tier) or ${FULL_COUNT} (full tier)`
         });
         return;
       }
     } else if (assessmentMode && questionCount) {
       // Validate match if both provided
-      const expectedCount = assessmentMode === 'free' ? 25 : 90;
+      const expectedCount = assessmentMode === 'free' ? FREE_COUNT : FULL_COUNT;
       if (questionCount !== expectedCount) {
         res.status(400).json({
           error: 'Invalid questionCount',
@@ -55,12 +89,15 @@ router.post('/api/assessment/submit', async (req, res) => {
       }
     }
 
+    // Build tier-specific sections for accurate scoring
+    const tierSections = assessmentMode ? buildSectionsForTier(assessmentMode) : ASSESSMENT_SECTIONS;
+
     const scores = {
-      technology: calculateSectionScore(data.answers, 'technology'),
-      dataManagement: calculateSectionScore(data.answers, 'dataManagement'),
-      organizationalCulture: calculateSectionScore(data.answers, 'organizationalCulture'),
-      strategyPlanning: calculateSectionScore(data.answers, 'strategyPlanning'),
-      riskCompliance: calculateSectionScore(data.answers, 'riskCompliance'),
+      technology: calculateSectionScore(data.answers, 'technology', tierSections),
+      dataManagement: calculateSectionScore(data.answers, 'dataManagement', tierSections),
+      organizationalCulture: calculateSectionScore(data.answers, 'organizationalCulture', tierSections),
+      strategyPlanning: calculateSectionScore(data.answers, 'strategyPlanning', tierSections),
+      riskCompliance: calculateSectionScore(data.answers, 'riskCompliance', tierSections),
     };
 
     const overall = calculateOverallScore(scores);
