@@ -29,6 +29,23 @@ A comprehensive AI Readiness Assessment web application designed as a diagnostic
   3. Good Progress (60-80%)
   4. AI Ready (80-100%)
 
+### Global Navigation & Footer (NEW - Phase 1)
+- **Persistent Navigation Bar:**
+  - Sticky header with brand logo
+  - Desktop: Horizontal menu with all navigation links
+  - Mobile: Responsive hamburger menu
+  - Links: Home, Free Assessment, Full Assessment, Pricing, How It Works, Outcomes, Contact
+  - "Get Started" CTA button (links to full assessment)
+  - Active link highlighting based on current route
+  - Keyboard accessible with focus states
+  
+- **Global Footer:**
+  - Brand section with logo and description
+  - Product links (Free Assessment, Full Assessment, Pricing, How It Works)
+  - Company links (Outcomes, Contact)
+  - Social media icons (LinkedIn, Twitter, Email)
+  - Copyright information
+
 ### Landing Page
 - **Sales-focused design** with clear value proposition
 - Two primary CTAs: "Take the Free Assessment Now" and "Try Full Assessment (90 Questions)"
@@ -51,6 +68,27 @@ A comprehensive AI Readiness Assessment web application designed as a diagnostic
 - Enterprise and custom solutions section
 - FAQ section addressing common questions
 - Note: Payment integration planned for future release
+
+### How It Works Page (/how-it-works) (NEW - Phase 1)
+- Step-by-step assessment process explanation
+- 4 main steps with duration estimates
+- 9 dimensions overview section
+- "What You'll Receive" highlights
+- CTAs to start free or full assessment
+
+### Outcomes Page (/outcomes) (NEW - Phase 1)
+- Business outcomes and benefits showcase
+- 6 key business outcomes with icons
+- Success stories from different industries
+- Key benefits checklist
+- ROI statistics section
+- CTAs to start assessment
+
+### Contact Page (/contact) (NEW - Phase 1)
+- Contact form (name, email, company, phone, message)
+- Contact methods: Email, Phone, Address
+- Quick action buttons (Start Assessment, Schedule Demo, View Pricing)
+- FAQ section
 
 ### Assessment Flow
 - Guided step-by-step experience
