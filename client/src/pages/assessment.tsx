@@ -7,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Progress } from '../components/ui/progress';
 import { apiRequest } from '../lib/queryClient';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
 import type { AssessmentSection } from '../../../shared/assessment-data';
 
 export function Assessment() {
@@ -16,6 +16,7 @@ export function Assessment() {
   const [orgName, setOrgName] = useState('');
   const [industry, setIndustry] = useState('');
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Get tier from URL query parameter
   const tier = useMemo(() => {
@@ -40,6 +41,7 @@ export function Assessment() {
 
   const submitMutation = useMutation({
     mutationFn: async () => {
+      setSubmitError(null);
       return apiRequest('/api/assessment/submit', 'POST', {
         organizationName: orgName,
         industry,
@@ -50,6 +52,9 @@ export function Assessment() {
     },
     onSuccess: (data) => {
       setLocation(`/results/${data.id}`);
+    },
+    onError: (error: Error) => {
+      setSubmitError(error.message || 'Failed to submit assessment. Please try again.');
     },
   });
 
@@ -208,6 +213,21 @@ export function Assessment() {
               </Card>
             ))}
           </div>
+        )}
+
+        {/* Error Message */}
+        {submitError && (
+          <Card className="mt-6 border-red-200 bg-red-50" data-testid="card-submit-error">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-red-900">Submission Failed</p>
+                  <p className="text-sm text-red-700 mt-1" data-testid="text-error-message">{submitError}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         {/* Navigation */}

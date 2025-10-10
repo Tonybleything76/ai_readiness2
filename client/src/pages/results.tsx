@@ -6,18 +6,22 @@ import { Progress } from '../components/ui/progress';
 import { Home, Download, TrendingUp, CheckCircle2, Award } from 'lucide-react';
 import { READINESS_LEVELS, ASSESSMENT_SECTIONS } from '../../../shared/assessment-data';
 
-// API response type (different from database schema due to field mapping)
+// API response type (matches backend pillarScores structure)
 interface AssessmentResult {
   id: string;
   organizationName: string;
   industry: string;
   answers: Record<string, number>;
   scores: {
-    technology: number;
-    dataManagement: number;
-    organizationalCulture: number;
-    strategyPlanning: number;
-    riskCompliance: number;
+    strategicLeadership: number;
+    useCasePortfolio: number;
+    dataFoundation: number;
+    techInfrastructure: number;
+    governanceRisk: number;
+    responsibleAI: number;
+    peopleSkills: number;
+    changeManagement: number;
+    valueRealization: number;
     overall: number;
   };
   readinessLevel: string;
@@ -163,6 +167,48 @@ export function Results() {
           </CardContent>
         </Card>
 
+        {/* Upgrade CTA for Free Tier Users */}
+        {result.assessmentMode === 'free' && (
+          <Card className="mb-8 border-0 bg-gradient-to-r from-blue-600 to-indigo-600 text-white" data-testid="card-upgrade-cta">
+            <CardContent className="pt-6">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold mb-2">Want Deeper Insights?</h3>
+                  <p className="text-white/90 mb-4">
+                    Upgrade to the Full Assessment with 90 questions for comprehensive analysis across all 9 dimensions. Get detailed recommendations, actionable insights, and a complete roadmap for your AI transformation journey.
+                  </p>
+                  <ul className="space-y-2 text-sm text-white/90">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4" />
+                      <span>3.6x more detailed analysis (90 vs 25 questions)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4" />
+                      <span>Granular scores for each dimension</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4" />
+                      <span>Personalized recommendations and action plans</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="flex-shrink-0">
+                  <Link href="/assessment?tier=full">
+                    <Button 
+                      size="lg" 
+                      className="bg-white text-blue-600 hover:bg-gray-100 font-semibold"
+                      data-testid="button-upgrade-full"
+                    >
+                      Take Full Assessment
+                      <Award className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Section Scores */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-6" data-testid="text-section-scores-title">Scores by Dimension</h2>
@@ -219,28 +265,44 @@ export function Results() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-gray-600">
-              Your overall AI readiness score is a weighted average of your performance across all five dimensions:
+              Your overall AI readiness score is a weighted average of your performance across all nine dimensions:
             </p>
-            <div className="grid sm:grid-cols-2 gap-3">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm">Data Management & Quality</span>
-                <span className="text-blue-600 font-bold">25%</span>
+                <span className="text-sm">Data Foundation</span>
+                <span className="text-blue-600 font-bold">15%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                <span className="text-sm">Strategic Leadership</span>
+                <span className="text-blue-600 font-bold">12%</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                 <span className="text-sm">Technology Infrastructure</span>
-                <span className="text-blue-600 font-bold">20%</span>
+                <span className="text-blue-600 font-bold">12%</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm">Organizational Culture</span>
-                <span className="text-blue-600 font-bold">20%</span>
+                <span className="text-sm">Governance & Risk</span>
+                <span className="text-blue-600 font-bold">12%</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm">Strategy & Planning</span>
-                <span className="text-blue-600 font-bold">20%</span>
+                <span className="text-sm">People & Skills</span>
+                <span className="text-blue-600 font-bold">12%</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm">Risk & Compliance</span>
-                <span className="text-blue-600 font-bold">15%</span>
+                <span className="text-sm">Use Case Portfolio</span>
+                <span className="text-blue-600 font-bold">10%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                <span className="text-sm">Responsible AI</span>
+                <span className="text-blue-600 font-bold">10%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                <span className="text-sm">Change Management</span>
+                <span className="text-blue-600 font-bold">10%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                <span className="text-sm">Value Realization</span>
+                <span className="text-blue-600 font-bold">7%</span>
               </div>
             </div>
           </CardContent>
