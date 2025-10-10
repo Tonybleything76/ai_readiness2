@@ -1,11 +1,7 @@
 import express from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import routes from './routes.js';
 import './utils/questionLoader.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -14,7 +10,9 @@ app.use(express.json());
 app.use(routes);
 
 // Serve static files from Vite build (for production)
-const distPath = path.join(__dirname, '..', 'dist');
+// Use process.cwd() for more reliable path resolution in production
+const distPath = path.join(process.cwd(), 'dist');
+console.log('Serving static files from:', distPath);
 app.use(express.static(distPath));
 
 // Handle client-side routing - serve index.html for all non-API routes
