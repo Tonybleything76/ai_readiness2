@@ -1,7 +1,7 @@
 import { Link } from 'wouter';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Sparkles, Calendar } from 'lucide-react';
 
 export function Pricing() {
   return (
@@ -173,12 +173,19 @@ export function Pricing() {
                 </ul>
               </div>
             </div>
-            <div className="text-center">
-              <p className="text-gray-600 mb-4">Contact us for custom pricing and implementation timeline</p>
-              <Button variant="outline" size="lg" className="text-blue-600 border-blue-600 hover:bg-blue-50" data-testid="button-contact-enterprise">
-                Contact Sales Team
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/schedule">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white" data-testid="button-schedule-consultation">
+                  <Calendar className="mr-2 h-5 w-5" />
+                  Schedule Consultation
+                </Button>
+              </Link>
+              <Link href="/contact">
+                <Button variant="outline" size="lg" className="text-blue-600 border-blue-600 hover:bg-blue-50" data-testid="button-contact-enterprise">
+                  Contact Sales Team
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>

@@ -87,8 +87,31 @@ A comprehensive AI Readiness Assessment web application designed as a diagnostic
 ### Contact Page (/contact) (NEW - Phase 1)
 - Contact form (name, email, company, phone, message)
 - Contact methods: Email, Phone, Address
-- Quick action buttons (Start Assessment, Schedule Demo, View Pricing)
+- Quick action buttons (Start Assessment, Schedule Consultation, View Pricing)
 - FAQ section
+
+### Scheduling & Consultation (NEW - Phase 4)
+- **Schedule Page (/schedule):**
+  - Embedded Calendly widget for booking consultations
+  - What to expect section with expert guidance, personalized insights, and action roadmap
+  - Session details explaining the post-booking process
+  - Automatic redirect to confirmation page after successful booking
+  
+- **Confirmation Page (/confirmation):**
+  - Success confirmation with visual feedback
+  - Next steps information (email, assessment review, consultation session, follow-up)
+  - Preparation tips for the consultation
+  - Rescheduling information and support contact
+  
+- **Calendly Configuration:**
+  - Configurable URL in `client/src/config/calendly.ts`
+  - Default placeholder URL that should be replaced with actual Calendly link
+  - Message event listener for automatic navigation to confirmation
+  
+- **Integration Points:**
+  - Results page includes "Schedule Consultation" CTA after assessment completion
+  - Pricing page offers scheduling for enterprise solutions
+  - Contact page updated to link to internal scheduling flow
 
 ### Assessment Flow
 - Guided step-by-step experience

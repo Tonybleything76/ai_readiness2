@@ -10,6 +10,8 @@ import { Pricing } from './pages/pricing';
 import { HowItWorks } from './pages/how-it-works';
 import { Outcomes } from './pages/outcomes';
 import { Contact } from './pages/contact';
+import { Schedule } from './pages/schedule';
+import { Confirmation } from './pages/confirmation';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/how-it-works" component={HowItWorks} />
           <Route path="/outcomes" component={Outcomes} />
           <Route path="/contact" component={Contact} />
+          <Route path="/schedule" component={Schedule} />
+          <Route path="/confirmation" component={Confirmation} />
           <Route>
             <div className="min-h-screen flex items-center justify-center">
               <div className="text-center">

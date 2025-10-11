@@ -157,12 +157,12 @@ export function Contact() {
                     Start Free Assessment
                   </Button>
                 </Link>
-                <a href="https://calendly.com" target="_blank" rel="noopener noreferrer">
+                <Link href="/schedule">
                   <Button variant="outline" className="w-full justify-start" data-testid="button-schedule-demo">
                     <Calendar className="mr-2 h-4 w-4" />
-                    Schedule a Demo
+                    Schedule a Consultation
                   </Button>
-                </a>
+                </Link>
                 <Link href="/pricing">
                   <Button variant="outline" className="w-full justify-start" data-testid="button-view-pricing">
                     <Mail className="mr-2 h-4 w-4" />

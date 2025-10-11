@@ -3,7 +3,7 @@ import { useParams, Link } from 'wouter';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Progress } from '../components/ui/progress';
-import { Home, Download, TrendingUp, CheckCircle2, Award } from 'lucide-react';
+import { Home, Download, TrendingUp, CheckCircle2, Award, Calendar } from 'lucide-react';
 import { READINESS_LEVELS, ASSESSMENT_SECTIONS } from '../../../shared/assessment-data';
 
 // API response type (matches backend pillarScores structure)
@@ -303,6 +303,46 @@ export function Results() {
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                 <span className="text-sm">Value Realization</span>
                 <span className="text-blue-600 font-bold">7%</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Schedule Consultation CTA */}
+        <Card className="mb-8 border-0 bg-gradient-to-r from-indigo-600 to-blue-600 text-white" data-testid="card-schedule-cta">
+          <CardContent className="pt-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold mb-2">Ready to Take Action?</h3>
+                <p className="text-white/90 mb-4">
+                  Schedule a free consultation with our AI readiness experts to discuss your results, get personalized recommendations, and create a roadmap for your AI transformation journey.
+                </p>
+                <ul className="space-y-2 text-sm text-white/90">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>30-minute personalized session</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>Expert review of your assessment results</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>Customized action plan and next steps</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="flex-shrink-0">
+                <Link href="/schedule">
+                  <Button 
+                    size="lg" 
+                    className="bg-white text-indigo-600 hover:bg-gray-100 font-semibold"
+                    data-testid="button-schedule-consultation"
+                  >
+                    <Calendar className="mr-2 h-5 w-5" />
+                    Schedule Consultation
+                  </Button>
+                </Link>
               </div>
             </div>
           </CardContent>
