@@ -67,23 +67,23 @@ export function Landing() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent" data-testid="text-hero-title">
-            AI Readiness Assessment
+            Unlock Your AI Advantage
           </h1>
           <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto" data-testid="text-hero-description">
-            Discover your organization's preparedness for AI adoption. Our comprehensive assessment evaluates your readiness across nine critical dimensions, providing you with actionable insights to accelerate your AI journey.
+            Get a detailed, 9-dimension scorecard, executive report, and AI roadmap. Choose the free preview or the full assessment with expert analysis.
           </p>
           
           {/* Main CTAs */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto mb-8">
-            <Link href="/assessment?tier=free" className="w-full sm:w-auto">
-              <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white" size="lg" data-testid="button-take-free-assessment">
-                Take the Free Assessment Now
+            <Link href="/assessment?tier=full" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" size="lg" data-testid="button-start-full-assessment">
+                Start Full Readiness Assessment
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/assessment?tier=full" className="w-full sm:w-auto">
-              <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" size="lg" data-testid="button-start-full-assessment">
-                Try Full Assessment (90 Questions)
+            <Link href="/assessment?tier=free" className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto border-2 border-blue-600 text-blue-600 hover:bg-blue-100 hover:text-blue-700" size="lg" data-testid="button-take-free-assessment">
+                Preview With Free 25-Question Assessment
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -169,8 +169,8 @@ export function Landing() {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <Card className="border-2 hover:border-blue-500 transition-colors" data-testid="card-free-tier">
               <CardHeader>
-                <CardTitle className="text-2xl">Free Assessment</CardTitle>
-                <CardDescription className="text-lg">Quick diagnostic evaluation</CardDescription>
+                <CardTitle className="text-2xl">Free Preview</CardTitle>
+                <CardDescription className="text-lg">Quick snapshot of your readiness</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -181,11 +181,11 @@ export function Landing() {
                   <ul className="space-y-2 text-sm text-gray-600">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
-                      <span>All 9 assessment dimensions</span>
+                      <span>Basic coverage of 9 dimensions</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
-                      <span>Core readiness insights</span>
+                      <span>High-level readiness score</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
@@ -193,7 +193,7 @@ export function Landing() {
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
-                      <span>Instant results and scoring</span>
+                      <span>Instant basic results</span>
                     </li>
                   </ul>
                 </div>
@@ -203,10 +203,10 @@ export function Landing() {
             <Card className="border-2 border-indigo-500 bg-gradient-to-br from-indigo-50 to-blue-50 hover:border-indigo-600 transition-colors" data-testid="card-full-tier">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <CardTitle className="text-2xl">Full Assessment</CardTitle>
-                  <span className="px-2 py-1 bg-indigo-600 text-white text-xs rounded-full">Comprehensive</span>
+                  <CardTitle className="text-2xl">Full Readiness Assessment</CardTitle>
+                  <span className="px-2 py-1 bg-indigo-600 text-white text-xs rounded-full">Recommended</span>
                 </div>
-                <CardDescription className="text-lg">Deep-dive analysis with expert insights</CardDescription>
+                <CardDescription className="text-lg">Comprehensive analysis with expert recommendations</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -217,19 +217,23 @@ export function Landing() {
                   <ul className="space-y-2 text-sm text-gray-600">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
-                      <span>Complete evaluation of all 9 dimensions</span>
+                      <span><strong>Detailed 9-dimension scorecard</strong> with deep insights</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
-                      <span>Detailed analysis and recommendations</span>
+                      <span><strong>Executive summary report</strong> ready for leadership</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
+                      <span><strong>Prioritized AI roadmap</strong> with actionable next steps</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
+                      <span><strong>Industry benchmarking</strong> to see how you compare</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
                       <span>~30 minutes to complete</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5" />
-                      <span>Actionable roadmap and benchmarking</span>
                     </li>
                   </ul>
                 </div>
