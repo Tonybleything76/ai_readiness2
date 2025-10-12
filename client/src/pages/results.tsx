@@ -3,8 +3,13 @@ import { useParams, Link } from 'wouter';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Progress } from '../components/ui/progress';
-import { Home, Download, TrendingUp, CheckCircle2, Award, Calendar } from 'lucide-react';
+import { Skeleton } from '../components/ui/skeleton';
+import { Tooltip } from '../components/ui/tooltip';
+import { Home, Download, TrendingUp, CheckCircle2, Award, Calendar, BarChart3, Share2, Check } from 'lucide-react';
 import { READINESS_LEVELS, ASSESSMENT_SECTIONS } from '../../../shared/assessment-data';
+import { RadarChart } from '../components/RadarChart';
+import { useCountUp } from '../hooks/useCountUp';
+import { useState } from 'react';
 
 // API response type (matches backend pillarScores structure)
 interface AssessmentResult {
@@ -46,10 +51,58 @@ export function Results() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your results...</p>
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* Header Skeleton */}
+          <div className="text-center mb-12">
+            <Skeleton className="h-12 w-48 mx-auto mb-4" />
+            <Skeleton className="h-10 w-96 mx-auto mb-2" />
+            <Skeleton className="h-6 w-64 mx-auto" />
+          </div>
+
+          {/* Overall Score Skeleton */}
+          <Card className="mb-8">
+            <CardHeader>
+              <Skeleton className="h-7 w-64" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-8">
+                <Skeleton className="h-24 w-24 rounded-lg" />
+                <div className="flex-1 space-y-3">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-20 w-full" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Chart Skeleton */}
+          <Card className="mb-8">
+            <CardHeader>
+              <Skeleton className="h-7 w-64" />
+              <Skeleton className="h-4 w-96 mt-2" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-96 w-full" />
+            </CardContent>
+          </Card>
+
+          {/* Dimension Cards Skeleton */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <Card key={i}>
+                <CardHeader>
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-4 w-full mt-2" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-8 w-20 mb-4" />
+                  <Skeleton className="h-2 w-full mb-4" />
+                  <Skeleton className="h-20 w-full" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -77,11 +130,25 @@ export function Results() {
     (level) => result.scores.overall >= level.range[0] && result.scores.overall <= level.range[1]
   ) || READINESS_LEVELS[0];
 
+  const animatedOverallScore = useCountUp(Math.round(result.scores.overall), 1500);
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 animate-fade-in">
           <div 
             className="inline-block px-6 py-3 rounded-full mb-4 text-white font-semibold"
             style={{ backgroundColor: readinessLevel.color }}
@@ -113,7 +180,7 @@ export function Results() {
         </div>
 
         {/* Overall Score */}
-        <Card className="mb-8 border-l-4" style={{ borderLeftColor: readinessLevel.color }} data-testid="card-overall-score">
+        <Card className="mb-8 border-l-4 animate-fade-in stagger-1" style={{ borderLeftColor: readinessLevel.color }} data-testid="card-overall-score">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-6 w-6" />
@@ -124,11 +191,11 @@ export function Results() {
             <div className="flex items-center gap-8 mb-6">
               <div className="text-center">
                 <div 
-                  className="text-6xl font-bold mb-2"
+                  className="text-6xl font-bold mb-2 transition-all duration-300"
                   style={{ color: readinessLevel.color }}
                   data-testid="text-overall-score"
                 >
-                  {Math.round(result.scores.overall)}
+                  {animatedOverallScore}
                 </div>
                 <div className="text-gray-600">out of 100</div>
               </div>
@@ -139,6 +206,31 @@ export function Results() {
                 </p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Visual Score Breakdown - Radar Chart */}
+        <Card className="mb-8 animate-fade-in stagger-2" data-testid="card-radar-chart">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-6 w-6" />
+              AI Readiness Visualization
+            </CardTitle>
+            <CardDescription>
+              Visual breakdown of your scores across all 9 dimensions
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RadarChart 
+              data={ASSESSMENT_SECTIONS.map(section => ({
+                dimension: section.title.length > 25 
+                  ? section.title.substring(0, 22) + '...' 
+                  : section.title,
+                score: result.scores[section.id as keyof typeof result.scores] as number,
+                fullMark: 100,
+              }))}
+              color={readinessLevel.color}
+            />
           </CardContent>
         </Card>
 
@@ -222,7 +314,10 @@ export function Results() {
               return (
                 <Card key={section.id} data-testid={`card-section-score-${section.id}`}>
                   <CardHeader>
-                    <CardTitle className="text-lg">{section.title}</CardTitle>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      {section.title}
+                      <Tooltip content={section.whatItAssesses} />
+                    </CardTitle>
                     <CardDescription>{section.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -349,7 +444,7 @@ export function Results() {
         </Card>
 
         {/* Actions */}
-        <div className="flex gap-4 justify-center">
+        <div className="flex flex-wrap gap-4 justify-center">
           <Link href="/">
             <Button variant="outline" data-testid="button-home">
               <Home className="mr-2 h-4 w-4" />
@@ -363,6 +458,23 @@ export function Results() {
           >
             <Download className="mr-2 h-4 w-4" />
             Download Results
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={handleShare}
+            data-testid="button-share"
+          >
+            {copied ? (
+              <>
+                <Check className="mr-2 h-4 w-4" />
+                Link Copied!
+              </>
+            ) : (
+              <>
+                <Share2 className="mr-2 h-4 w-4" />
+                Share Results
+              </>
+            )}
           </Button>
           <Link href="/assessment">
             <Button data-testid="button-retake">

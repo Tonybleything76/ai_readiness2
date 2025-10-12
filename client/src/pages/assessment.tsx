@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { Button } from '../components/ui/button';
@@ -6,24 +6,47 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Progress } from '../components/ui/progress';
+import { Skeleton } from '../components/ui/skeleton';
 import { apiRequest } from '../lib/queryClient';
 import { ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
 import type { AssessmentSection } from '../../../shared/assessment-data';
 
 export function Assessment() {
   const [, setLocation] = useLocation();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [orgName, setOrgName] = useState('');
-  const [industry, setIndustry] = useState('');
-  const [answers, setAnswers] = useState<Record<string, number>>({});
-  const [submitError, setSubmitError] = useState<string | null>(null);
-
+  
   // Get tier from URL query parameter
   const tier = useMemo(() => {
     const params = new URLSearchParams(window.location.search);
     const tierParam = params.get('tier');
-    return tierParam === 'full' ? 'full' : 'free'; // Default to free
+    return tierParam === 'full' ? 'full' : 'free';
   }, []);
+
+  // Load saved progress from localStorage
+  const savedProgress = useMemo(() => {
+    try {
+      const saved = localStorage.getItem(`assessment-progress-${tier}`);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  }, [tier]);
+
+  const [currentStep, setCurrentStep] = useState(savedProgress?.currentStep || 0);
+  const [orgName, setOrgName] = useState(savedProgress?.orgName || '');
+  const [industry, setIndustry] = useState(savedProgress?.industry || '');
+  const [answers, setAnswers] = useState<Record<string, number>>(savedProgress?.answers || {});
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Save progress to localStorage whenever it changes
+  useEffect(() => {
+    const progress = {
+      currentStep,
+      orgName,
+      industry,
+      answers,
+    };
+    localStorage.setItem(`assessment-progress-${tier}`, JSON.stringify(progress));
+  }, [currentStep, orgName, industry, answers, tier]);
 
   const { data: assessmentData, isLoading } = useQuery<{ 
     sections: AssessmentSection[];
@@ -51,6 +74,8 @@ export function Assessment() {
       });
     },
     onSuccess: (data) => {
+      // Clear saved progress on successful submission
+      localStorage.removeItem(`assessment-progress-${tier}`);
       setLocation(`/results/${data.id}`);
     },
     onError: (error: Error) => {
@@ -60,10 +85,40 @@ export function Assessment() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading assessment...</p>
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          {/* Progress Bar Skeleton */}
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-2">
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-5 w-12" />
+            </div>
+            <Skeleton className="h-2 w-full" />
+          </div>
+
+          {/* Card Skeleton */}
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-8 w-96" />
+              <Skeleton className="h-4 w-full mt-2" />
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Navigation Skeleton */}
+          <div className="flex justify-between mt-8">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-10 w-24" />
+          </div>
         </div>
       </div>
     );
