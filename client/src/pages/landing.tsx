@@ -63,18 +63,18 @@ export function Landing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-6xl mx-auto px-4 section-spacing-xl">
         {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent" data-testid="text-hero-title">
+        <div className="text-center section-spacing-2xl">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent" data-testid="text-hero-title">
             Unlock Your AI Advantage
           </h1>
-          <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto" data-testid="text-hero-description">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto" data-testid="text-hero-description">
             Get a detailed, 9-dimension scorecard, executive report, and AI roadmap. Choose the free preview or the full assessment with expert analysis.
           </p>
           
           {/* Main CTAs */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto mb-8">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto">
             <Link href="/assessment?tier=full" className="w-full sm:w-auto">
               <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" size="lg" data-testid="button-start-full-assessment">
                 Start Full Readiness Assessment
@@ -97,8 +97,8 @@ export function Landing() {
         </div>
 
         {/* Benefits Overview */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-8" data-testid="text-benefits-title">
+        <section className="section-spacing-xl">
+          <h2 className="text-3xl font-bold text-center" data-testid="text-benefits-title">
             Why Complete the AI Readiness Assessment?
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -130,11 +130,11 @@ export function Landing() {
         </section>
 
         {/* Nine Dimensions Methodology */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-4" data-testid="text-methodology-title">
+        <section className="section-spacing-xl">
+          <h2 className="text-3xl font-bold text-center" data-testid="text-methodology-title">
             Our Comprehensive 9-Dimension Framework
           </h2>
-          <p className="text-center text-gray-600 mb-8 max-w-3xl mx-auto" data-testid="text-methodology-description">
+          <p className="text-center text-gray-600 max-w-3xl mx-auto" data-testid="text-methodology-description">
             Based on extensive analysis of leading frameworks from premier consulting firms and research institutions, our assessment evaluates nine critical dimensions that determine AI readiness. This comprehensive approach ensures you understand all aspects of your organization's preparedness for successful AI transformation.
           </p>
           <div className="space-y-4">
@@ -148,7 +148,7 @@ export function Landing() {
                         <IconComponent className="h-6 w-6 text-blue-600" />
                       </div>
                       <div className="flex-1">
-                        <CardTitle className="mb-2">{dimension.title}</CardTitle>
+                        <CardTitle>{dimension.title}</CardTitle>
                         <CardDescription className="text-base">
                           {dimension.description}
                         </CardDescription>
@@ -162,8 +162,8 @@ export function Landing() {
         </section>
 
         {/* Assessment Tiers Comparison */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-8" data-testid="text-tiers-title">
+        <section className="section-spacing-xl">
+          <h2 className="text-3xl font-bold text-center" data-testid="text-tiers-title">
             Choose Your Assessment Level
           </h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -244,10 +244,10 @@ export function Landing() {
 
         {/* Final CTA */}
         <div className="text-center bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-12 text-white">
-          <h2 className="text-3xl font-bold mb-4" data-testid="text-final-cta-title">
+          <h2 className="text-3xl font-bold text-white" data-testid="text-final-cta-title">
             Ready to Understand Your AI Readiness?
           </h2>
-          <p className="text-xl mb-8 opacity-90" data-testid="text-final-cta-description">
+          <p className="text-xl text-white opacity-90" data-testid="text-final-cta-description">
             Take the first step toward successful AI transformation today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
