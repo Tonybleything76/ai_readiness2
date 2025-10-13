@@ -21,6 +21,6 @@
       "@assets/*": ["./attached_assets/*"]
     }
   },
-  "include": ["shared", "server", "client/src"],
+  "include": ["shared", "server", "client/src", "client/env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
