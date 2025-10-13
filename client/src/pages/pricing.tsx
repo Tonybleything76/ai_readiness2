@@ -2,6 +2,7 @@ import { Link } from 'wouter';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { ArrowRight, CheckCircle2, Sparkles, Calendar } from 'lucide-react';
+import { trackEvent } from '../lib/analytics';
 
 export function Pricing() {
   return (
@@ -52,7 +53,12 @@ export function Pricing() {
                 </li>
               </ul>
               <Link href="/assessment?tier=free" className="block">
-                <Button className="w-full" size="lg" data-testid="button-pricing-free">
+                <Button 
+                  className="w-full" 
+                  size="lg" 
+                  data-testid="button-pricing-free"
+                  onClick={() => trackEvent('cta_click', 'conversion', 'pricing_free_cta', undefined, { tier: 'free', location: 'pricing_card' })}
+                >
                   Start Free Assessment
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -108,7 +114,12 @@ export function Pricing() {
                 </li>
               </ul>
               <Link href="/assessment?tier=full" className="block">
-                <Button className="w-full bg-indigo-600 hover:bg-indigo-700" size="lg" data-testid="button-pricing-full">
+                <Button 
+                  className="w-full bg-indigo-600 hover:bg-indigo-700" 
+                  size="lg" 
+                  data-testid="button-pricing-full"
+                  onClick={() => trackEvent('cta_click', 'conversion', 'pricing_full_cta', undefined, { tier: 'full', location: 'pricing_card' })}
+                >
                   Start Full Assessment
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>

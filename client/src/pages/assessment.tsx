@@ -13,6 +13,7 @@ import { apiRequest } from '../lib/queryClient';
 import { ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
 import type { AssessmentSection } from '../../../shared/assessment-data';
 import { organizationInfoSchema, type OrganizationInfoData } from '../../../shared/validation';
+import { trackEvent } from '../lib/analytics';
 
 type ViewMode = 'info' | 'dimension-overview' | 'question';
 
@@ -24,6 +25,7 @@ interface AssessmentState {
 
 export function Assessment() {
   const [, setLocation] = useLocation();
+  const [hasTrackedStart, setHasTrackedStart] = useState(false);
   
   // Get tier from URL query parameter
   const tier = useMemo(() => {
@@ -31,6 +33,17 @@ export function Assessment() {
     const tierParam = params.get('tier');
     return tierParam === 'full' ? 'full' : 'free';
   }, []);
+
+  // Track assessment start on initial load
+  useEffect(() => {
+    if (!hasTrackedStart) {
+      trackEvent('assessment_start', 'engagement', `assessment_start_${tier}`, undefined, { 
+        tier,
+        timestamp: new Date().toISOString(),
+      });
+      setHasTrackedStart(true);
+    }
+  }, [tier, hasTrackedStart]);
 
   // Load saved progress from localStorage
   const savedProgress = useMemo(() => {
@@ -100,6 +113,14 @@ export function Assessment() {
       });
     },
     onSuccess: (data) => {
+      // Track assessment completion
+      trackEvent('assessment_complete', 'conversion', `assessment_complete_${tier}`, undefined, {
+        tier,
+        resultId: data.id,
+        questionCount: assessmentData?.questionCount,
+        timestamp: new Date().toISOString(),
+      });
+      
       // Clear saved progress on successful submission
       localStorage.removeItem(`assessment-progress-${tier}`);
       setLocation(`/results/${data.id}`);

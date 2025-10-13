@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { X, Cookie } from 'lucide-react';
-import { hasAnalyticsConsent, setAnalyticsConsent } from '../lib/analytics';
+import { setAnalyticsConsent } from '../lib/analytics';
 
 export function CookieConsent() {
   const [isVisible, setIsVisible] = useState(false);

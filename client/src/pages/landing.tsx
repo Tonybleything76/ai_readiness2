@@ -2,8 +2,22 @@ import { Link } from 'wouter';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { ArrowRight, CheckCircle2, Brain, TrendingUp, Database, Cpu, Shield, Heart, Users, RefreshCw, Target } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { getABTestVariant, heroContent, type ABTestVariant } from '../lib/ab-test';
+import { trackEvent } from '../lib/analytics';
 
 export function Landing() {
+  const [variant, setVariant] = useState<ABTestVariant>('A');
+
+  useEffect(() => {
+    const testVariant = getABTestVariant();
+    setVariant(testVariant);
+    
+    trackEvent('ab_test_view', 'ab_test', `hero_variant_${testVariant}`, undefined, {
+      variant: testVariant,
+      page: 'landing',
+    });
+  }, []);
   const nineDimensions = [
     {
       id: 'strategic-leadership',
@@ -64,29 +78,70 @@ export function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <div className="max-w-6xl mx-auto px-4 section-spacing-xl">
-        {/* Hero Section */}
+        {/* Hero Section with A/B Testing */}
         <div className="text-center section-spacing-2xl">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent" data-testid="text-hero-title">
-            Unlock Your AI Advantage
+            {heroContent[variant].title}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto" data-testid="text-hero-description">
-            Get a detailed, 9-dimension scorecard, executive report, and AI roadmap. Choose the free preview or the full assessment with expert analysis.
+            {heroContent[variant].description}
           </p>
           
-          {/* Main CTAs */}
+          {/* Main CTAs - Variant A: Full first, Free second | Variant B: Free first, Full second */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto">
-            <Link href="/assessment?tier=full" className="w-full sm:w-auto">
-              <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" size="lg" data-testid="button-start-full-assessment">
-                Start Full Readiness Assessment
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link href="/assessment?tier=free" className="w-full sm:w-auto">
-              <Button variant="outline" className="w-full sm:w-auto border-2 border-blue-600 text-blue-600 hover:bg-blue-100 hover:text-blue-700" size="lg" data-testid="button-take-free-assessment">
-                Preview With Free 25-Question Assessment
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+            {variant === 'A' ? (
+              <>
+                <Link href="/assessment?tier=full" className="w-full sm:w-auto">
+                  <Button 
+                    className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" 
+                    size="lg" 
+                    data-testid="button-start-full-assessment"
+                    onClick={() => trackEvent('cta_click', 'conversion', 'hero_primary_cta_variant_a', undefined, { variant: 'A', tier: 'full', location: 'hero' })}
+                  >
+                    {heroContent[variant].primaryCTA}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link href="/assessment?tier=free" className="w-full sm:w-auto">
+                  <Button 
+                    variant="outline" 
+                    className="w-full sm:w-auto border-2 border-blue-600 text-blue-600 hover:bg-blue-100 hover:text-blue-700" 
+                    size="lg" 
+                    data-testid="button-take-free-assessment"
+                    onClick={() => trackEvent('cta_click', 'conversion', 'hero_secondary_cta_variant_a', undefined, { variant: 'A', tier: 'free', location: 'hero' })}
+                  >
+                    {heroContent[variant].secondaryCTA}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/assessment?tier=free" className="w-full sm:w-auto">
+                  <Button 
+                    className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" 
+                    size="lg" 
+                    data-testid="button-take-free-assessment"
+                    onClick={() => trackEvent('cta_click', 'conversion', 'hero_primary_cta_variant_b', undefined, { variant: 'B', tier: 'free', location: 'hero' })}
+                  >
+                    {heroContent[variant].primaryCTA}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link href="/assessment?tier=full" className="w-full sm:w-auto">
+                  <Button 
+                    variant="outline" 
+                    className="w-full sm:w-auto border-2 border-blue-600 text-blue-600 hover:bg-blue-100 hover:text-blue-700" 
+                    size="lg" 
+                    data-testid="button-start-full-assessment"
+                    onClick={() => trackEvent('cta_click', 'conversion', 'hero_secondary_cta_variant_b', undefined, { variant: 'B', tier: 'full', location: 'hero' })}
+                  >
+                    {heroContent[variant].secondaryCTA}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
           
           <div className="text-center">

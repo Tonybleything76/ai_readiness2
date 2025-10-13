@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Button } from './ui/button';
 import { Menu, X, Brain } from 'lucide-react';
+import { trackEvent } from '../lib/analytics';
 
 export function Navigation() {
   const [location] = useLocation();
@@ -61,6 +62,7 @@ export function Navigation() {
               <Button 
                 className="bg-blue-600 hover:bg-blue-700 text-white"
                 data-testid="button-get-started"
+                onClick={() => trackEvent('cta_click', 'conversion', 'nav_get_started_desktop', undefined, { tier: 'full', location: 'navigation' })}
               >
                 Get Started
               </Button>
@@ -106,7 +108,10 @@ export function Navigation() {
               <Link href="/assessment?tier=full">
                 <Button 
                   className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    trackEvent('cta_click', 'conversion', 'nav_get_started_mobile', undefined, { tier: 'full', location: 'navigation_mobile' });
+                  }}
                   data-testid="button-mobile-get-started"
                 >
                   Get Started
