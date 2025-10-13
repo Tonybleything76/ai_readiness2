@@ -1,4 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { Button } from '../components/ui/button';
@@ -10,6 +12,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { apiRequest } from '../lib/queryClient';
 import { ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
 import type { AssessmentSection } from '../../../shared/assessment-data';
+import { organizationInfoSchema, type OrganizationInfoData } from '../../../shared/validation';
 
 export function Assessment() {
   const [, setLocation] = useLocation();
@@ -36,6 +39,20 @@ export function Assessment() {
   const [industry, setIndustry] = useState(savedProgress?.industry || '');
   const [answers, setAnswers] = useState<Record<string, number>>(savedProgress?.answers || {});
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit: handleOrgSubmit,
+    formState: { errors: orgErrors },
+    trigger,
+  } = useForm<OrganizationInfoData>({
+    resolver: zodResolver(organizationInfoSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      organizationName: savedProgress?.orgName || '',
+      industry: savedProgress?.industry || '',
+    },
+  });
 
   // Save progress to localStorage whenever it changes
   useEffect(() => {
@@ -131,7 +148,7 @@ export function Assessment() {
   const totalSteps = sections.length + 1;
   const progress = (currentStep / totalSteps) * 100;
 
-  const canProceedInfo = orgName.trim() && industry.trim();
+  const canProceedInfo = orgName.trim() && industry.trim() && Object.keys(orgErrors).length === 0;
   
   // Check if ALL questions in current section are answered
   const canProceedQuestion = currentSection && currentSection.questions.every(q => answers[q.id] !== undefined);
@@ -183,24 +200,54 @@ export function Assessment() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="orgName">Organization Name *</Label>
+                <Label htmlFor="orgName">
+                  Organization Name <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="orgName"
-                  value={orgName}
-                  onChange={(e) => setOrgName(e.target.value)}
-                  placeholder="Enter your organization name"
+                  placeholder="Acme Corporation"
+                  aria-required="true"
+                  aria-invalid={orgErrors.organizationName ? 'true' : 'false'}
+                  aria-describedby={orgErrors.organizationName ? 'org-name-error' : undefined}
+                  className={orgErrors.organizationName ? 'border-red-500 focus-visible:ring-red-500' : ''}
                   data-testid="input-organization-name"
+                  {...register('organizationName', {
+                    onChange: (e) => {
+                      setOrgName(e.target.value);
+                      trigger('organizationName');
+                    }
+                  })}
                 />
+                {orgErrors.organizationName && (
+                  <p id="org-name-error" className="text-sm text-red-600 mt-1" role="alert" data-testid="error-organization-name">
+                    {orgErrors.organizationName.message}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="industry">Industry *</Label>
+                <Label htmlFor="industry">
+                  Industry <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="industry"
-                  value={industry}
-                  onChange={(e) => setIndustry(e.target.value)}
-                  placeholder="e.g., Healthcare, Finance, Technology"
+                  placeholder="Healthcare, Finance, Technology, Manufacturing"
+                  aria-required="true"
+                  aria-invalid={orgErrors.industry ? 'true' : 'false'}
+                  aria-describedby={orgErrors.industry ? 'industry-error' : undefined}
+                  className={orgErrors.industry ? 'border-red-500 focus-visible:ring-red-500' : ''}
                   data-testid="input-industry"
+                  {...register('industry', {
+                    onChange: (e) => {
+                      setIndustry(e.target.value);
+                      trigger('industry');
+                    }
+                  })}
                 />
+                {orgErrors.industry && (
+                  <p id="industry-error" className="text-sm text-red-600 mt-1" role="alert" data-testid="error-industry">
+                    {orgErrors.industry.message}
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>
