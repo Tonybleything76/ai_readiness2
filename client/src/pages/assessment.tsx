@@ -277,40 +277,58 @@ export function Assessment() {
                   <CardTitle className="text-lg">
                     Question {qIndex + 1} of {currentSection.questions.length}
                   </CardTitle>
-                  <CardDescription className="text-base pt-2">
-                    {question.text}
-                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {question.options.map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => handleAnswerChange(question.id, option.value)}
-                        className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                          answers[question.id] === option.value
-                            ? 'border-blue-600 bg-blue-50'
-                            : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-                        }`}
-                        data-testid={`button-answer-${question.id}-${option.value}`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div
-                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-0.5 ${
-                              answers[question.id] === option.value
-                                ? 'border-blue-600 bg-blue-600'
-                                : 'border-gray-300'
-                            }`}
-                          >
-                            {answers[question.id] === option.value && (
-                              <div className="w-2 h-2 rounded-full bg-white"></div>
-                            )}
+                  <fieldset className="space-y-3">
+                    <legend className="text-base text-gray-700 mb-4 font-medium">
+                      {question.text}
+                    </legend>
+                    <div className="space-y-3" role="radiogroup" aria-required="true">
+                      {question.options.map((option) => {
+                        const inputId = `${question.id}-${option.value}`;
+                        const isSelected = answers[question.id] === option.value;
+                        
+                        return (
+                          <div key={option.value} className="relative">
+                            <input
+                              type="radio"
+                              id={inputId}
+                              name={question.id}
+                              value={option.value}
+                              checked={isSelected}
+                              onChange={() => handleAnswerChange(question.id, option.value)}
+                              className="peer sr-only"
+                              data-testid={`radio-answer-${question.id}-${option.value}`}
+                            />
+                            <label
+                              htmlFor={inputId}
+                              className={`flex items-start gap-3 w-full p-4 rounded-lg border-2 transition-all cursor-pointer
+                                ${isSelected
+                                  ? 'border-blue-600 bg-blue-50'
+                                  : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                                }
+                                focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-blue-600 peer-focus-visible:ring-offset-2`}
+                              data-testid={`label-answer-${question.id}-${option.value}`}
+                            >
+                              <div
+                                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-0.5 flex-shrink-0 ${
+                                  isSelected
+                                    ? 'border-blue-600 bg-blue-600'
+                                    : 'border-gray-300'
+                                }`}
+                                aria-hidden="true"
+                              >
+                                {isSelected && (
+                                  <div className="w-2 h-2 rounded-full bg-white"></div>
+                                )}
+                              </div>
+                              <span className="flex-1 text-gray-900">{option.label}</span>
+                            </label>
                           </div>
-                          <span className="flex-1">{option.label}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+                        );
+                      })}
+                    </div>
+                  </fieldset>
                 </CardContent>
               </Card>
             ))}
