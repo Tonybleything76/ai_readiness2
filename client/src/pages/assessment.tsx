@@ -14,6 +14,14 @@ import { ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
 import type { AssessmentSection } from '../../../shared/assessment-data';
 import { organizationInfoSchema, type OrganizationInfoData } from '../../../shared/validation';
 
+type ViewMode = 'info' | 'dimension-overview' | 'question';
+
+interface AssessmentState {
+  mode: ViewMode;
+  dimensionIndex: number;
+  questionIndex: number;
+}
+
 export function Assessment() {
   const [, setLocation] = useLocation();
   
@@ -34,7 +42,9 @@ export function Assessment() {
     }
   }, [tier]);
 
-  const [currentStep, setCurrentStep] = useState(savedProgress?.currentStep || 0);
+  const [state, setState] = useState<AssessmentState>(
+    savedProgress?.state || { mode: 'info', dimensionIndex: 0, questionIndex: 0 }
+  );
   const [orgName, setOrgName] = useState(savedProgress?.orgName || '');
   const [industry, setIndustry] = useState(savedProgress?.industry || '');
   const [answers, setAnswers] = useState<Record<string, number>>(savedProgress?.answers || {});
@@ -42,7 +52,6 @@ export function Assessment() {
 
   const {
     register,
-    handleSubmit: handleOrgSubmit,
     formState: { errors: orgErrors },
     trigger,
   } = useForm<OrganizationInfoData>({
@@ -57,13 +66,13 @@ export function Assessment() {
   // Save progress to localStorage whenever it changes
   useEffect(() => {
     const progress = {
-      currentStep,
+      state,
       orgName,
       industry,
       answers,
     };
     localStorage.setItem(`assessment-progress-${tier}`, JSON.stringify(progress));
-  }, [currentStep, orgName, industry, answers, tier]);
+  }, [state, orgName, industry, answers, tier]);
 
   const { data: assessmentData, isLoading } = useQuery<{ 
     sections: AssessmentSection[];
@@ -142,36 +151,97 @@ export function Assessment() {
   }
 
   const sections = assessmentData?.sections || [];
-  const isInfoStep = currentStep === 0;
-  const currentSectionIndex = currentStep - 1;
-  const currentSection = sections[currentSectionIndex];
-  const totalSteps = sections.length + 1;
-  const progress = (currentStep / totalSteps) * 100;
+  const currentDimension = sections[state.dimensionIndex];
+  const currentQuestion = currentDimension?.questions[state.questionIndex];
+
+  // Calculate total steps: info + (dimension overview + questions) for each dimension
+  const totalQuestions = sections.reduce((sum, section) => sum + section.questions.length, 0);
+  const totalSteps = 1 + sections.length + totalQuestions; // 1 info + overviews + questions
+
+  // Calculate current step number for progress
+  let currentStepNumber = 1; // Start with info step
+  if (state.mode !== 'info') {
+    // Add completed dimensions (overview + questions)
+    for (let i = 0; i < state.dimensionIndex; i++) {
+      currentStepNumber += 1 + sections[i].questions.length;
+    }
+    // Add current dimension overview if past it
+    if (state.mode === 'question') {
+      currentStepNumber += 1 + state.questionIndex + 1;
+    } else {
+      currentStepNumber += 1;
+    }
+  }
+
+  const progress = (currentStepNumber / totalSteps) * 100;
 
   const canProceedInfo = orgName.trim() && industry.trim() && Object.keys(orgErrors).length === 0;
-  
-  // Check if ALL questions in current section are answered
-  const canProceedQuestion = currentSection && currentSection.questions.every(q => answers[q.id] !== undefined);
-  
-  const isLastSection = currentStep === sections.length;
+  const canProceedQuestion = currentQuestion && answers[currentQuestion.id] !== undefined;
 
   const handleNext = () => {
-    if (isLastSection) {
-      submitMutation.mutate();
-    } else {
-      setCurrentStep(currentStep + 1);
+    if (state.mode === 'info') {
+      // Move to first dimension overview
+      setState({ mode: 'dimension-overview', dimensionIndex: 0, questionIndex: 0 });
+    } else if (state.mode === 'dimension-overview') {
+      // Move to first question of this dimension
+      setState({ mode: 'question', dimensionIndex: state.dimensionIndex, questionIndex: 0 });
+    } else if (state.mode === 'question') {
+      const isLastQuestionInDimension = state.questionIndex === currentDimension.questions.length - 1;
+      const isLastDimension = state.dimensionIndex === sections.length - 1;
+
+      if (isLastQuestionInDimension) {
+        if (isLastDimension) {
+          // Submit assessment
+          submitMutation.mutate();
+        } else {
+          // Move to next dimension overview
+          setState({ mode: 'dimension-overview', dimensionIndex: state.dimensionIndex + 1, questionIndex: 0 });
+        }
+      } else {
+        // Move to next question in same dimension
+        setState({ mode: 'question', dimensionIndex: state.dimensionIndex, questionIndex: state.questionIndex + 1 });
+      }
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+    if (state.mode === 'dimension-overview') {
+      if (state.dimensionIndex === 0) {
+        // Go back to info
+        setState({ mode: 'info', dimensionIndex: 0, questionIndex: 0 });
+      } else {
+        // Go back to last question of previous dimension
+        const prevDimensionIndex = state.dimensionIndex - 1;
+        const prevDimensionLastQuestion = sections[prevDimensionIndex].questions.length - 1;
+        setState({ mode: 'question', dimensionIndex: prevDimensionIndex, questionIndex: prevDimensionLastQuestion });
+      }
+    } else if (state.mode === 'question') {
+      if (state.questionIndex === 0) {
+        // Go back to dimension overview
+        setState({ mode: 'dimension-overview', dimensionIndex: state.dimensionIndex, questionIndex: 0 });
+      } else {
+        // Go back to previous question
+        setState({ mode: 'question', dimensionIndex: state.dimensionIndex, questionIndex: state.questionIndex - 1 });
+      }
     }
   };
 
   const handleAnswerChange = (questionId: string, value: number) => {
     setAnswers({ ...answers, [questionId]: value });
   };
+
+  const getProgressLabel = () => {
+    if (state.mode === 'info') return 'Organization Information';
+    if (state.mode === 'dimension-overview') return `${currentDimension?.title} - Overview`;
+    if (state.mode === 'question') {
+      return `${currentDimension?.title} - Question ${state.questionIndex + 1} of ${currentDimension?.questions.length}`;
+    }
+    return '';
+  };
+
+  const isLastStep = state.mode === 'question' && 
+    state.dimensionIndex === sections.length - 1 && 
+    state.questionIndex === currentDimension?.questions.length - 1;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -180,7 +250,7 @@ export function Assessment() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-medium text-gray-600" data-testid="text-progress-label">
-              {isInfoStep ? 'Organization Information' : `${currentSection?.title} (${currentStep}/${totalSteps - 1})`}
+              {getProgressLabel()}
             </span>
             <span className="text-sm font-medium text-gray-600" data-testid="text-progress-percent">
               {Math.round(progress)}%
@@ -190,7 +260,7 @@ export function Assessment() {
         </div>
 
         {/* Info Step */}
-        {isInfoStep && (
+        {state.mode === 'info' && (
           <Card data-testid="card-organization-info">
             <CardHeader>
               <CardTitle>Welcome to the AI Readiness Assessment</CardTitle>
@@ -253,86 +323,94 @@ export function Assessment() {
           </Card>
         )}
 
-        {/* Question Step */}
-        {!isInfoStep && currentSection && (
-          <div className="space-y-6">
-            {/* Dimension Overview */}
-            {assessmentData?.overviews?.[currentSection.id] && (
-              <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0" data-testid={`card-dimension-overview-${currentSection.id}`}>
-                <CardHeader>
-                  <CardTitle className="text-white text-2xl mb-3">
-                    {assessmentData.overviews[currentSection.id].title}
-                  </CardTitle>
-                  <CardDescription className="text-white/95 text-base leading-relaxed">
-                    {assessmentData.overviews[currentSection.id].overview}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            )}
+        {/* Dimension Overview */}
+        {state.mode === 'dimension-overview' && currentDimension && (
+          <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0" data-testid={`card-dimension-overview-${currentDimension.id}`}>
+            <CardHeader>
+              <CardTitle className="text-white text-2xl mb-3">
+                {assessmentData?.overviews?.[currentDimension.id]?.title || currentDimension.title}
+              </CardTitle>
+              <CardDescription className="text-white/95 text-base leading-relaxed">
+                {assessmentData?.overviews?.[currentDimension.id]?.overview || currentDimension.description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
+                <p className="text-white/90 text-sm mb-2">
+                  <strong className="text-white">What we'll assess:</strong> {currentDimension.whatItAssesses}
+                </p>
+                <p className="text-white/90 text-sm">
+                  <strong className="text-white">Why it matters:</strong> {currentDimension.importance}
+                </p>
+              </div>
+              <p className="text-white/80 text-sm mt-4">
+                You'll answer {currentDimension.questions.length} question{currentDimension.questions.length !== 1 ? 's' : ''} in this section.
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
-            {/* Questions */}
-            {currentSection.questions.map((question, qIndex) => (
-              <Card key={question.id} data-testid={`card-question-${question.id}`}>
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    Question {qIndex + 1} of {currentSection.questions.length}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <fieldset className="space-y-3">
-                    <legend className="text-base text-gray-700 mb-4 font-medium">
-                      {question.text}
-                    </legend>
-                    <div className="space-y-3" role="radiogroup" aria-required="true">
-                      {question.options.map((option) => {
-                        const inputId = `${question.id}-${option.value}`;
-                        const isSelected = answers[question.id] === option.value;
-                        
-                        return (
-                          <div key={option.value} className="relative">
-                            <input
-                              type="radio"
-                              id={inputId}
-                              name={question.id}
-                              value={option.value}
-                              checked={isSelected}
-                              onChange={() => handleAnswerChange(question.id, option.value)}
-                              className="peer sr-only"
-                              data-testid={`radio-answer-${question.id}-${option.value}`}
-                            />
-                            <label
-                              htmlFor={inputId}
-                              className={`flex items-start gap-3 w-full p-4 rounded-lg border-2 transition-all cursor-pointer
-                                ${isSelected
-                                  ? 'border-blue-600 bg-blue-50'
-                                  : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-                                }
-                                focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-blue-600 peer-focus-visible:ring-offset-2`}
-                              data-testid={`label-answer-${question.id}-${option.value}`}
-                            >
-                              <div
-                                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-0.5 flex-shrink-0 ${
-                                  isSelected
-                                    ? 'border-blue-600 bg-blue-600'
-                                    : 'border-gray-300'
-                                }`}
-                                aria-hidden="true"
-                              >
-                                {isSelected && (
-                                  <div className="w-2 h-2 rounded-full bg-white"></div>
-                                )}
-                              </div>
-                              <span className="flex-1 text-gray-900">{option.label}</span>
-                            </label>
+        {/* Question */}
+        {state.mode === 'question' && currentQuestion && currentDimension && (
+          <Card data-testid={`card-question-${currentQuestion.id}`}>
+            <CardHeader>
+              <CardTitle className="text-lg">
+                Question {state.questionIndex + 1} of {currentDimension.questions.length}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <fieldset className="space-y-3">
+                <legend className="text-base text-gray-700 mb-4 font-medium">
+                  {currentQuestion.text}
+                </legend>
+                <div className="space-y-3" role="radiogroup" aria-required="true">
+                  {currentQuestion.options.map((option) => {
+                    const inputId = `${currentQuestion.id}-${option.value}`;
+                    const isSelected = answers[currentQuestion.id] === option.value;
+                    
+                    return (
+                      <div key={option.value} className="relative">
+                        <input
+                          type="radio"
+                          id={inputId}
+                          name={currentQuestion.id}
+                          value={option.value}
+                          checked={isSelected}
+                          onChange={() => handleAnswerChange(currentQuestion.id, option.value)}
+                          className="peer sr-only"
+                          data-testid={`radio-answer-${currentQuestion.id}-${option.value}`}
+                        />
+                        <label
+                          htmlFor={inputId}
+                          className={`flex items-start gap-3 w-full p-4 rounded-lg border-2 transition-all cursor-pointer
+                            ${isSelected
+                              ? 'border-blue-600 bg-blue-50'
+                              : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                            }
+                            focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-blue-600 peer-focus-visible:ring-offset-2`}
+                          data-testid={`label-answer-${currentQuestion.id}-${option.value}`}
+                        >
+                          <div
+                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-0.5 flex-shrink-0 ${
+                              isSelected
+                                ? 'border-blue-600 bg-blue-600'
+                                : 'border-gray-300'
+                            }`}
+                            aria-hidden="true"
+                          >
+                            {isSelected && (
+                              <div className="w-2 h-2 rounded-full bg-white"></div>
+                            )}
                           </div>
-                        );
-                      })}
-                    </div>
-                  </fieldset>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                          <span className="flex-1 text-gray-900">{option.label}</span>
+                        </label>
+                      </div>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            </CardContent>
+          </Card>
         )}
 
         {/* Error Message */}
@@ -355,7 +433,7 @@ export function Assessment() {
           <Button
             variant="outline"
             onClick={handleBack}
-            disabled={currentStep === 0}
+            disabled={state.mode === 'info'}
             data-testid="button-back"
           >
             <ChevronLeft className="mr-2 h-4 w-4" />
@@ -364,16 +442,21 @@ export function Assessment() {
           <Button
             onClick={handleNext}
             disabled={
-              (isInfoStep && !canProceedInfo) ||
-              (!isInfoStep && !canProceedQuestion) ||
+              (state.mode === 'info' && !canProceedInfo) ||
+              (state.mode === 'question' && !canProceedQuestion) ||
               submitMutation.isPending
             }
             data-testid="button-next"
           >
             {submitMutation.isPending ? (
               <>Processing...</>
-            ) : isLastSection ? (
+            ) : isLastStep ? (
               <>Complete Assessment</>
+            ) : state.mode === 'dimension-overview' ? (
+              <>
+                Start Questions
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </>
             ) : (
               <>
                 Next
