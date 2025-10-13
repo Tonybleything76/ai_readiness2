@@ -39,6 +39,38 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Enhanced focus styles for WCAG AA compliance */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [role="button"]:focus-visible,
+  [role="link"]:focus-visible,
+  [role="tab"]:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Ensure radio and checkbox inputs have visible focus when using sr-only pattern */
+  input[type="radio"]:focus-visible + label,
+  input[type="checkbox"]:focus-visible + label {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline-width: 3px;
+    }
+  }
 }
 
 @layer utilities {
