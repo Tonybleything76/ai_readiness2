@@ -276,7 +276,10 @@ export function Assessment() {
   };
 
   const handleAnswerChange = (questionId: string, value: number) => {
-    setAnswers({ ...answers, [questionId]: value });
+    console.log('[Assessment] Answer changed:', { questionId, value });
+    const newAnswers = { ...answers, [questionId]: value };
+    setAnswers(newAnswers);
+    console.log('[Assessment] Total answers after change:', Object.keys(newAnswers).length);
   };
 
   const getProgressLabel = () => {
@@ -291,6 +294,19 @@ export function Assessment() {
   const isLastStep = state.mode === 'question' && 
     state.dimensionIndex === sections.length - 1 && 
     state.questionIndex === currentDimension?.questions.length - 1;
+
+  // Log button state when on last step
+  if (isLastStep) {
+    console.log('[Assessment] On last step - Button state:', {
+      isLastStep: true,
+      canProceedQuestion,
+      currentQuestionId: currentQuestion?.id,
+      hasAnswer: currentQuestion ? answers[currentQuestion.id] !== undefined : false,
+      answerValue: currentQuestion ? answers[currentQuestion.id] : null,
+      isPending: submitMutation.isPending,
+      buttonDisabled: (state.mode === 'question' && !canProceedQuestion) || submitMutation.isPending
+    });
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
