@@ -16,7 +16,8 @@ export async function apiRequest(url: string, method = 'GET', data?: unknown) {
   
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: 'Unknown error' }));
-    throw new Error(error.error || `HTTP ${response.status}`);
+    const errorMessage = error.message || error.error || `HTTP ${response.status}`;
+    throw new Error(errorMessage);
   }
 
   return response.json();

@@ -132,10 +132,13 @@ router.post('/api/assessment/submit', async (req, res) => {
       questionCount: response.questionCount,
     });
   } catch (error) {
+    console.error('[Server] Assessment submission error:', error);
     if (error instanceof z.ZodError) {
       res.status(400).json({ error: 'Invalid input', details: error.errors });
     } else {
-      res.status(500).json({ error: 'Internal server error' });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('[Server] Error details:', errorMessage);
+      res.status(500).json({ error: 'Internal server error', message: errorMessage });
     }
   }
 });
