@@ -104,13 +104,24 @@ export function Assessment() {
   const submitMutation = useMutation({
     mutationFn: async () => {
       setSubmitError(null);
-      return apiRequest('/api/assessment/submit', 'POST', {
+      console.log('[Assessment] Submitting with data:', {
+        organizationName: orgName,
+        industry,
+        answerCount: Object.keys(answers).length,
+        assessmentMode: assessmentData?.tier || tier,
+        questionCount: assessmentData?.questionCount,
+      });
+      
+      const result = await apiRequest('/api/assessment/submit', 'POST', {
         organizationName: orgName,
         industry,
         answers,
         assessmentMode: assessmentData?.tier || tier,
         questionCount: assessmentData?.questionCount,
       });
+      
+      console.log('[Assessment] Submission successful:', result);
+      return result;
     },
     onSuccess: (data) => {
       // Track assessment completion
@@ -123,9 +134,11 @@ export function Assessment() {
       
       // Clear saved progress on successful submission
       localStorage.removeItem(`assessment-progress-${tier}`);
+      console.log('[Assessment] Navigating to results:', data.id);
       setLocation(`/results/${data.id}`);
     },
     onError: (error: Error) => {
+      console.error('[Assessment] Submission failed:', error);
       setSubmitError(error.message || 'Failed to submit assessment. Please try again.');
     },
   });
@@ -200,6 +213,14 @@ export function Assessment() {
   const canProceedQuestion = currentQuestion && answers[currentQuestion.id] !== undefined;
 
   const handleNext = () => {
+    console.log('[Assessment] handleNext called', { 
+      mode: state.mode, 
+      dimensionIndex: state.dimensionIndex, 
+      questionIndex: state.questionIndex,
+      totalDimensions: sections.length,
+      currentDimensionQuestions: currentDimension?.questions.length
+    });
+
     if (state.mode === 'info') {
       // Move to first dimension overview
       setState({ mode: 'dimension-overview', dimensionIndex: 0, questionIndex: 0 });
@@ -210,9 +231,16 @@ export function Assessment() {
       const isLastQuestionInDimension = state.questionIndex === currentDimension.questions.length - 1;
       const isLastDimension = state.dimensionIndex === sections.length - 1;
 
+      console.log('[Assessment] Question navigation check:', {
+        isLastQuestionInDimension,
+        isLastDimension,
+        willSubmit: isLastQuestionInDimension && isLastDimension
+      });
+
       if (isLastQuestionInDimension) {
         if (isLastDimension) {
           // Submit assessment
+          console.log('[Assessment] Triggering submission...');
           submitMutation.mutate();
         } else {
           // Move to next dimension overview
