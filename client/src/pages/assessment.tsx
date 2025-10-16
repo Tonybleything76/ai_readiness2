@@ -128,18 +128,30 @@ export function Assessment() {
         questionCount: assessmentData?.questionCount,
       });
       
-      const result = await apiRequest('/api/assessment/submit', 'POST', {
-        organizationName: orgName,
-        industry,
-        answers,
-        assessmentMode: assessmentData?.tier || tier,
-        questionCount: assessmentData?.questionCount,
-      });
-      
-      console.log('[Assessment] Submission successful:', result);
-      return result;
+      try {
+        const result = await apiRequest('/api/assessment/submit', 'POST', {
+          organizationName: orgName,
+          industry,
+          answers,
+          assessmentMode: assessmentData?.tier || tier,
+          questionCount: assessmentData?.questionCount,
+        });
+        
+        console.log('[Assessment] Submission successful:', result);
+        
+        if (!result || !result.id) {
+          throw new Error('Invalid response from server: missing result ID');
+        }
+        
+        return result;
+      } catch (err) {
+        console.error('[Assessment] API request failed:', err);
+        throw err;
+      }
     },
     onSuccess: (data) => {
+      console.log('[Assessment] onSuccess called with data:', data);
+      
       // Track assessment completion
       trackEvent('assessment_complete', 'conversion', `assessment_complete_${tier}`, undefined, {
         tier,
@@ -150,12 +162,24 @@ export function Assessment() {
       
       // Clear saved progress on successful submission
       localStorage.removeItem(`assessment-progress-${tier}`);
-      console.log('[Assessment] Navigating to results:', data.id);
-      setLocation(`/results/${data.id}`);
+      
+      console.log('[Assessment] About to navigate to results:', `/results/${data.id}`);
+      
+      // Navigate to results page
+      try {
+        setLocation(`/results/${data.id}`);
+        console.log('[Assessment] Navigation command executed');
+      } catch (navError) {
+        console.error('[Assessment] Navigation failed:', navError);
+        // Fallback: direct window navigation
+        window.location.href = `/results/${data.id}`;
+      }
     },
     onError: (error: Error) => {
-      console.error('[Assessment] Submission failed:', error);
-      setSubmitError(error.message || 'Failed to submit assessment. Please try again.');
+      console.error('[Assessment] onError called with error:', error);
+      const errorMessage = error.message || 'Failed to submit assessment. Please try again.';
+      console.error('[Assessment] Setting error message:', errorMessage);
+      setSubmitError(errorMessage);
     },
   });
 
@@ -500,10 +524,25 @@ export function Assessment() {
             <CardContent className="pt-6">
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-semibold text-red-900">Submission Failed</p>
                   <p className="text-sm text-red-700 mt-1" data-testid="text-error-message">{submitError}</p>
+                  <p className="text-xs text-red-600 mt-2">
+                    Please check your internet connection and try again. If the problem persists, contact support.
+                  </p>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        
+        {/* Loading overlay when submitting */}
+        {submitMutation.isPending && (
+          <Card className="mt-6 border-blue-200 bg-blue-50" data-testid="card-submit-loading">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                <p className="text-sm font-medium text-blue-900">Processing your assessment...</p>
               </div>
             </CardContent>
           </Card>
