@@ -7,7 +7,7 @@ import { getABTestVariant, heroContent, type ABTestVariant } from '../lib/ab-tes
 import { trackEvent } from '../lib/analytics';
 
 export function Landing() {
-  const [variant, setVariant] = useState<ABTestVariant>('A');
+  const [variant, setVariant] = useState<ABTestVariant | null>(null);
 
   useEffect(() => {
     const testVariant = getABTestVariant();
@@ -18,6 +18,8 @@ export function Landing() {
       page: 'landing',
     });
   }, []);
+
+  const displayVariant = variant || 'A';
   const nineDimensions = [
     {
       id: 'strategic-leadership',
@@ -81,15 +83,15 @@ export function Landing() {
         {/* Hero Section with A/B Testing */}
         <div className="text-center section-spacing-2xl">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent" data-testid="text-hero-title">
-            {heroContent[variant].title}
+            {heroContent[displayVariant].title}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto" data-testid="text-hero-description">
-            {heroContent[variant].description}
+            {heroContent[displayVariant].description}
           </p>
           
           {/* Main CTAs - Variant A: Full first, Free second | Variant B: Free first, Full second */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto">
-            {variant === 'A' ? (
+            {displayVariant === 'A' ? (
               <>
                 <Link href="/assessment?tier=full" className="w-full sm:w-auto">
                   <Button 
@@ -98,7 +100,7 @@ export function Landing() {
                     data-testid="button-start-full-assessment"
                     onClick={() => trackEvent('cta_click', 'conversion', 'hero_primary_cta_variant_a', undefined, { variant: 'A', tier: 'full', location: 'hero' })}
                   >
-                    {heroContent[variant].primaryCTA}
+                    {heroContent[displayVariant].primaryCTA}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
@@ -110,7 +112,7 @@ export function Landing() {
                     data-testid="button-take-free-assessment"
                     onClick={() => trackEvent('cta_click', 'conversion', 'hero_secondary_cta_variant_a', undefined, { variant: 'A', tier: 'free', location: 'hero' })}
                   >
-                    {heroContent[variant].secondaryCTA}
+                    {heroContent[displayVariant].secondaryCTA}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
@@ -124,7 +126,7 @@ export function Landing() {
                     data-testid="button-take-free-assessment"
                     onClick={() => trackEvent('cta_click', 'conversion', 'hero_primary_cta_variant_b', undefined, { variant: 'B', tier: 'free', location: 'hero' })}
                   >
-                    {heroContent[variant].primaryCTA}
+                    {heroContent[displayVariant].primaryCTA}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
@@ -136,7 +138,7 @@ export function Landing() {
                     data-testid="button-start-full-assessment"
                     onClick={() => trackEvent('cta_click', 'conversion', 'hero_secondary_cta_variant_b', undefined, { variant: 'B', tier: 'full', location: 'hero' })}
                   >
-                    {heroContent[variant].secondaryCTA}
+                    {heroContent[displayVariant].secondaryCTA}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>

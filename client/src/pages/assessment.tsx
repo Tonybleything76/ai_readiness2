@@ -26,58 +26,74 @@ interface AssessmentState {
 export function Assessment() {
   const [, setLocation] = useLocation();
   const [hasTrackedStart, setHasTrackedStart] = useState(false);
+  const [mounted, setMounted] = useState(false);
   
   // Get tier from URL query parameter
   const tier = useMemo(() => {
+    if (typeof window === 'undefined') return 'free';
     const params = new URLSearchParams(window.location.search);
     const tierParam = params.get('tier');
     return tierParam === 'full' ? 'full' : 'free';
   }, []);
 
-  // Track assessment start on initial load
-  useEffect(() => {
-    if (!hasTrackedStart) {
-      trackEvent('assessment_start', 'engagement', `assessment_start_${tier}`, undefined, { 
-        tier,
-        timestamp: new Date().toISOString(),
-      });
-      setHasTrackedStart(true);
-    }
-  }, [tier, hasTrackedStart]);
-
-  // Load saved progress from localStorage
-  const savedProgress = useMemo(() => {
-    try {
-      const saved = localStorage.getItem(`assessment-progress-${tier}`);
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  }, [tier]);
-
-  const [state, setState] = useState<AssessmentState>(
-    savedProgress?.state || { mode: 'info', dimensionIndex: 0, questionIndex: 0 }
-  );
-  const [orgName, setOrgName] = useState(savedProgress?.orgName || '');
-  const [industry, setIndustry] = useState(savedProgress?.industry || '');
-  const [answers, setAnswers] = useState<Record<string, number>>(savedProgress?.answers || {});
+  // Initialize state with safe defaults
+  const [state, setState] = useState<AssessmentState>({ mode: 'info', dimensionIndex: 0, questionIndex: 0 });
+  const [orgName, setOrgName] = useState('');
+  const [industry, setIndustry] = useState('');
+  const [answers, setAnswers] = useState<Record<string, number>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
     formState: { errors: orgErrors },
     trigger,
+    reset,
   } = useForm<OrganizationInfoData>({
     resolver: zodResolver(organizationInfoSchema),
     mode: 'onBlur',
     defaultValues: {
-      organizationName: savedProgress?.orgName || '',
-      industry: savedProgress?.industry || '',
+      organizationName: '',
+      industry: '',
     },
   });
 
-  // Save progress to localStorage whenever it changes
+  // Load saved progress from localStorage after mount
   useEffect(() => {
+    setMounted(true);
+    try {
+      const saved = localStorage.getItem(`assessment-progress-${tier}`);
+      if (saved) {
+        const savedProgress = JSON.parse(saved);
+        if (savedProgress) {
+          setState(savedProgress.state || { mode: 'info', dimensionIndex: 0, questionIndex: 0 });
+          setOrgName(savedProgress.orgName || '');
+          setIndustry(savedProgress.industry || '');
+          setAnswers(savedProgress.answers || {});
+          reset({
+            organizationName: savedProgress.orgName || '',
+            industry: savedProgress.industry || '',
+          });
+        }
+      }
+    } catch (error) {
+      console.error('[Assessment] Failed to load saved progress:', error);
+    }
+  }, [tier, reset]);
+
+  // Track assessment start on initial load
+  useEffect(() => {
+    if (mounted && !hasTrackedStart) {
+      trackEvent('assessment_start', 'engagement', `assessment_start_${tier}`, undefined, { 
+        tier,
+        timestamp: new Date().toISOString(),
+      });
+      setHasTrackedStart(true);
+    }
+  }, [tier, hasTrackedStart, mounted]);
+
+  // Save progress to localStorage whenever it changes (only after mount)
+  useEffect(() => {
+    if (!mounted) return;
     const progress = {
       state,
       orgName,
@@ -85,7 +101,7 @@ export function Assessment() {
       answers,
     };
     localStorage.setItem(`assessment-progress-${tier}`, JSON.stringify(progress));
-  }, [state, orgName, industry, answers, tier]);
+  }, [state, orgName, industry, answers, tier, mounted]);
 
   const { data: assessmentData, isLoading } = useQuery<{ 
     sections: AssessmentSection[];
