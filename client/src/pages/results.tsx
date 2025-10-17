@@ -133,11 +133,22 @@ export function Results() {
   const animatedOverallScore = useCountUp(Math.round(result.scores.overall), 1500);
   const [copied, setCopied] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [formattedDate, setFormattedDate] = useState('');
 
   // Prevent hydration mismatch by deferring browser-only operations
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    
+    // Format date only on client side to prevent hydration mismatch
+    if (result.createdAt) {
+      const formatted = new Date(result.createdAt).toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      setFormattedDate(formatted);
+    }
+  }, [result.createdAt]);
 
   const handleShare = async () => {
     if (!isMounted) return;
@@ -150,15 +161,6 @@ export function Results() {
       console.error('Failed to copy:', err);
     }
   };
-
-  // Format date safely for hydration
-  const formattedDate = result.createdAt 
-    ? new Date(result.createdAt).toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      })
-    : '';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -235,16 +237,23 @@ export function Results() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <RadarChart 
-              data={ASSESSMENT_SECTIONS.map(section => ({
-                dimension: section.title.length > 25 
-                  ? section.title.substring(0, 22) + '...' 
-                  : section.title,
-                score: result.scores[section.id as keyof typeof result.scores] as number,
-                fullMark: 100,
-              }))}
-              color={readinessLevel.color}
-            />
+            {isMounted && (
+              <RadarChart 
+                data={ASSESSMENT_SECTIONS.map(section => ({
+                  dimension: section.title.length > 25 
+                    ? section.title.substring(0, 22) + '...' 
+                    : section.title,
+                  score: result.scores[section.id as keyof typeof result.scores] as number,
+                  fullMark: 100,
+                }))}
+                color={readinessLevel.color}
+              />
+            )}
+            {!isMounted && (
+              <div className="h-96 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
