@@ -9,7 +9,7 @@ import { Home, Download, TrendingUp, CheckCircle2, Award, Calendar, BarChart3, S
 import { READINESS_LEVELS, ASSESSMENT_SECTIONS } from '../../../shared/assessment-data';
 import { RadarChart } from '../components/RadarChart';
 import { useCountUp } from '../hooks/useCountUp';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // API response type (matches backend pillarScores structure)
 interface AssessmentResult {
@@ -132,8 +132,15 @@ export function Results() {
 
   const animatedOverallScore = useCountUp(Math.round(result.scores.overall), 1500);
   const [copied, setCopied] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Prevent hydration mismatch by deferring browser-only operations
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleShare = async () => {
+    if (!isMounted) return;
     const url = window.location.href;
     try {
       await navigator.clipboard.writeText(url);
@@ -143,6 +150,15 @@ export function Results() {
       console.error('Failed to copy:', err);
     }
   };
+
+  // Format date safely for hydration
+  const formattedDate = result.createdAt 
+    ? new Date(result.createdAt).toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    : '';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -160,13 +176,11 @@ export function Results() {
           <p className="text-gray-600" data-testid="text-organization-info">
             {result.organizationName} • {result.industry}
           </p>
-          <p className="text-sm text-gray-500 mt-2" data-testid="text-assessment-date">
-            Completed on {new Date(result.createdAt).toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </p>
+          {isMounted && formattedDate && (
+            <p className="text-sm text-gray-500 mt-2" data-testid="text-assessment-date">
+              Completed on {formattedDate}
+            </p>
+          )}
           {result.assessmentMode && result.questionCount && (
             <div className="flex items-center justify-center gap-2 mt-3" data-testid="info-assessment-tier">
               <Award className="h-4 w-4 text-blue-600" />

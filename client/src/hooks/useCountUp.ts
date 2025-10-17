@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 
 export function useCountUp(end: number, duration: number = 1000, start: number = 0) {
-  const [count, setCount] = useState(start);
+  // Start with end value to prevent hydration mismatch
+  const [count, setCount] = useState(end);
 
   useEffect(() => {
+    // Reset count to start for animation
+    setCount(start);
+
     let startTimestamp: number | null = null;
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
@@ -21,5 +25,6 @@ export function useCountUp(end: number, duration: number = 1000, start: number =
     window.requestAnimationFrame(step);
   }, [end, duration, start]);
 
+  // Return end value during SSR/initial render to prevent hydration mismatch
   return count;
 }
