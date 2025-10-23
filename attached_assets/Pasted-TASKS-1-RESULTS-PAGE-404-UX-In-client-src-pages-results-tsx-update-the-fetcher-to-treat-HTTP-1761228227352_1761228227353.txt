@@ -1,0 +1,39 @@
+TASKS:
+1) RESULTS PAGE 404 UX
+   - In client/src/pages/results.tsx, update the fetcher to treat HTTP 404 as a distinct error code (e.g., {code:404}).
+   - Add a user-friendly “Result not found or expired” state with a button to /assessment.
+   - Keep existing skeletons; do not regress loading behavior or layout.
+
+2) ENV CONSISTENCY & STORAGE
+   - Ensure server/storage.ts uses the DB in production. On Railway, confirm DATABASE_URL is set.
+   - Add a “migrate” npm script. Use drizzle-kit with drizzle.config.ts:
+       "migrate": "drizzle-kit generate && drizzle-kit push"
+   - In Railway build/deploy, run npm run migrate before starting the server.
+   - Verify the “responses” table exists and inserts work on POST /api/assessment/submit.
+
+3) REACT HOOKS ERROR (#310) – HARDENING
+   - Run locally in dev (non-minified) and navigate through Assessment → Results.
+   - If any component conditionally calls hooks, refactor: keep hooks at top-level; guard only their inputs.
+   - Confirm single React instance (react and react-dom versions match; no duplicate installs). Remove any secondary React copies if present.
+
+4) ANALYTICS NOISE
+   - Add VITE_GA_MEASUREMENT_ID to .env.[environment] (optional). If not set, keep the current console fallback.
+   - Do not block page render when GA is absent.
+
+5) SPA SERVER ORDERING
+   - Keep app.use(routes) before express.static and before the catch-all.
+   - Confirm GET /api/health returns json. Confirm GET /api/results/:id returns 404 JSON for missing IDs and 200 for existing IDs.
+
+6) SMOKE TEST
+   - npm run dev locally: fill the assessment, submit, land on /results/{id}.
+   - Verify no 404 on /api/results/{id}. Reload the page; results persist.
+   - Produce a short README note on “How to migrate DB and test Result flow”.
+
+DELIVERABLES:
+- Updated files: results.tsx, package.json (scripts), any hook refactors, small README section.
+- Commands I can run locally:
+    npm i
+    npm run migrate   # optional for local Postgres
+    npm run dev
+- Railway notes: set DATABASE_URL (and GA ID if desired), run migrate, then start with:
+    node --loader tsx server/index.ts
