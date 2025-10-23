@@ -1,0 +1,30 @@
+import { useEffect, useState } from 'react';
+
+export function useCountUp(end: number, duration: number = 1000, start: number = 0) {
+  // Start with end value to prevent hydration mismatch
+  const [count, setCount] = useState(end);
+
+  useEffect(() => {
+    // Reset count to start for animation
+    setCount(start);
+
+    let startTimestamp: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      
+      // Easing function for smooth animation
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      setCount(Math.floor(easeOutQuart * (end - start) + start));
+      
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    
+    window.requestAnimationFrame(step);
+  }, [end, duration, start]);
+
+  // Return end value during SSR/initial render to prevent hydration mismatch
+  return count;
+}
