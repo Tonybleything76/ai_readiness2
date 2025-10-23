@@ -9,6 +9,12 @@ const PORT = Number(process.env.PORT) || 3000;
 app.use(express.json());
 app.use(routes);
 
+// Healthcheck
+app.get('/api/health', (_req, res) => {
+  const storageMode = process.env.DATABASE_URL ? 'db' : 'mem';
+  res.json({ ok: true, env: process.env.NODE_ENV || 'development', storage: storageMode });
+});
+
 // Serve static files from Vite build (for production)
 // Use process.cwd() for more reliable path resolution in production
 const distPath = path.join(process.cwd(), 'dist');

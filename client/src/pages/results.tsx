@@ -43,11 +43,17 @@ export function Results() {
     queryKey: ['/api/results', resultId],
     queryFn: async () => {
       const response = await fetch(`/api/results/${resultId}`);
-      if (!response.ok) throw new Error('Failed to load results');
-      return response.json();
+      if (!response.ok) { throw new Error(`Failed to load results: HTTP ${response.status}`); }
+      const json = await response.json();
+      try { localStorage.setItem(`result:${resultId}`, JSON.stringify(json)); } catch {}
+      return json;
     },
     enabled: !!resultId,
   });
+
+  if (error && !result) {
+    return <div className="max-w-3xl mx-auto p-6"><h1 className="text-2xl font-semibold mb-2">Results not found</h1><p className="text-muted-foreground">This link may have expired or the results aren't available yet. Try re-running the assessment.</p></div>;
+  }
 
   if (isLoading) {
     return (
