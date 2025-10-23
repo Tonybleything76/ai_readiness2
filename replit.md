@@ -43,3 +43,10 @@ Preferred communication style: Simple, everyday language.
 - **Drizzle ORM:** Used for interacting with the PostgreSQL database from the backend.
 - **Calendly:** Embedded for scheduling consultation appointments.
 - **Google Analytics 4:** For website analytics and tracking user interactions (optional, configured via `VITE_GA_MEASUREMENT_ID`).
+
+## Recent Changes (October 23, 2025)
+### React Error Fixes
+- **Fixed duplicate script loading:** Added module-level flags (`gaInitialized`, `calendlyScriptLoaded`) to prevent Google Analytics and Calendly scripts from loading multiple times during React StrictMode double-invocation.
+- **Improved error handling:** Wrapped script injection code in try-catch blocks to prevent uncaught errors.
+- **Added Error Boundary:** Created `ErrorBoundary` component that catches React errors and displays a friendly fallback UI instead of crashing the entire app. Uses `import.meta.env.DEV` for Vite compatibility.
+- **Enhanced robustness:** Added `typeof window` checks in analytics and Calendly initialization to prevent issues in non-browser environments.
