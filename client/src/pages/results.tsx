@@ -43,7 +43,10 @@ export function Results() {
     queryKey: ['/api/results', resultId],
     queryFn: async () => {
       const response = await fetch(`/api/results/${resultId}`);
-      if (!response.ok) { throw new Error(`Failed to load results: HTTP ${response.status}`); }
+      if (!response.ok) {
+        const errorObj = { code: response.status, message: `Failed to load results: HTTP ${response.status}` };
+        throw errorObj;
+      }
       const json = await response.json();
       try { localStorage.setItem(`result:${resultId}`, JSON.stringify(json)); } catch {}
       return json;
@@ -52,7 +55,65 @@ export function Results() {
   });
 
   if (error && !result) {
-    return <div className="max-w-3xl mx-auto p-6"><h1 className="text-2xl font-semibold mb-2">Results not found</h1><p className="text-muted-foreground">This link may have expired or the results aren't available yet. Try re-running the assessment.</p></div>;
+    const is404 = (error as any)?.code === 404;
+    
+    if (is404) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white">
+          <Card className="max-w-md mx-4" data-testid="card-404-error">
+            <CardHeader>
+              <CardTitle data-testid="text-404-title">Result Not Found</CardTitle>
+              <CardDescription data-testid="text-404-description">
+                This assessment result could not be found or may have expired.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-gray-600" data-testid="text-404-message">
+                The link you followed may be incorrect, or the results may no longer be available.
+              </p>
+              <Link href="/assessment">
+                <Button className="w-full" data-testid="button-start-new-assessment">
+                  Start New Assessment
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button variant="outline" className="w-full" data-testid="button-back-home">
+                  Back to Home
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white">
+        <Card className="max-w-md mx-4" data-testid="card-error">
+          <CardHeader>
+            <CardTitle data-testid="text-error-title">Unable to Load Results</CardTitle>
+            <CardDescription data-testid="text-error-description">
+              We encountered an error while loading your assessment results.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-gray-600" data-testid="text-error-message">
+              Please try again later or contact support if the problem persists.
+            </p>
+            <Link href="/assessment">
+              <Button className="w-full" data-testid="button-retry-assessment">
+                Start New Assessment
+              </Button>
+            </Link>
+            <Link href="/">
+              <Button variant="outline" className="w-full" data-testid="button-home">
+                Back to Home
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   if (isLoading) {
@@ -114,22 +175,8 @@ export function Results() {
     );
   }
 
-  if (error || !result) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>Results Not Found</CardTitle>
-            <CardDescription>We couldn't find the assessment results you're looking for.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/">
-              <Button>Return Home</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  if (!result) {
+    return null;
   }
 
   const readinessLevel = READINESS_LEVELS.find(
