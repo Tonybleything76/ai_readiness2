@@ -4,19 +4,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Calendar, CheckCircle2, Clock, Video } from 'lucide-react';
 import { CALENDLY_URL } from '../config/calendly';
 
+let calendlyScriptLoaded = false;
+
 export function Schedule() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    const head = document.querySelector('head');
-    const existingScript = head?.querySelector('script[src*="calendly"]');
+    if (typeof window === 'undefined') return;
     
-    if (!existingScript) {
-      const script = document.createElement('script');
-      script.setAttribute('src', 'https://assets.calendly.com/assets/external/widget.js');
-      script.setAttribute('type', 'text/javascript');
-      script.setAttribute('async', 'true');
-      head?.appendChild(script);
+    if (!calendlyScriptLoaded) {
+      const head = document.querySelector('head');
+      const existingScript = head?.querySelector('script[src*="calendly"]');
+      
+      if (!existingScript && head) {
+        try {
+          const script = document.createElement('script');
+          script.setAttribute('src', 'https://assets.calendly.com/assets/external/widget.js');
+          script.setAttribute('type', 'text/javascript');
+          script.setAttribute('async', 'true');
+          head.appendChild(script);
+          calendlyScriptLoaded = true;
+        } catch (error) {
+          console.error('Failed to load Calendly script:', error);
+        }
+      } else {
+        calendlyScriptLoaded = true;
+      }
     }
 
     const handleCalendlyEvent = (e: MessageEvent) => {

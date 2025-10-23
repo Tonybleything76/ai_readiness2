@@ -14,6 +14,7 @@ import { Contact } from './pages/contact';
 import { Schedule } from './pages/schedule';
 import { Confirmation } from './pages/confirmation';
 import { CookieConsent } from './components/CookieConsent';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { useAnalytics } from './hooks/use-analytics';
 import { initGA } from './lib/analytics';
 
@@ -51,12 +52,14 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Layout>
-        <Router />
-      </Layout>
-      <CookieConsent />
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <Layout>
+          <Router />
+        </Layout>
+        <CookieConsent />
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

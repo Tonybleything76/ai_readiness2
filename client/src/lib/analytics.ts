@@ -22,7 +22,11 @@ export const setAnalyticsConsent = (granted: boolean) => {
   }
 };
 
+let gaInitialized = false;
+
 export const initGA = () => {
+  if (typeof window === 'undefined') return;
+  if (gaInitialized) return;
   if (!hasAnalyticsConsent()) return;
   
   const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
@@ -32,24 +36,33 @@ export const initGA = () => {
   }
 
   const existingScript = document.querySelector(`script[src*="googletagmanager.com/gtag/js"]`);
-  if (existingScript) return;
+  if (existingScript) {
+    gaInitialized = true;
+    return;
+  }
 
-  const script1 = document.createElement('script');
-  script1.async = true;
-  script1.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-  document.head.appendChild(script1);
+  try {
+    const script1 = document.createElement('script');
+    script1.async = true;
+    script1.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    document.head.appendChild(script1);
 
-  const script2 = document.createElement('script');
-  script2.textContent = `
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${measurementId}', {
-      anonymize_ip: true,
-      cookie_flags: 'SameSite=None;Secure'
-    });
-  `;
-  document.head.appendChild(script2);
+    const script2 = document.createElement('script');
+    script2.textContent = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${measurementId}', {
+        anonymize_ip: true,
+        cookie_flags: 'SameSite=None;Secure'
+      });
+    `;
+    document.head.appendChild(script2);
+    
+    gaInitialized = true;
+  } catch (error) {
+    console.error('Failed to initialize Google Analytics:', error);
+  }
 };
 
 export const trackPageView = (url: string) => {
